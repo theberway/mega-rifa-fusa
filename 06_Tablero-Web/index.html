@@ -120,6 +120,16 @@ li{margin-bottom:5px}
 .suta-señala{flex:0 0 auto;width:clamp(96px,27vw,140px);border:5px solid var(--negro);border-radius:14px;background:#F8EFDE;box-shadow:5px 5px 0 var(--negro);overflow:hidden;line-height:0}
 .suta-señala img{width:100%;height:auto;display:block}
 .pagar .pie{margin:14px 0 0;font-size:14px;font-weight:600;opacity:.95}
+
+.ir-nums{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:22px;padding:16px 12px;text-decoration:none;color:var(--negro);background:var(--amarillo);border:5px solid var(--negro);border-radius:14px;box-shadow:6px 6px 0 var(--negro);text-align:center;transition:transform .08s,box-shadow .08s}
+.ir-nums:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--negro)}
+.ir-nums:focus-visible{outline:4px solid var(--rojo);outline-offset:3px}
+.ir-nums .irt{font-family:var(--titular);font-size:clamp(19px,5.4vw,28px);line-height:1.1}
+.ir-nums .flechas{font-size:clamp(24px,7vw,34px);color:var(--rojo);text-shadow:2px 2px 0 var(--negro);animation:rebote 1s ease-in-out infinite}
+@keyframes rebote{0%,100%{transform:translateY(-3px)}50%{transform:translateY(5px)}}
+@media(prefers-reduced-motion:reduce){.ir-nums .flechas{animation:none}}
+html{scroll-behavior:smooth}
+#numeros{scroll-margin-top:14px}
 footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
 .en .es-only{display:none}
 .es .en-only{display:none}
@@ -157,38 +167,16 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
     <p class="nota en-only">Cash, if the winning number was sold · NZD 1,000 if it was sold in New Zealand · Draw 10:30 p.m. Colombia time</p>
   </section>
 
-  <!-- CONTADOR PRINCIPAL -->
-  <div class="hero" id="hero">
-    <div class="hn" id="cLibre">—</div>
-    <div class="hk" data-es="números libres de 1.000" data-en="numbers still free of 1,000">números libres de 1.000</div>
-    <div class="frase" id="frase" aria-live="polite"></div>
-    <div class="cierre"><span id="cReloj">—</span> · <span data-es="para el cierre" data-en="to closing">para el cierre</span></div>
-  </div>
-
-  <div id="estadoDatos" class="aviso" hidden></div>
-
-  <!-- CUADRÍCULA -->
-  <section class="card">
-    <h2 data-es="Escoge tu número" data-en="Pick your number">Escoge tu número</h2>
-    <p style="margin:0" data-es="Toca cualquier número libre. Lo que ves aquí sale del tablero real y se actualiza solo." data-en="Tap any free number. What you see here comes from the real board and refreshes on its own.">Toca cualquier número libre. Lo que ves aquí sale del tablero real y se actualiza solo.</p>
-    <div class="legend">
-      <span><i class="sw" style="background:var(--crema)"></i><b data-es="Libre" data-en="Free">Libre</b></span>
-      <span><i class="sw" style="background:var(--amarillo)"></i><b data-es="Apartado" data-en="On hold">Apartado</b></span>
-      <span><i class="sw" style="background:var(--azul)"></i><b data-es="Pagado" data-en="Paid">Pagado</b></span>
-    </div>
-    <div class="grid" id="grid" role="grid" aria-label="Los 1.000 números"></div>
-  </section>
-
   <!-- CÓMO PAGAR -->
   <section class="pagar" id="pagar" aria-label="Cómo pagar">
     <h2 class="es-only">Así de fácil se paga</h2><h2 class="en-only">Paying is easy</h2>
     <ol class="pasos es-only">
-      <li><span>Toca tu número arriba y pulsa <b>«Lo quiero»</b>: te lo apartamos <b>24 horas</b>.</span></li>
+      <li><span>Toca tu número más abajo y pulsa <b>«Lo quiero»</b>: te lo apartamos <b>24 horas</b>.</span></li>
       <li><span>Paga <b>$6.000 por número</b> a la llave Bre-B de Nubank, o en efectivo al vendedor.</span></li>
       <li><span>Cuando la plata aparece en la app, queda <b>PAGADO</b> y te mandamos tu tarjeta-boleta.</span></li>
     </ol>
     <ol class="pasos en-only">
-      <li><span>Tap your number above and press <b>“I want it”</b>: we hold it for <b>24 hours</b>.</span></li>
+      <li><span>Tap your number further down and press <b>“I want it”</b>: we hold it for <b>24 hours</b>.</span></li>
       <li><span>In Colombia, pay <b>COP 6,000 per number</b> to the Nubank Bre-B key below. In New Zealand it's <b>NZD 4</b> by bank transfer; we send the details in the chat.</span></li>
       <li><span>Once the money shows up in the app, it's <b>PAID</b> and we send your ticket card.</span></li>
     </ol>
@@ -203,6 +191,35 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
     </div>
     <p class="pie es-only">Pagado es cuando la plata se ve en la app: un pantallazo no cuenta. Pega la llave en tu app del banco y escribe tu número en el mensaje.</p>
     <p class="pie en-only">Paid means the money shows up in the app: a screenshot doesn't count. Paste the key in your bank app and put your number in the message.</p>
+  </section>
+
+  <!-- IR A LOS NÚMEROS -->
+  <a class="ir-nums" href="#numeros" id="irNums">
+    <span class="flechas" aria-hidden="true">▼</span>
+    <span class="irt es-only">¡ESCOGE TU NÚMERO AQUÍ ABAJO!</span><span class="irt en-only">PICK YOUR NUMBER BELOW!</span>
+    <span class="flechas" aria-hidden="true">▼</span>
+  </a>
+
+  <!-- CONTADOR PRINCIPAL -->
+  <div class="hero" id="hero">
+    <div class="hn" id="cLibre">—</div>
+    <div class="hk" data-es="números libres de 1.000" data-en="numbers still free of 1,000">números libres de 1.000</div>
+    <div class="frase" id="frase" aria-live="polite"></div>
+    <div class="cierre"><span id="cReloj">—</span> · <span data-es="para el cierre" data-en="to closing">para el cierre</span></div>
+  </div>
+
+  <div id="estadoDatos" class="aviso" hidden></div>
+
+  <!-- CUADRÍCULA -->
+  <section class="card" id="numeros">
+    <h2 data-es="Escoge tu número" data-en="Pick your number">Escoge tu número</h2>
+    <p style="margin:0" data-es="Toca cualquier número libre. Lo que ves aquí sale del tablero real y se actualiza solo." data-en="Tap any free number. What you see here comes from the real board and refreshes on its own.">Toca cualquier número libre. Lo que ves aquí sale del tablero real y se actualiza solo.</p>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--crema)"></i><b data-es="Libre" data-en="Free">Libre</b></span>
+      <span><i class="sw" style="background:var(--amarillo)"></i><b data-es="Apartado" data-en="On hold">Apartado</b></span>
+      <span><i class="sw" style="background:var(--azul)"></i><b data-es="Pagado" data-en="Paid">Pagado</b></span>
+    </div>
+    <div class="grid" id="grid" role="grid" aria-label="Los 1.000 números"></div>
   </section>
 
   <!-- PREMIO Y SORTEO -->

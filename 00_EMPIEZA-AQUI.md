@@ -5,6 +5,10 @@
 ## 11 oct — `SHEET_CSV` actualizado y web redesplegada
 `index.html` y `publicar/index.html` ahora apuntan al Sheet `2PACX-1vSDP5V6…` (gid 540644959). Desplegado en producción (proyecto `mega-rifa-fusa`, dpl_2fr3fdETS3b9sqxVjiJemECjjd71) y verificado en vivo: la web muestra 998 libres, igual que el CSV (998 libres, 1 apartado, 1 pagado de prueba), sin errores. **Ojo:** el Sheet trae datos de prueba (002 apartado, 006 pagado); limpiarlos antes de vender.
 
+## 11 oct (noche 2) — historia «Premio 2M» y reorden de la web
+- **Historia de Instagram/WhatsApp** (1080×1920, estilo de la web, zona segura respetada): `08_Contenido/historia-premio/` (`historia-premio.html` + `historia-premio.png`). Premio $2.000.000, boleta a $6.000, sorteo 5 dic, Sutá señalando, link. Sin whisky ni causa.
+- **Web**: el bloque «Así de fácil se paga» ahora va **justo debajo del premio**, y entre él y el contador hay un botón amarillo con flechas **«¡ESCOGE TU NÚMERO AQUÍ ABAJO!»** que baja directo a la cuadrícula. Desplegado y probado en vivo.
+
 ## 11 oct (noche) — web: premio arriba + bloque de pago con botón de copiar
 `06_Tablero-Web/publicar/index.html` (y copia en `06_Tablero-Web/index.html`): bloque **¡¡PREMIO DE $2.000.000!!** + «Boleta a $6.000» + «Se juega el 5 de diciembre» como **lo primero que se ve**, y debajo de la cuadrícula el bloque **«Así de fácil se paga»** (3 pasos, botón grande **COPIAR LLAVE @sbg884** con aviso «¡LLAVE COPIADA!», y Sutá señalando el botón; imagen `suta-senalando.webp`). ES y EN. Se arregló además un error de ortografía que estaba en vivo: **«Boyaquí» → «Boyacá»** (2 veces en la web). Desplegado y probado en vivo (copia la llave al portapapeles).
 
