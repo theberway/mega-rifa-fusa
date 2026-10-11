@@ -2,7 +2,9 @@
 
 > Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-11: todo construido y la web en vivo; hay UN pendiente técnico abierto (el link nuevo del Sheet, ver abajo) y Santiago ejecuta lo de "Siguiente paso".**
 
-## ⚠️ Pendiente abierto del 11 oct — link nuevo del Sheet (primero que hay que resolver)
+## ⚠️ Pendiente abierto del 11 oct — link nuevo del Sheet: CAMBIADO EN EL CÓDIGO, FALTA DESPLEGAR Y PROBAR
+
+**Actualización (11 oct, 2.ª sesión):** `SHEET_CSV` ya apunta al link `...1vSDP5V6...` en `06_Tablero-Web/index.html` y `publicar/index.html` (commit en la rama). **No se pudo desplegar ni abrir el CSV desde la nube**; falta `cd 06_Tablero-Web/publicar && npx vercel deploy --prod --yes` desde el PC de Santiago y comprobar en vivo. Lo de abajo es el contexto original.
 
 La sesión "Campaña masiva RRSS" se cortó (límite semanal, vuelve el 13 oct 9 a.m.) justo cuando Santiago escribió: *"la página todavía no funciona, aquí está el link, revisa, conéctalo y deja funcionando la página"*:
 `https://docs.google.com/spreadsheets/d/e/2PACX-1vSDP5V6nI_cacFyy5hmmh_Lqy92K1ioHRhLdib97-tL1m8udoiykjhjN1peCk7ZsQ/pub?gid=540644959&single=true&output=csv`
