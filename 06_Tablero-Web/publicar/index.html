@@ -264,9 +264,9 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
   </section>
 
   <footer>
-    <p class="es-only">Mega Rifa Fusa · Fusagasugá, 2026 · El tablero se refresca solo cada minuto.</p>
+    <p class="es-only">Mega Rifa Fusa · Fusagasugá, 2026 · El tablero se refresca solo cada 20 segundos.</p>
     <p class="es-only">The Ber Way (<a href="https://instagram.com/theberway" target="_blank" rel="noopener">@theberway</a>) by Santiago (<a href="https://instagram.com/santiagobermudezai" target="_blank" rel="noopener">@santiagobermudezai</a>)</p>
-    <p class="en-only">Mega Rifa Fusa · Fusagasugá, 2026 · The board refreshes on its own every minute.</p>
+    <p class="en-only">Mega Rifa Fusa · Fusagasugá, 2026 · The board refreshes on its own every 20 seconds.</p>
     <p class="en-only">The Ber Way (<a href="https://instagram.com/theberway" target="_blank" rel="noopener">@theberway</a>) by Santiago (<a href="https://instagram.com/santiagobermudezai" target="_blank" rel="noopener">@santiagobermudezai</a>)</p>
   </footer>
 </div>
@@ -299,7 +299,12 @@ const WHATSAPP  = "573334018903";   // línea WhatsApp Business de la rifa
 /* ── Lo de abajo no hace falta tocarlo ── */
 const CIERRE   = new Date("2026-12-05T18:00:00-05:00");
 const TOTAL    = 1000;
-const REFRESCO = 60000;   // la web relee el Sheet cada 60 s
+const REFRESCO = 20000;   // la web relee el tablero cada 20 s (y al volver a la pestaña)
+
+// 3) (opcional, MÁS RÁPIDO) URL de la aplicación web de Apps Script (termina en /exec).
+//    Lee el Sheet en vivo, sin el retraso de ~5 min de "Publicar en la web".
+//    Vacío = se usa solo el CSV de arriba. Si el servicio falla, también cae al CSV.
+const API_URL = "";
 
 /* ══════════════════════════════════════════════════════════════ */
 
@@ -360,7 +365,38 @@ function parseCSV(t) {
   return filas;
 }
 
+/* Servicio en vivo (Apps Script): solo trae los números PAGADOS y APARTADOS. Devuelve true si funcionó. */
+async function cargarAPI() {
+  if (!API_URL) return false;
+  try {
+    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 8000);
+    const r = await fetch(API_URL + (API_URL.includes("?") ? "&" : "?") + "t=" + Date.now(), { signal: ctl.signal });
+    clearTimeout(to);
+    if (!r.ok) return false;
+    const j = await r.json();
+    if (!j || j.ok !== true || !Array.isArray(j.v)) return false;
+    const m = {}, nm = {};
+    for (let i = 0; i < TOTAL; i++) m[String(i).padStart(3, "0")] = "LIBRE";
+    for (const f of j.v) {
+      const n = String(f[0] || "").padStart(3, "0");
+      if (!(n in m)) continue;
+      m[n] = f[1] === "PAGADO" ? "PAGADO" : "APARTADO";
+      if (m[n] === "PAGADO") nm[n] = String(f[2] || "").trim();
+    }
+    estados = m; nombres = nm;
+    $("#estadoDatos").hidden = true;
+    pintarGrid(); pintarContadores();
+    return true;
+  } catch (e) { return false; }
+}
+
+let cargando = false;
 async function cargar() {
+  if (cargando) return; cargando = true;
+  try { if (await cargarAPI()) return; await cargarCSV(); } finally { cargando = false; }
+}
+
+async function cargarCSV() {
   if (!SHEET_CSV) { sinDatos("falta-link"); return; }
   try {
     const r = await fetch(SHEET_CSV + (SHEET_CSV.includes("?") ? "&" : "?") + "t=" + Date.now());
@@ -588,6 +624,9 @@ $("#dlg").onclick = ev => { if (ev.target === $("#dlg")) $("#dlg").close(); };
 pintarGrid();
 cargar();
 setInterval(cargar, REFRESCO);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) cargar(); });
+window.addEventListener("focus", cargar);
+window.addEventListener("online", cargar);
 setInterval(reloj, 30000);
 setInterval(rotarFrase, 1200000);   // frase nueva cada 20 minutos
 

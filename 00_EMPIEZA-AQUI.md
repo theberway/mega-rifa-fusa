@@ -5,6 +5,10 @@
 ## 11 oct — `SHEET_CSV` actualizado y web redesplegada
 `index.html` y `publicar/index.html` ahora apuntan al Sheet `2PACX-1vSDP5V6…` (gid 540644959). Desplegado en producción (proyecto `mega-rifa-fusa`, dpl_2fr3fdETS3b9sqxVjiJemECjjd71) y verificado en vivo: la web muestra 998 libres, igual que el CSV (998 libres, 1 apartado, 1 pagado de prueba), sin errores. **Ojo:** el Sheet trae datos de prueba (002 apartado, 006 pagado); limpiarlos antes de vender.
 
+## 11 oct (noche 3) — velocidad del tablero + ALERTA de nombres completos
+- La web ahora relee cada **20 s** (antes 60) y al volver a la pestaña. El retraso grande es de Google ("Publicar en la web" tarda hasta ~5 min). **Solución lista, falta que Santiago la active:** `doGet` al final de `06_Tablero-Web/script-tablero.gs` (servicio en vivo, solo datos ya públicos) → publicarlo como aplicación web, pasar la URL `/exec` y ponerla en `API_URL` de `publicar/index.html`. Si falla, la web cae sola al CSV.
+- **ALERTA (privacidad, decisión 35):** en `NUMEROS!E` (NOMBRE_PUBLICO) los números **575 y 718 tienen el nombre completo** escrito a mano y salen así en la web. Hay que restaurar la fórmula de E (ejecutar `repararTodo` en Apps Script, o copiar la fórmula de una fila vecina) y poner los nombres solo en `COMPRADORES`.
+
 ## 11 oct (noche 2) — historia «Premio 2M» y reorden de la web
 - **Historia de Instagram/WhatsApp** (1080×1920, estilo de la web, zona segura respetada): `08_Contenido/historia-premio/` (`historia-premio.html` + `historia-premio.png`). Premio $2.000.000, boleta a $6.000, sorteo 5 dic, Sutá señalando, link. Sin whisky ni causa.
 - **Web**: el bloque «Así de fácil se paga» ahora va **justo debajo del premio**, y entre él y el contador hay un botón amarillo con flechas **«¡ESCOGE TU NÚMERO AQUÍ ABAJO!»** que baja directo a la cuadrícula. Desplegado y probado en vivo.
