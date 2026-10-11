@@ -1,6 +1,22 @@
 # EMPIEZA AQUÍ — Mega Rifa Fusa
 
-> Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-09: todo construido; falta que Santiago ejecute lo de "Siguiente paso" antes del sáb 10 oct.**
+> Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-11: todo construido y la web en vivo; hay UN pendiente técnico abierto (el link nuevo del Sheet, ver abajo) y Santiago ejecuta lo de "Siguiente paso".**
+
+## ⚠️ Pendiente abierto del 11 oct — link nuevo del Sheet (primero que hay que resolver)
+
+La sesión "Campaña masiva RRSS" se cortó (límite semanal, vuelve el 13 oct 9 a.m.) justo cuando Santiago escribió: *"la página todavía no funciona, aquí está el link, revisa, conéctalo y deja funcionando la página"*:
+`https://docs.google.com/spreadsheets/d/e/2PACX-1vSDP5V6nI_cacFyy5hmmh_Lqy92K1ioHRhLdib97-tL1m8udoiykjhjN1peCk7ZsQ/pub?gid=540644959&single=true&output=csv`
+
+- **Lo que dice el repo:** `06_Tablero-Web/publicar/index.html` (línea ~206) tiene `SHEET_CSV` apuntando a **otro** ID: `2PACX-1vQb_AQEeerda6u...`. Es el que la sesión del 10 oct dejó desplegado y "verificado en vivo" (1.000 libres).
+- **Qué no se sabe:** si el link nuevo (`...1vSDP5V6...`) es un Sheet distinto que Santiago rehízo después, o el mismo con otro enlace de publicación. Desde el entorno de la nube no se pudo abrir Google (proxy 403), así que **no se tocó `index.html` ni se desplegó nada**.
+- **Qué hacer en la próxima sesión (en el PC de Santiago, con internet):** (1) bajar el CSV nuevo con `curl` y comprobar 1.000 filas, encabezados y ceros adelante; (2) si cuadra, cambiar `SHEET_CSV` en `06_Tablero-Web/publicar/index.html` (y en `artifact.html` si aplica), desplegar a Vercel (comando en `rifa-fusa-herramientas-y-despliegue`) y probar en vivo; (3) preguntarle a Santiago qué síntoma ve en la web ("no funciona" = contadores en `—`, números en blanco, error). Registrar el resultado aquí.
+
+## Novedades del 10–11 oct (sesiones "Guía de configuración" y "Campaña RRSS")
+
+- **Web en vivo (10 oct, noche):** cuadrícula de **7 números por fila**, ~25 % más grande; **links de Instagram en el pie** (ES y EN): @theberway → instagram.com/theberway y @santiagobermudezai → instagram.com/santiagobermudezai; **confeti al cargar** (~3 s, colores de marca, respeta "reducir movimiento"). El confeti sale en cada carga o refresco; si molesta, se limita a una vez por sesión con una línea.
+- **Calendario de contenido corregido (11 oct):** 10 días de la semana estaban mal en `08_Contenido/calendario-de-contenido.md` (20–25 oct corridos un día; noviembre: sáb 21, mar 24, jue 26, sáb 28). Versión con marca: `08_Contenido/calendario-de-contenido.html` (se regenera con `campana-rrss/_fuentes/calendario-html.py`); también `calendario-celular.html` y `banner-facebook.html`. Nota: `PROMPT-nueva-sesion-campana-RRSS.md` es el prompt original de la campaña, ya cumplido.
+- **Arranque de la campaña (guía dada a Santiago el 11 oct):** crear **@megarifafusa** en IG, FB y TikTok (IG como cuenta profesional; foto `05_Marca/WA-perfil/WA-ESCOGIDA.png`; bio: "1.000 números · $6.000 · Premio $2.000.000 · Sorteo sáb 5 dic, Lotería de Boyacá · Organizada por Santiago"; link `mega-rifa-fusa.vercel.app`); unir IG y FB en Meta Business Suite para publicar y programar; configurar WhatsApp Business (pendiente 4); instalar `script-tablero.gs` y correr `repararTodo`; probar `generador-contador.html` una vez. Rutina diaria: 7:45 a.m. mirar `calendario-publicacion.md`, 8:00 a.m. publicar feed (IG+FB) con el `copy.md`, reemplazando `[QUEDAN]`/`[VAN]`/`[###]` por los mismos números del generador. La preventa se mueve por **WhatsApp 1 a 1**, no por el post; los vendedores reciben su link `?v=CODIGO` y las historias; a Sofía se le manda `semana-1/14-oct-NZ/`.
+- **Memoria del proyecto:** la carpeta `MEMORY.md` vive en el PC de Santiago, no en este repo. Esta sesión no pudo editarla; los datos de arriba son los que habría que pasarle.
 
 ## Novedades del 10 oct — campaña de redes (IG · FB · TikTok) LISTA
 
@@ -232,4 +248,4 @@ Los casos de prueba se verificaron **recalculando el archivo de Excel**, no solo
 
 ---
 
-*Última actualización: 2026-10-06: decisión 37 (regla del número no vendido) y decisión 15 (sorteo el sáb 5 dic). Ver `02_Decisiones/analisis-premio-y-tiempo.md`.*
+*Última actualización: 2026-10-11: pendiente del link nuevo del Sheet, web con grid 7/fila + IG + confeti, calendario corregido, guía de arranque de la campaña. Antes: 2026-10-10 decisión 43; 2026-10-06 decisiones 37 y 15 (ver `02_Decisiones/analisis-premio-y-tiempo.md`).*
