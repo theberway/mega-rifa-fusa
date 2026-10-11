@@ -5,6 +5,11 @@
 ## 11 oct — `SHEET_CSV` actualizado y web redesplegada
 `index.html` y `publicar/index.html` ahora apuntan al Sheet `2PACX-1vSDP5V6…` (gid 540644959). Desplegado en producción (proyecto `mega-rifa-fusa`, dpl_2fr3fdETS3b9sqxVjiJemECjjd71) y verificado en vivo: la web muestra 998 libres, igual que el CSV (998 libres, 1 apartado, 1 pagado de prueba), sin errores. **Ojo:** el Sheet trae datos de prueba (002 apartado, 006 pagado); limpiarlos antes de vender.
 
+## Novedades del 11 oct — portada de Facebook y QR de la web
+- **Portada de Facebook** (estilo de marca, 1640×624): `08_Contenido/banner-facebook/` (HTML + PNG). Reemplaza al `banner-facebook.html` viejo (negro, Arial Black), que sigue ahí sin usarse.
+- **QR de la web** (**decisión 44**): `08_Contenido/qr/` (empezar por `00_LEEME.md`). Digital 1080×1080, cartel carta, **hoja de 6 stickers × 5 = 30** y SVG vectorial. Verificado: los 4 formatos leen `https://mega-rifa-fusa.vercel.app`. Imprimir en papel blanco, escala 100 %, adhesivo mate; **probar una hoja con dos celulares antes de pegar los 30**. **No cambiar el dominio después de imprimir.**
+- La web ya lee el Sheet nuevo (`2PACX-1vSDP5V6…`, desplegada el 11 oct). **El Sheet trae datos de prueba (002 apartado, 006 pagado): limpiarlos antes de vender.**
+
 ## Novedades del 10 oct — campaña de redes (IG · FB · TikTok) LISTA
 
 Todo en `08_Contenido/campana-rrss/` (empezar por `00_LEEME.md` y `calendario-publicacion.md`). Nada publicado: Santiago publica.
