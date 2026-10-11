@@ -5,6 +5,9 @@
 ## 11 oct — `SHEET_CSV` actualizado y web redesplegada
 `index.html` y `publicar/index.html` ahora apuntan al Sheet `2PACX-1vSDP5V6…` (gid 540644959). Desplegado en producción (proyecto `mega-rifa-fusa`, dpl_2fr3fdETS3b9sqxVjiJemECjjd71) y verificado en vivo: la web muestra 998 libres, igual que el CSV (998 libres, 1 apartado, 1 pagado de prueba), sin errores. **Ojo:** el Sheet trae datos de prueba (002 apartado, 006 pagado); limpiarlos antes de vender.
 
+## 11 oct (noche) — web: premio arriba + bloque de pago con botón de copiar
+`06_Tablero-Web/publicar/index.html` (y copia en `06_Tablero-Web/index.html`): bloque **¡¡PREMIO DE $2.000.000!!** + «Boleta a $6.000» + «Se juega el 5 de diciembre» como **lo primero que se ve**, y debajo de la cuadrícula el bloque **«Así de fácil se paga»** (3 pasos, botón grande **COPIAR LLAVE @sbg884** con aviso «¡LLAVE COPIADA!», y Sutá señalando el botón; imagen `suta-senalando.webp`). ES y EN. Se arregló además un error de ortografía que estaba en vivo: **«Boyaquí» → «Boyacá»** (2 veces en la web). Desplegado y probado en vivo (copia la llave al portapapeles).
+
 ## Novedades del 11 oct — portada de Facebook y QR de la web
 - **Portada de Facebook** (estilo de marca, 1640×624): `08_Contenido/banner-facebook/` (HTML + PNG). Reemplaza al `banner-facebook.html` viejo (negro, Arial Black), que sigue ahí sin usarse.
 - **QR de la web** (**decisión 44**): `08_Contenido/qr/` (empezar por `00_LEEME.md`). Digital 1080×1080, cartel carta, **hoja de 6 stickers × 5 = 30** y SVG vectorial. Verificado: los 4 formatos leen `https://mega-rifa-fusa.vercel.app`. Imprimir en papel blanco, escala 100 %, adhesivo mate; **probar una hoja con dos celulares antes de pegar los 30**. **No cambiar el dominio después de imprimir.**

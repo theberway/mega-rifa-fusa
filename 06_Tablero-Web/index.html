@@ -89,6 +89,37 @@ ol,ul{padding-left:20px;margin:8px 0}
 li{margin-bottom:5px}
 .mono{font-family:var(--mono);font-weight:700}
 .aviso{color:var(--negro);background:var(--crema);border:3px dashed var(--rojo);border-radius:var(--radio);padding:12px;margin-top:18px;font-weight:600;background:var(--crema)}
+
+/* ───── Premio (lo primero que se ve) ───── */
+.premio-top{background:var(--crema);border:var(--borde) solid var(--negro);border-radius:var(--radio);box-shadow:6px 6px 0 var(--negro);margin-top:22px;padding:20px 14px 16px;text-align:center}
+.premio-top .pt{font-family:var(--titular);color:var(--rojo);font-size:clamp(30px,9.2vw,56px);line-height:1.1;text-shadow:3px 3px 0 var(--negro);letter-spacing:.5px}
+.premio-top .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chip{font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:clamp(14px,3.9vw,18px);padding:7px 12px;border:3px solid var(--negro);border-radius:var(--radio);box-shadow:3px 3px 0 var(--negro);color:var(--crema)}
+.chip.n{background:var(--negro)}.chip.a{background:var(--azul)}
+.premio-top .pt span{display:block}.premio-top .pt .l1{font-size:.62em;line-height:1.25;letter-spacing:1px}.premio-top .nota{margin:12px 0 0;font-size:14px;font-weight:600}
+
+/* ───── Cómo pagar + botón para copiar la llave ───── */
+.pagar{background:var(--rojo);color:var(--crema);border:var(--borde) solid var(--negro);border-radius:var(--radio);box-shadow:6px 6px 0 var(--negro);margin-top:22px;padding:18px 16px 20px}
+.pagar h2{color:var(--crema);text-shadow:3px 3px 0 var(--negro);font-size:clamp(24px,6.4vw,32px)}
+.pasos{list-style:none;padding:0;margin:10px 0 0;counter-reset:p}
+.pasos li{counter-increment:p;display:flex;gap:10px;align-items:flex-start;margin:0 0 9px;font-size:17px;font-weight:600;line-height:1.3}
+.pasos li::before{content:counter(p);flex:0 0 30px;height:30px;border:3px solid var(--negro);border-radius:50%;background:var(--amarillo);color:var(--negro);font-family:var(--titular);font-size:16px;display:flex;align-items:center;justify-content:center;margin-top:-1px}
+.pasos b{color:var(--amarillo)}
+.llave-fila{display:flex;align-items:flex-end;gap:10px;margin-top:14px}
+.btn-copiar{flex:1 1 auto;min-width:0;cursor:pointer;font-family:var(--texto);background:var(--amarillo);color:var(--negro);border:5px solid var(--negro);border-radius:14px;box-shadow:6px 6px 0 var(--negro);padding:14px 10px 12px;text-align:center;transition:transform .08s,box-shadow .08s;animation:latido 2.2s ease-in-out infinite}
+.btn-copiar:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--negro)}
+.btn-copiar:focus-visible{outline:4px solid var(--crema);outline-offset:3px}
+.btn-copiar .bt{display:block;font-family:var(--titular);font-size:clamp(22px,6.6vw,32px);line-height:1.05}
+.btn-copiar .bk{display:block;font-family:var(--mono);font-weight:700;font-size:clamp(20px,6vw,28px);margin-top:6px;background:var(--crema);border:3px dashed var(--negro);border-radius:8px;padding:4px 6px}
+.btn-copiar .bs{display:block;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
+.btn-copiar .okt{display:none}
+.btn-copiar.ok{background:var(--verde);color:var(--crema);animation:none}
+.btn-copiar.ok .norm{display:none}.btn-copiar.ok .okt{display:inline}
+@keyframes latido{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+@media(prefers-reduced-motion:reduce){.btn-copiar{animation:none}}
+.suta-señala{flex:0 0 auto;width:clamp(96px,27vw,140px);border:5px solid var(--negro);border-radius:14px;background:#F8EFDE;box-shadow:5px 5px 0 var(--negro);overflow:hidden;line-height:0}
+.suta-señala img{width:100%;height:auto;display:block}
+.pagar .pie{margin:14px 0 0;font-size:14px;font-weight:600;opacity:.95}
 footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
 .en .es-only{display:none}
 .es .en-only{display:none}
@@ -114,6 +145,18 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
 
 <div class="wrap">
 
+  <!-- PREMIO: lo primero que se ve -->
+  <section class="premio-top" aria-label="Premio">
+    <div class="pt es-only"><span class="l1">¡¡PREMIO DE</span><span class="l2">$2.000.000!!</span></div>
+    <div class="pt en-only"><span class="l1">¡¡PRIZE OF</span><span class="l2">COP 2,000,000!!</span></div>
+    <div class="chips">
+      <span class="chip n es-only">Boleta a $6.000</span><span class="chip n en-only">NZD 4 per number</span>
+      <span class="chip a es-only">Se juega el 5 de diciembre</span><span class="chip a en-only">Draw: 5 December</span>
+    </div>
+    <p class="nota es-only">En efectivo, si el número ganador está vendido · Sorteo 10:30 p.m. con la Lotería de Boyacá</p>
+    <p class="nota en-only">Cash, if the winning number was sold · NZD 1,000 if it was sold in New Zealand · Draw 10:30 p.m. Colombia time</p>
+  </section>
+
   <!-- CONTADOR PRINCIPAL -->
   <div class="hero" id="hero">
     <div class="hn" id="cLibre">—</div>
@@ -136,6 +179,32 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
     <div class="grid" id="grid" role="grid" aria-label="Los 1.000 números"></div>
   </section>
 
+  <!-- CÓMO PAGAR -->
+  <section class="pagar" id="pagar" aria-label="Cómo pagar">
+    <h2 class="es-only">Así de fácil se paga</h2><h2 class="en-only">Paying is easy</h2>
+    <ol class="pasos es-only">
+      <li><span>Toca tu número arriba y pulsa <b>«Lo quiero»</b>: te lo apartamos <b>24 horas</b>.</span></li>
+      <li><span>Paga <b>$6.000 por número</b> a la llave Bre-B de Nubank, o en efectivo al vendedor.</span></li>
+      <li><span>Cuando la plata aparece en la app, queda <b>PAGADO</b> y te mandamos tu tarjeta-boleta.</span></li>
+    </ol>
+    <ol class="pasos en-only">
+      <li><span>Tap your number above and press <b>“I want it”</b>: we hold it for <b>24 hours</b>.</span></li>
+      <li><span>In Colombia, pay <b>COP 6,000 per number</b> to the Nubank Bre-B key below. In New Zealand it's <b>NZD 4</b> by bank transfer; we send the details in the chat.</span></li>
+      <li><span>Once the money shows up in the app, it's <b>PAID</b> and we send your ticket card.</span></li>
+    </ol>
+    <div class="llave-fila">
+      <button type="button" class="btn-copiar" id="btnCopiar" aria-label="Copiar la llave Bre-B @sbg884">
+        <span class="bt es-only"><span class="norm">COPIAR LLAVE</span><span class="okt">¡LLAVE COPIADA!</span></span>
+        <span class="bt en-only"><span class="norm">COPY THE KEY</span><span class="okt">KEY COPIED!</span></span>
+        <span class="bk">@sbg884</span>
+        <span class="bs es-only">Bre-B · Nubank</span><span class="bs en-only">Bre-B · Nubank (Colombia)</span>
+      </button>
+      <div class="suta-señala"><img src="suta-senalando.webp" alt="" width="140" height="171" loading="lazy"></div>
+    </div>
+    <p class="pie es-only">Pagado es cuando la plata se ve en la app: un pantallazo no cuenta. Pega la llave en tu app del banco y escribe tu número en el mensaje.</p>
+    <p class="pie en-only">Paid means the money shows up in the app: a screenshot doesn't count. Paste the key in your bank app and put your number in the message.</p>
+  </section>
+
   <!-- PREMIO Y SORTEO -->
   <section class="card azul">
     <h2 data-es="El premio y el sorteo" data-en="The prize and the draw">El premio y el sorteo</h2>
@@ -144,9 +213,9 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
       <tr><td data-es="Precio" data-en="Price">Precio</td><td><span class="es-only">COP 6.000 por número</span><span class="en-only">NZD 4 per number</span></td></tr>
       <tr><td data-es="Cierre" data-en="Closing">Cierre</td><td><span class="mono">sáb 5 dic 2026 · 6:00 p.m.</span></td></tr>
       <tr><td data-es="Sorteo" data-en="Draw">Sorteo</td><td><span class="mono">sáb 5 dic 2026 · 10:30 p.m.</span></td></tr>
-      <tr><td data-es="Cómo se define" data-en="How it is decided">Cómo se define</td><td><span class="es-only">Las <b>últimas 3 cifras</b> del premio mayor de la <b>Lotería de Boyaquí</b>.</span><span class="en-only">The <b>last 3 digits</b> of the top prize of Colombia's <b>Lotería de Boyaquí</b>.</span></td></tr>
+      <tr><td data-es="Cómo se define" data-en="How it is decided">Cómo se define</td><td><span class="es-only">Las <b>últimas 3 cifras</b> del premio mayor de la <b>Lotería de Boyacá</b>.</span><span class="en-only">The <b>last 3 digits</b> of the top prize of Colombia's <b>Lotería de Boyacá</b>.</span></td></tr>
       <tr><td data-es="Si el número no se vendió" data-en="If that number wasn't sold">Si el número no se vendió</td><td><span class="es-only">No hay premio de 2 millones. El <b>siguiente número vendido</b> (del 999 se pasa al 000) gana un <b>premio de consolación</b>: una botella de whisky Buchanan's Master de 750 ml (valor COP 210.000; solo mayores de 18). Entre más números se vendan, más seguro hay ganador de los 2 millones.</span><span class="en-only">There is no big prize. The <b>next number sold</b> (999 wraps to 000) wins a <b>consolation prize</b>: a 750 ml bottle of Buchanan's Master whisky (worth COP 210,000; 18+ only). The more numbers sell, the likelier the big prize has a winner.</span></td></tr>
-      <tr><td data-es="Si la Boyaquí no juega" data-en="If Boyaquí doesn't draw">Si la Boyaquí no juega</td><td><span class="es-only">Se usa la Lotería del Cauca de las 11:00 p.m., con la misma regla.</span><span class="en-only">Lotería del Cauca at 11:00 p.m. is used instead, same rule.</span></td></tr>
+      <tr><td data-es="Si la Boyacá no juega" data-en="If Boyacá doesn't draw">Si la Boyacá no juega</td><td><span class="es-only">Se usa la Lotería del Cauca de las 11:00 p.m., con la misma regla.</span><span class="en-only">Lotería del Cauca at 11:00 p.m. is used instead, same rule.</span></td></tr>
       <tr><td data-es="Entrega" data-en="Hand-over">Entrega</td><td><span class="es-only">Máximo 24 horas después, con video y acta firmada.</span><span class="en-only">Within 24 hours, filmed, with a signed record.</span></td></tr>
     </table>
   </section>
@@ -439,6 +508,23 @@ function reloj() {
   const d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), mi = Math.floor(ms % 3600000 / 60000);
   $("#cReloj").textContent = d + "d " + h + "h " + mi + "m";
 }
+
+/* ───── Copiar la llave ───── */
+const LLAVE = "@sbg884";
+$("#btnCopiar").onclick = async () => {
+  let ok = false;
+  try { await navigator.clipboard.writeText(LLAVE); ok = true; } catch (e) {
+    try {
+      const t = document.createElement("textarea");
+      t.value = LLAVE; t.setAttribute("readonly", ""); t.style.cssText = "position:fixed;opacity:0";
+      document.body.appendChild(t); t.select(); ok = document.execCommand("copy"); t.remove();
+    } catch (e2) { ok = false; }
+  }
+  const b = $("#btnCopiar");
+  if (ok) { b.classList.add("ok"); setTimeout(() => b.classList.remove("ok"), 2500); }
+  else { prompt(idioma === "es" ? "Copia la llave:" : "Copy the key:", LLAVE); }
+};
+
 
 /* ───── Modal ───── */
 function abrirModal(n) {
