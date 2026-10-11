@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Facebook Mega Rifa Fusa - Branding Campaña</title>
+    <style>
+        :root {
+            --color-fondo: #000000;
+            --color-primario: #FFD700; /* Amarillo brillante de la campaña */
+            --color-secundario: #FFFFFF;
+            --color-acento: #E63946;
+            --fuente-principal: 'Arial Black', 'Gadget', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #222;
+            font-family: var(--fuente-principal);
+        }
+
+        .banner {
+            width: 851px;
+            height: 315px;
+            background-color: var(--color-fondo);
+            color: var(--color-secundario);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            border: 12px solid var(--color-primario); /* Marco grueso amarillo típico de los posts */
+            box-sizing: border-box;
+        }
+
+        /* Fondo con patrón de puntos o rayas para romper el negro plano */
+        .banner::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--color-primario) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .suta-container {
+            width: 45%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+        }
+
+        .suta-img {
+            width: 115%;
+            height: auto;
+            max-height: 340px;
+            filter: drop-shadow(0 0 15px var(--color-primario));
+        }
+
+        .content {
+            width: 55%;
+            padding: 0 20px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 65px;
+            margin: 0;
+            color: var(--color-primario);
+            text-transform: uppercase;
+            line-height: 0.85;
+            letter-spacing: -2px;
+            -webkit-text-stroke: 2px var(--color-secundario);
+        }
+
+        .tagline {
+            background-color: var(--color-primario);
+            color: #000;
+            font-size: 24px;
+            padding: 5px 15px;
+            display: inline-block;
+            margin: 15px 0;
+            transform: skewX(-10deg);
+            font-weight: bold;
+            width: fit-content;
+        }
+
+        .info-box {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            font-size: 22px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--color-secundario);
+        }
+
+        .info-row b {
+            color: var(--color-primario);
+        }
+
+        .disclaimer {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 15px;
+            font-family: Arial, sans-serif;
+            line-height: 1.2;
+        }
+
+        .cta {
+            background-color: var(--color-acento);
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            text-align: center;
+            width: fit-content;
+            border: 3px solid var(--color-secundario);
+            text-transform: uppercase;
+            box-shadow: 5px 5px 0px var(--color-secundario);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            color: var(--color-primario);
+            font-family: Arial, sans-serif;
+            z-index: 3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <div class="suta-container">
+            <img src="https://via.placeholder.com/400x400?text=SUTÁ" alt="Sutá" class="suta-img">
+        </div>
+
+        <div class="content">
+            <h1>MEGA RIFA<br>FUSA</h1>
+            <div class="tagline">¡AYUDA A SUTÁ! 🐾</div>
+
+            <div class="info-box">
+                <div class="info-row">🎟️ Boleto: <b>$6.000</b></div>
+                <div class="info-row">🎁 Premio: <b>$2.000.000</b></div>
+                <div class="info-row">📅 Sorteo: <b>5 Dic, 10:30 PM</b></div>
+            </div>
+
+            <div class="disclaimer">
+                * Premio sujeto a que el número ganador esté vendido.
+            </div>
+
+            <div class="cta">¡Compra tu número! 👇</div>
+        </div>
+
+        <div class="footer">Organizada por Santiago</div>
+    </div>
+
+</body>
+</html>

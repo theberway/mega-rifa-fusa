@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>13 oct · feed lanzamiento</title>
+<link rel="stylesheet" href="marca.css">
+<style>
+  .feed { background: var(--rojo); padding: 40px 44px 30px; gap: 20px; }
+  .tope { display: flex; justify-content: space-between; align-items: center; color: var(--crema); font-size: 24px; letter-spacing: 4px; }
+  .tope .chip { background: var(--crema); color: var(--rojo); border: 6px solid var(--negro); padding: 8px 18px; font-size: 26px; letter-spacing: 3px; }
+  .cuerpo { display: flex; gap: 24px; flex: 1; min-height: 0; }
+  .izq { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  .logo { background: var(--crema); padding: 20px 24px 26px; flex: 1; display: flex; align-items: center; }
+  .logo .slab { font-size: 98px; line-height: 0.95; color: var(--rojo); text-shadow: 7px 7px 0 var(--negro); white-space: nowrap; }
+  .premio { background: var(--amarillo); padding: 16px 24px 18px; }
+  .premio .caps { font-size: 24px; }
+  .premio .slab { font-size: 98px; line-height: 1.02; white-space: nowrap; }
+  .premio .letra { font-size: 21px; font-weight: 600; line-height: 1.35; margin-top: 4px; }
+  .der { width: 270px; flex-shrink: 0; background: var(--crema); display: flex; align-items: flex-end; justify-content: center; padding: 20px 14px 0; }
+  .der img { width: 100%; height: auto; display: block; }
+  .banda { background: var(--negro); color: var(--crema); padding: 16px 24px 18px; }
+  .banda .slab { font-size: 50px; line-height: 1.1; color: var(--amarillo); }
+  .banda .linea { font-size: 32px; font-weight: 700; margin-top: 4px; }
+  .cta { background: var(--crema); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .cta .slab { font-size: 40px; color: var(--rojo); }
+  .cta .mono { font-size: 29px; }
+  .firma {color: var(--crema); font-size: 22px; font-weight: 600; text-align: center; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="lienzo feed">
+  <div class="tope mono"><span>FUSAGASUGÁ · 2026</span><span class="chip">HOY ARRANCA</span></div>
+
+  <div class="cuerpo">
+    <div class="izq">
+      <div class="logo borde"><div class="slab">MEGA RIFA<br>FUSA</div></div>
+      <div class="premio borde">
+        <div class="caps">Premio en efectivo</div>
+        <div class="slab">$2.000.000</div>
+        <div class="letra">Si el número ganador está vendido.</div>
+      </div>
+    </div>
+    <div class="der borde"><img src="../_assets/suta-1-de-pie.png" alt="Sutá"></div>
+  </div>
+
+  <div class="banda borde">
+    <div class="slab">1.000 números · $6.000</div>
+    <div class="linea">Sorteo sáb 5 dic, 10:30 p.m. · Lotería de Boyacá</div>
+  </div>
+  <div class="cta borde"><span class="slab">ESCOGE EL TUYO →</span><span class="mono">mega-rifa-fusa.vercel.app</span></div>
+  <div class="firma">Organizada por Santiago · The Ber Way</div>
+</div>
+</body>
+</html>

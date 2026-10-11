@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador privado de tarjetas — Mega Rifa Fusa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo+Narrow:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--crema:#FFF4D6;--rojo:#C1121F;--amarillo:#F2B705;--azul:#0A3D62;--negro:#1A1A1A}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--crema);color:var(--negro);font-family:"Archivo Narrow",sans-serif;padding:16px;max-width:960px;margin:0 auto}
+  h1{font-family:"Alfa Slab One",serif;color:var(--rojo);font-size:26px;margin:.2em 0}
+  .aviso{background:var(--azul);color:var(--crema);border:3px solid var(--negro);border-radius:10px;padding:10px 14px;font-weight:700;margin:12px 0}
+  .fila{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+  label{font-weight:700;display:block;font-size:14px;margin-bottom:4px}
+  input{font-family:"Archivo Narrow",sans-serif;font-weight:700;font-size:18px;border:3px solid var(--negro);border-radius:8px;background:#fff;color:var(--negro);padding:8px 10px;width:100%}
+  .campo{flex:1;min-width:140px}
+  button{font-family:"Alfa Slab One",serif;font-size:18px;background:var(--azul);color:var(--crema);border:3px solid var(--negro);border-radius:10px;padding:10px 20px;cursor:pointer}
+  canvas{max-width:100%;height:auto;border:3px solid var(--negro);border-radius:8px;margin-top:12px;display:block}
+  a.bajar{display:inline-block;margin-top:10px;font-family:"Alfa Slab One",serif;background:var(--amarillo);color:var(--negro);border:3px solid var(--negro);border-radius:10px;padding:10px 20px;text-decoration:none}
+  .nota{font-size:13px;color:#555;margin-top:8px}
+</style>
+</head>
+<body>
+  <h1>Generador privado de tarjetas</h1>
+  <div class="aviso">Este archivo es solo tuyo. NO se sube a la web. La tarjeta la generas acá y se la mandas al comprador.</div>
+
+  <div class="fila">
+    <div class="campo"><label>Número (3 cifras)</label><input id="num" inputmode="numeric" maxlength="3" placeholder="450"></div>
+    <div class="campo" style="flex:2"><label>Nombre acortado (como en el tablero)</label><input id="nombre" placeholder="Dav*** G."></div>
+  </div>
+  <div class="fila">
+    <div class="campo"><label>Vendedor (opcional)</label><input id="vend" maxlength="4" placeholder="V01"></div>
+    <div class="campo"><label>Idioma</label><input id="idioma" maxlength="2" placeholder="es" value="es"></div>
+    <div style="display:flex;align-items:flex-end"><button id="gen">Generar</button></div>
+  </div>
+  <p class="nota">El serial se calcula solo (A-000 … J-999). El nombre acortado lo copias de la columna <b>NOMBRE_PUBLICO</b> del tablero; es lo que ve el comprador. En NZ, escribe el idioma <b>en</b>.</p>
+
+  <canvas id="lienzo" width="880" height="520" hidden></canvas>
+  <a class="bajar" id="bajar" hidden download="boleta.png">Guardar la tarjeta</a>
+
+<script>
+const $=s=>document.querySelector(s);
+const SITIO="mega-rifa-fusa.vercel.app";
+const suta=new Image(); suta.src="suta-boleta.jpg";
+
+function serial(n){ return "ABCDEFGHIJ"[Math.floor(parseInt(n,10)/100)]+"-"+n; }
+
+function dibujar(n, nombre, vend, idioma){
+  const cv=$("#lienzo"), x=cv.getContext("2d");
+  const CREMA="#FFF4D6",ROJO="#C1121F",AZUL="#0A3D62",NEGRO="#1A1A1A",AMA="#F2B705";
+  x.fillStyle=CREMA; x.fillRect(0,0,880,520);
+  x.strokeStyle=NEGRO; x.lineWidth=14; x.strokeRect(7,7,866,506);
+  x.fillStyle=ROJO; x.fillRect(21,21,838,104);
+  x.fillStyle=NEGRO; x.font='44px "Alfa Slab One", serif'; x.textBaseline="middle";
+  x.fillText("MEGA RIFA FUSA",47,76);
+  x.fillStyle=CREMA; x.fillText("MEGA RIFA FUSA",43,72);
+  x.fillStyle=AMA; x.fillRect(21,141,470,230);
+  x.strokeStyle=NEGRO; x.lineWidth=7; x.strokeRect(21,141,470,230);
+  x.fillStyle=NEGRO; x.font='700 20px "Archivo Narrow", sans-serif';
+  x.fillText(idioma==="es"?"TU NÚMERO":"YOUR NUMBER",45,176);
+  x.font='158px "Alfa Slab One", serif';
+  x.fillStyle=NEGRO; x.fillText(n,50,282);
+  x.fillStyle=ROJO; x.fillText(n,44,276);
+  x.fillStyle=NEGRO; x.font='700 26px "Space Mono", monospace';
+  x.fillText(serial(n),46,340);
+  x.font='700 22px "Archivo Narrow", sans-serif'; x.textAlign="right";
+  x.fillText(nombre||"",470,340); x.textAlign="left";
+  if(suta.complete && suta.naturalWidth){
+    x.save(); x.beginPath(); x.rect(521,141,190,230); x.clip();
+    x.fillStyle=CREMA; x.fillRect(521,141,190,230);
+    x.drawImage(suta,521,161,190,190); x.restore();
+    x.strokeStyle=NEGRO; x.lineWidth=6; x.strokeRect(521,141,190,230);
+  }
+  x.beginPath(); x.arc(800,256,56,0,6.2832);
+  x.fillStyle=AZUL; x.fill(); x.lineWidth=6; x.strokeStyle=NEGRO; x.stroke();
+  x.fillStyle=CREMA; x.textAlign="center";
+  x.font='700 19px "Space Mono", monospace'; x.fillText("MRF",800,243);
+  x.font='700 13px "Space Mono", monospace'; x.fillText("FUSA 2026",800,268);
+  x.textAlign="left";
+  x.fillStyle=AZUL; x.fillRect(21,387,838,112);
+  x.fillStyle=CREMA; x.font='700 21px "Archivo Narrow", sans-serif';
+  x.fillText(idioma==="es"?"PREMIO COP 2.000.000 · SORTEO SÁB 5 DIC 2026, 10:30 P.M.":"PRIZE NZD 1,000 · DRAW SAT 5 DEC 2026, 10:30 P.M.",45,423);
+  x.font='17px "Archivo Narrow", sans-serif';
+  x.fillText(idioma==="es"?"Últimas 3 cifras del premio mayor de la Lotería de Boyacá.":"Last 3 digits of the top prize of the Lotería de Boyacá.",45,452);
+  x.font='700 15px "Space Mono", monospace';
+  x.fillText((idioma==="es"?"A NOMBRE DE ":"ISSUED TO ")+(nombre||"—")+(vend?"  ·  "+(idioma==="es"?"VENDEDOR ":"SELLER ")+vend:""),45,479);
+  x.textAlign="right"; x.font='13px "Archivo Narrow", sans-serif';
+  x.fillText((idioma==="es"?"verifica este número en ":"check this number at ")+SITIO,835,479);
+  x.textAlign="left";
+  cv.hidden=false;
+  const a=$("#bajar"); a.href=cv.toDataURL("image/png"); a.download="boleta-"+n+".png"; a.hidden=false;
+}
+
+$("#gen").onclick=()=>{
+  const raw=($("#num").value||"").replace(/\D/g,"");
+  if(!/^\d{1,3}$/.test(raw)){ alert("Escribe un número del 000 al 999."); return; }
+  const n=raw.padStart(3,"0");
+  const nombre=($("#nombre").value||"").trim();
+  const vend=($("#vend").value||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,4);
+  const idioma=($("#idioma").value||"es").toLowerCase().startsWith("en")?"en":"es";
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>dibujar(n,nombre,vend,idioma));
+  else dibujar(n,nombre,vend,idioma);
+};
+</script>
+</body>
+</html>

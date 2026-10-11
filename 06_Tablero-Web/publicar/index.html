@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tablero Mega Rifa Fusa</title>
+<meta name="description" content="Tablero en vivo de la Mega Rifa Fusa: los 1.000 números, cuáles están libres y cuántos quedan.">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo+Narrow:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ───── CONFIGURACIÓN VISUAL: sistema de marca, estilo A ───── */
+:root{
+  color-scheme:light;
+  --crema:#FFF4D6; --rojo:#C1121F; --amarillo:#F2B705;
+  --azul:#0A3D62; --negro:#1A1A1A; --verde:#1E6F50;
+  --borde:4px; --radio:10px;
+  --titular:"Alfa Slab One",Georgia,serif;
+  --texto:"Archivo Narrow","Arial Narrow",system-ui,sans-serif;
+  --mono:"Space Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--crema); color:var(--negro);
+  font-family:var(--texto); font-size:16px; line-height:1.5;
+}
+.wrap{max-width:860px; margin:0 auto; padding:0 16px 56px}
+
+/* ───── Encabezado ───── */
+header{background:var(--rojo); border-bottom:7px solid var(--negro)}
+.hdr{max-width:860px;margin:0 auto;padding:18px 16px;display:flex;align-items:center;gap:14px}
+.hdr img{width:58px;height:58px;flex:0 0 auto;border:var(--borde) solid var(--negro);border-radius:50%;background:var(--amarillo);object-fit:cover}
+.logo{font-family:var(--titular);color:var(--crema);font-size:clamp(22px,6.4vw,34px);line-height:.96;text-shadow:3px 3px 0 var(--negro);letter-spacing:.5px}
+.hdr .right{margin-left:auto;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.lang{display:flex;border:3px solid var(--negro);border-radius:var(--radio);overflow:hidden;background:var(--crema)}
+.lang button{font-family:var(--texto);font-weight:700;font-size:13px;padding:5px 10px;border:0;background:transparent;color:var(--negro);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--negro);color:var(--crema)}
+.seller{font-size:12px;font-weight:700;color:var(--crema);font-family:var(--mono)}
+
+/* ───── Tarjetas / bloques ───── */
+.card{background:var(--crema);border:var(--borde) solid var(--negro);border-radius:var(--radio);box-shadow:5px 5px 0 var(--negro);padding:16px;margin-top:22px}
+.card.azul{background:var(--azul);color:var(--crema);border-color:var(--negro)}
+.card.amarillo{background:var(--amarillo)}
+h2{font-family:var(--titular);font-size:clamp(20px,5vw,26px);margin:0 0 10px;line-height:1.15}
+.card.azul h2{color:var(--crema)}
+.sub{font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:12px;margin:0 0 4px}
+
+/* ───── Contador principal (hero) ───── */
+.hero{border:var(--borde) solid var(--negro);border-radius:var(--radio);padding:22px 18px;margin-top:22px;background:var(--amarillo);box-shadow:6px 6px 0 var(--negro);text-align:center}
+.hero .hn{font-family:var(--titular);font-size:88px;line-height:.9;color:var(--negro);text-shadow:4px 4px 0 var(--rojo)}
+.hero .hk{font-weight:700;text-transform:uppercase;font-size:14px;letter-spacing:.07em;margin-top:6px}
+.frase{margin-top:16px;font-family:var(--titular);font-size:22px;line-height:1.2;color:var(--rojo);min-height:2.4em;display:flex;align-items:center;justify-content:center;transition:opacity .4s}
+.cierre{margin-top:12px;font-family:var(--mono);font-weight:700;font-size:14px;color:var(--negro);opacity:.8}
+@media(max-width:420px){.hero .hn{font-size:68px}.frase{font-size:19px}}
+
+/* ───── Cuadrícula de números ───── */
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:10px}
+.cell{
+  aspect-ratio:1/1;border:2px solid var(--negro);border-radius:5px;
+  font-family:var(--mono);font-size:clamp(11px,3.4vw,16px);font-weight:700;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  background:var(--crema);color:var(--negro);cursor:pointer;min-height:33px;
+}
+.cell[data-e="PAGADO"]{background:var(--azul);color:var(--crema);cursor:default}
+.cell[data-e="APARTADO"]{background:var(--amarillo);color:var(--negro)}
+.cell:focus-visible{outline:3px solid var(--rojo);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:13px;font-weight:600}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:15px;height:15px;border:2px solid var(--negro);border-radius:3px;display:inline-block}
+
+/* ───── Modal ───── */
+dialog{border:0;padding:0;background:transparent;color:var(--negro);width:min(92vw,420px);max-width:none;margin:auto;overflow:visible}
+dialog::backdrop{background:rgba(26,26,26,.7)}
+.sheet{background:var(--crema);color:var(--negro);border:5px solid var(--negro);border-radius:14px;box-shadow:7px 7px 0 var(--negro);padding:18px}
+.big{font-family:var(--titular);font-size:58px;line-height:1;text-align:center;color:var(--rojo);text-shadow:3px 3px 0 var(--negro)}
+.btn{display:block;width:100%;text-align:center;font-family:var(--texto);font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.04em;padding:13px;border:var(--borde) solid var(--negro);border-radius:var(--radio);background:var(--rojo);color:var(--crema);text-decoration:none;cursor:pointer;box-shadow:4px 4px 0 var(--negro);margin-top:14px}
+.btn.alt{background:var(--crema);color:var(--negro)}
+.btn.azul{background:var(--azul);color:var(--crema)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+td{padding:5px 0;border-bottom:1px dashed rgba(26,26,26,.3);vertical-align:top}
+td:first-child{font-weight:700;width:42%}
+.card.azul td{border-bottom-color:rgba(255,244,214,.3)}
+ol,ul{padding-left:20px;margin:8px 0}
+li{margin-bottom:5px}
+.mono{font-family:var(--mono);font-weight:700}
+.aviso{color:var(--negro);background:var(--crema);border:3px dashed var(--rojo);border-radius:var(--radio);padding:12px;margin-top:18px;font-weight:600;background:var(--crema)}
+footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
+.en .es-only{display:none}
+.es .en-only{display:none}
+@media (max-width:380px){ .grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:3px} }
+#confeti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+</style>
+</head>
+<body class="es">
+
+<header>
+  <div class="hdr">
+    <img src="suta.webp" alt="Sutá, la mascota de la rifa, de pie con su lanza">
+    <div class="logo">MEGA RIFA<br>FUSA</div>
+    <div class="right">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button id="bES" aria-pressed="true">ES</button>
+        <button id="bEN" aria-pressed="false">EN</button>
+      </div>
+      <div class="seller" id="seller" hidden></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- CONTADOR PRINCIPAL -->
+  <div class="hero" id="hero">
+    <div class="hn" id="cLibre">—</div>
+    <div class="hk" data-es="números libres de 1.000" data-en="numbers still free of 1,000">números libres de 1.000</div>
+    <div class="frase" id="frase" aria-live="polite"></div>
+    <div class="cierre"><span id="cReloj">—</span> · <span data-es="para el cierre" data-en="to closing">para el cierre</span></div>
+  </div>
+
+  <div id="estadoDatos" class="aviso" hidden></div>
+
+  <!-- CUADRÍCULA -->
+  <section class="card">
+    <h2 data-es="Escoge tu número" data-en="Pick your number">Escoge tu número</h2>
+    <p style="margin:0" data-es="Toca cualquier número libre. Lo que ves aquí sale del tablero real y se actualiza solo." data-en="Tap any free number. What you see here comes from the real board and refreshes on its own.">Toca cualquier número libre. Lo que ves aquí sale del tablero real y se actualiza solo.</p>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--crema)"></i><b data-es="Libre" data-en="Free">Libre</b></span>
+      <span><i class="sw" style="background:var(--amarillo)"></i><b data-es="Apartado" data-en="On hold">Apartado</b></span>
+      <span><i class="sw" style="background:var(--azul)"></i><b data-es="Pagado" data-en="Paid">Pagado</b></span>
+    </div>
+    <div class="grid" id="grid" role="grid" aria-label="Los 1.000 números"></div>
+  </section>
+
+  <!-- PREMIO Y SORTEO -->
+  <section class="card azul">
+    <h2 data-es="El premio y el sorteo" data-en="The prize and the draw">El premio y el sorteo</h2>
+    <table>
+      <tr><td data-es="Premio" data-en="Prize">Premio</td><td><b class="es-only">COP 2.000.000 en efectivo, si el número ganador está vendido</b><b class="en-only">NZD 1,000 cash if the winning number was sold in New Zealand, if it was paid</b></td></tr>
+      <tr><td data-es="Precio" data-en="Price">Precio</td><td><span class="es-only">COP 6.000 por número</span><span class="en-only">NZD 4 per number</span></td></tr>
+      <tr><td data-es="Cierre" data-en="Closing">Cierre</td><td><span class="mono">sáb 5 dic 2026 · 6:00 p.m.</span></td></tr>
+      <tr><td data-es="Sorteo" data-en="Draw">Sorteo</td><td><span class="mono">sáb 5 dic 2026 · 10:30 p.m.</span></td></tr>
+      <tr><td data-es="Cómo se define" data-en="How it is decided">Cómo se define</td><td><span class="es-only">Las <b>últimas 3 cifras</b> del premio mayor de la <b>Lotería de Boyaquí</b>.</span><span class="en-only">The <b>last 3 digits</b> of the top prize of Colombia's <b>Lotería de Boyaquí</b>.</span></td></tr>
+      <tr><td data-es="Si el número no se vendió" data-en="If that number wasn't sold">Si el número no se vendió</td><td><span class="es-only">No hay premio de 2 millones. El <b>siguiente número vendido</b> (del 999 se pasa al 000) gana un <b>premio de consolación</b>: una botella de whisky Buchanan's Master de 750 ml (valor COP 210.000; solo mayores de 18). Entre más números se vendan, más seguro hay ganador de los 2 millones.</span><span class="en-only">There is no big prize. The <b>next number sold</b> (999 wraps to 000) wins a <b>consolation prize</b>: a 750 ml bottle of Buchanan's Master whisky (worth COP 210,000; 18+ only). The more numbers sell, the likelier the big prize has a winner.</span></td></tr>
+      <tr><td data-es="Si la Boyaquí no juega" data-en="If Boyaquí doesn't draw">Si la Boyaquí no juega</td><td><span class="es-only">Se usa la Lotería del Cauca de las 11:00 p.m., con la misma regla.</span><span class="en-only">Lotería del Cauca at 11:00 p.m. is used instead, same rule.</span></td></tr>
+      <tr><td data-es="Entrega" data-en="Hand-over">Entrega</td><td><span class="es-only">Máximo 24 horas después, con video y acta firmada.</span><span class="en-only">Within 24 hours, filmed, with a signed record.</span></td></tr>
+    </table>
+  </section>
+
+  <!-- REGLAS -->
+  <section class="card amarillo">
+    <h2 data-es="Las reglas, cortas" data-en="The rules, short">Las reglas, cortas</h2>
+    <ol class="es-only">
+      <li><b>1.000 números</b>, del 000 al 999. Un número, un dueño.</li>
+      <li>Apartar <b>no</b> es comprar. Un apartado se cae solo a las <b>24 horas</b> si no llega el pago, y el número vuelve a quedar libre para cualquiera.</li>
+      <li>Un número queda <b>PAGADO</b> cuando la plata se ve dentro de la app que recibe. Ahí se manda la tarjeta-boleta con su serial.</li>
+      <li>Pago: llave Bre-B de Nubank <b class="mono">@sbg884</b>, o efectivo en mano.</li>
+      <li>El tablero manda. Si el tablero dice pagado, está pagado, y el premio es de quien diga el tablero — no de quien tenga la tarjeta.</li>
+      <li><b>Antes de comprarle un número a alguien que no sea un vendedor</b>, busca ese número aquí: tiene que decir el nombre de esa persona. Si no coincide, no es de ella.</li>
+      <li>En el tablero, cada número pagado sale <b>a nombre de su dueño, acortado</b> (así: <b>Dav*** G.</b>). Nunca el nombre completo, nunca el teléfono. Quien no quiera salir, sale como <b>Reservado</b>.</li>
+      <li>Las reglas se congelan el <b>10 de octubre de 2026</b> y después no se cambian.</li>
+    </ol>
+    <ol class="en-only">
+      <li><b>1,000 numbers</b>, 000 to 999. One number, one owner.</li>
+      <li>Holding is <b>not</b> buying. A hold drops by itself after <b>24 hours</b> if payment doesn't arrive, and the number is free again for anyone.</li>
+      <li>A number is <b>PAID</b> once the money shows up inside the receiving app. That's when the ticket card with its serial is sent.</li>
+      <li>In New Zealand it is NZD 4 per number, paid by bank transfer. The payment details are given in the chat.</li>
+      <li>The board decides. If the board says paid, it's paid — and the prize goes to whoever the board names, not to whoever holds a card.</li>
+      <li><b>Before buying a number from anyone who isn't a seller</b>, look that number up here: it has to show that person's name. If it doesn't match, it isn't theirs.</li>
+      <li>On the board, each paid number shows its owner <b>shortened</b> (like <b>Dav*** G.</b>). Never the full name, never the phone. Anyone who prefers not to appear shows as <b>Reservado</b>.</li>
+      <li>The rules are frozen on <b>10 October 2026</b> and don't change after that.</li>
+    </ol>
+    <p style="margin:12px 0 0;font-weight:700"><a class="es-only" href="/reglamento">Leer el reglamento completo →</a><a class="en-only" href="/reglamento?l=en">Read the full rules →</a></p>
+  </section>
+
+  <footer>
+    <p class="es-only">Mega Rifa Fusa · Fusagasugá, 2026 · El tablero se refresca solo cada minuto.</p>
+    <p class="es-only">The Ber Way (<a href="https://instagram.com/theberway" target="_blank" rel="noopener">@theberway</a>) by Santiago (<a href="https://instagram.com/santiagobermudezai" target="_blank" rel="noopener">@santiagobermudezai</a>)</p>
+    <p class="en-only">Mega Rifa Fusa · Fusagasugá, 2026 · The board refreshes on its own every minute.</p>
+    <p class="en-only">The Ber Way (<a href="https://instagram.com/theberway" target="_blank" rel="noopener">@theberway</a>) by Santiago (<a href="https://instagram.com/santiagobermudezai" target="_blank" rel="noopener">@santiagobermudezai</a>)</p>
+  </footer>
+</div>
+
+<!-- MODAL DE UN NÚMERO -->
+<dialog id="dlg">
+  <div class="sheet">
+    <div class="big mono" id="dNum">000</div>
+    <p class="sub" style="text-align:center;margin:8px 0 0" id="dEstado"></p>
+    <p id="dTexto" style="margin:10px 0 0"></p>
+    <a class="btn" id="dWa" href="#" target="_blank" rel="noopener"></a>
+    <button class="btn alt" id="dCerrar"></button>
+  </div>
+</dialog>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   CONFIGURACIÓN — las 2 líneas que hay que cambiar
+   ══════════════════════════════════════════════════════════════ */
+
+// 1) El CSV publicado de la hoja NUMEROS.
+//    Sheet → Archivo → Compartir → Publicar en la web → pestaña NUMEROS → .csv
+const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQb_AQEeerda6uvaJSCcjyJwtwXFNdMmKMTHA59-M-Q0AF3Gya1kGK6rCEaHXl0qKIab33brF6i6qq7/pub?gid=540644959&single=true&output=csv";
+//    Es la hoja NUMEROS publicada como CSV. Si alguna vez dice "demo.csv",
+//    la web muestra DATOS DE EJEMPLO y lo avisa con una franja roja arriba.
+
+// 2) La línea de WhatsApp Business, con 57 y sin + ni espacios.
+const WHATSAPP  = "573334018903";   // línea WhatsApp Business de la rifa
+
+/* ── Lo de abajo no hace falta tocarlo ── */
+const CIERRE   = new Date("2026-12-05T18:00:00-05:00");
+const TOTAL    = 1000;
+const REFRESCO = 60000;   // la web relee el Sheet cada 60 s
+
+/* ══════════════════════════════════════════════════════════════ */
+
+const ES_DEMO  = SHEET_CSV.includes("demo.csv");
+const $ = s => document.querySelector(s);
+if (ES_DEMO) {
+  const b = document.createElement("div");
+  b.style.cssText = "background:#C1121F;color:#FFF4D6;border-bottom:5px solid #1A1A1A;padding:10px 16px;font-weight:700;text-align:center;font-size:14px";
+  b.textContent = "DATOS DE EJEMPLO — este NO es el tablero real. Los números de abajo son inventados para probar la web.";
+  document.body.insertBefore(b, document.body.firstChild);
+}
+let estados = null;   // null = todavía no se sabe. Nunca se inventa un estado.
+let nombres = {};     // número -> "Dav*** G." o "Reservado". Sale del Sheet, no lo escribe nadie aquí.
+let idioma  = "es";
+
+/* ───── Código del vendedor: ?v=V03, y se recuerda ───── */
+const qs = new URLSearchParams(location.search);
+let vend = (qs.get("v") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 24);
+try {
+  if (vend) localStorage.setItem("mrf_v", vend);
+  else vend = localStorage.getItem("mrf_v") || "";
+} catch (e) { /* navegador sin almacenamiento: el código vale solo para esta visita */ }
+if (vend) {
+  const s = $("#seller");
+  s.hidden = false;
+  s.textContent = (idioma === "es" ? "te atiende " : "your seller: ") + vend;
+}
+
+/* ───── Idioma ───── */
+function setIdioma(l) {
+  idioma = l;
+  document.body.className = l;
+  document.documentElement.lang = l;
+  $("#bES").setAttribute("aria-pressed", l === "es");
+  $("#bEN").setAttribute("aria-pressed", l === "en");
+  document.querySelectorAll("[data-es]").forEach(n => { n.textContent = n.dataset[l]; });
+  if (vend) $("#seller").textContent = (l === "es" ? "te atiende " : "your seller: ") + vend;
+  pintarContadores();
+  if ($("#dlg").open) abrirModal($("#dNum").textContent);
+}
+$("#bES").onclick = () => setIdioma("es");
+$("#bEN").onclick = () => setIdioma("en");
+
+/* ───── CSV ───── */
+function parseCSV(t) {
+  const filas = []; let f = [], c = "", q = false;
+  for (let i = 0; i < t.length; i++) {
+    const ch = t[i];
+    if (q) {
+      if (ch === '"') { if (t[i + 1] === '"') { c += '"'; i++; } else q = false; }
+      else c += ch;
+    } else if (ch === '"') q = true;
+    else if (ch === ",") { f.push(c); c = ""; }
+    else if (ch === "\n") { f.push(c); filas.push(f); f = []; c = ""; }
+    else if (ch !== "\r") c += ch;
+  }
+  if (c !== "" || f.length) { f.push(c); filas.push(f); }
+  return filas;
+}
+
+async function cargar() {
+  if (!SHEET_CSV) { sinDatos("falta-link"); return; }
+  try {
+    const r = await fetch(SHEET_CSV + (SHEET_CSV.includes("?") ? "&" : "?") + "t=" + Date.now());
+    if (!r.ok) throw new Error(r.status);
+    const filas = parseCSV(await r.text());
+    const enc = filas[0].map(x => x.trim().toUpperCase());
+    const iNum = enc.indexOf("NUMERO"), iEst = enc.indexOf("ESTADO");
+    const iNom = enc.indexOf("NOMBRE_PUBLICO");
+    if (iNum < 0 || iEst < 0) throw new Error("faltan las columnas NUMERO o ESTADO");
+    const m = {}, nm = {};
+    for (let i = 1; i < filas.length; i++) {
+      const n = (filas[i][iNum] || "").trim().padStart(3, "0");
+      const e = (filas[i][iEst] || "").trim().toUpperCase();
+      if (!/^\d{3}$/.test(n)) continue;
+      m[n] = (e === "PAGADO" || e === "APARTADO") ? e : "LIBRE";
+      // Solo se muestra el nombre de un número PAGADO, y solo lo que el Sheet ya enmascaró.
+      if (m[n] === "PAGADO" && iNom >= 0) nm[n] = (filas[i][iNom] || "").trim();
+    }
+    if (!Object.keys(m).length) throw new Error("el CSV llegó vacío");
+    estados = m; nombres = nm;
+    $("#estadoDatos").hidden = true;
+    pintarGrid(); pintarContadores();
+  } catch (err) {
+    sinDatos("error", err.message);
+  }
+}
+
+/* Regla fija 3: si no hay dato real, no se muestra un número inventado. */
+function sinDatos(tipo, detalle) {
+  estados = null;
+  const box = $("#estadoDatos");
+  box.hidden = false;
+  box.textContent = tipo === "falta-link"
+    ? (idioma === "es"
+        ? "El tablero todavía no está conectado al Sheet. Los contadores aparecen en blanco a propósito: no se muestra un número que no sea real."
+        : "The board isn't connected to the sheet yet. The counters are blank on purpose: no number is shown unless it's real.")
+    : (idioma === "es"
+        ? "No pudimos leer el tablero en este momento (" + detalle + "). Escríbenos por WhatsApp y te confirmamos el número a mano."
+        : "We couldn't read the board right now (" + detalle + "). Message us on WhatsApp and we'll confirm the number by hand.");
+  pintarGrid(); pintarContadores();
+}
+
+/* ───── Pintar ───── */
+function pintarGrid() {
+  const g = $("#grid");
+  if (!g.children.length) {
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < TOTAL; i++) {
+      const n = String(i).padStart(3, "0");
+      const b = document.createElement("button");
+      b.className = "cell"; b.textContent = n; b.dataset.n = n;
+      b.onclick = () => abrirModal(n);
+      frag.appendChild(b);
+    }
+    g.appendChild(frag);
+  }
+  [...g.children].forEach(b => {
+    const e = estados ? estados[b.dataset.n] || "LIBRE" : "";
+    b.dataset.e = e;
+    b.setAttribute("aria-label", b.dataset.n + (e ? " · " + e : ""));
+  });
+}
+
+function pintarContadores() {
+  if (!estados) { $("#cLibre").textContent = "—"; reloj(); pintarFrase(); return; }
+  let p = 0, a = 0;
+  for (const n in estados) { if (estados[n] === "PAGADO") p++; else if (estados[n] === "APARTADO") a++; }
+  $("#cLibre").textContent = TOTAL - p - a;
+  reloj();
+  pintarFrase();
+}
+
+/* ───── Banco de frases rotatorias ─────
+   Honestas (regla fija 3): no prometen ganar ni inventan urgencia.
+   Las que llevan {n} muestran un número REALMENTE libre, tomado del Sheet. */
+const FRASES = [
+  { es: "¿Cuál será el tuyo?", en: "Which one will be yours?" },
+  { es: "El {n} está libre. ¿Te late?", en: "Number {n} is free. Feeling it?" },
+  { es: "Hoy es un buen día para escoger tu número.", en: "Today's a good day to pick your number." },
+  { es: "Mil números, y uno puede ser tuyo.", en: "A thousand numbers, and one could be yours." },
+  { es: "El {n} todavía no tiene dueño.", en: "Number {n} has no owner yet." },
+  { es: "Escoge tú. Los demás todavía lo están pensando.", en: "You choose. The rest are still thinking about it." },
+  { es: "¿Tu fecha de cumpleaños está libre? Míralo.", en: "Is your birthday free? Check it." },
+  { es: "El {n} te está esperando.", en: "Number {n} is waiting for you." },
+  { es: "Un número, un dueño. Sin fiado.", en: "One number, one owner. No credit." },
+  { es: "¿Los últimos 3 de tu cédula? A ver si están libres.", en: "The last 3 of your ID? See if they're free." },
+  { es: "El {n} se ve bien, ¿no?", en: "Number {n} looks good, doesn't it?" },
+  { es: "Escoger es gratis. Pensarlo también.", en: "Choosing is free. So is thinking about it." },
+  { es: "Mil puertas. Toca la tuya.", en: "A thousand doors. Knock on yours." },
+  { es: "El {n} anda suelto por ahí.", en: "Number {n} is still up for grabs." },
+  { es: "¿Número de la suerte? Búscalo arriba.", en: "Lucky number? Look for it above." },
+  { es: "Tu número para el 5 de diciembre.", en: "Your number for December 5th." },
+  { es: "El {n} libre. Alguien lo va a escoger.", en: "Number {n} is free. Someone will pick it." },
+  { es: "De 000 a 999: hay para todos los gustos.", en: "From 000 to 999: something for everyone." },
+  { es: "¿Redondo? El 100, el 500… míralos.", en: "A round one? 100, 500… have a look." },
+  { es: "El {n} está ahí, esperando dueño.", en: "Number {n} is there, waiting for an owner." },
+  { es: "Escoge el tuyo con calma.", en: "Pick yours, no rush." },
+  { es: "Un buen plan de sábado empieza aquí.", en: "A good Saturday plan starts here." },
+  { es: "El {n}: tres cifras con tu nombre.", en: "Number {n}: three digits with your name on them." },
+  { es: "¿Capicúa? El 121, el 787… a ver.", en: "A palindrome? 121, 787… let's see." },
+  { es: "Mira el tablero: todo está a la vista.", en: "Look at the board: it's all out in the open." },
+  { es: "El {n} libre. ¿Será el tuyo?", en: "Number {n} is free. Could it be yours?" },
+  { es: "Escoge tu número y cuéntale a tu gente.", en: "Pick your number and tell your people." },
+  { es: "Tu número vive en el tablero, en vivo.", en: "Your number lives on the board, live." },
+  { es: "El {n} te queda bonito.", en: "Number {n} suits you." },
+  { es: "Fusa tiene mil números. Uno es tuyo.", en: "Fusa has a thousand numbers. One is yours." },
+  { es: "¿El año en que naciste? A ver si está.", en: "The year you were born? See if it's there." },
+  { es: "El {n} sigue libre, por ahora.", en: "Number {n} is still free, for now." },
+  { es: "Escoger un número es media sonrisa.", en: "Picking a number is half a smile." },
+  { es: "¿Tu número de la casa? Míralo arriba.", en: "Your house number? Check it above." },
+  { es: "El {n} está libre y bien bonito.", en: "Number {n} is free and looking good." },
+  { es: "Mil historias, una por número.", en: "A thousand stories, one per number." },
+  { es: "El sorteo es el 5 de diciembre. Escoge ya.", en: "The draw is December 5th. Pick now." },
+  { es: "El {n} no tiene dueño. ¿Lo quieres?", en: "Number {n} has no owner. Want it?" },
+  { es: "¿Número del parche? Escójanlos juntos.", en: "A crew number? Pick them together." },
+  { es: "Tu número, a $6.000. Nada más.", en: "Your number, $6,000. That's it." },
+  { es: "El {n} libre: tres cifras esperando.", en: "Number {n} free: three digits waiting." },
+  { es: "Escoge con el corazón o con la cabeza.", en: "Choose with your heart or your head." },
+  { es: "Mil números y el tablero no miente.", en: "A thousand numbers and the board doesn't lie." },
+  { es: "El {n} está libre. Piénsalo.", en: "Number {n} is free. Think about it." },
+  { es: "¿Tu número de siempre? Búscalo.", en: "Your usual number? Look it up." },
+  { es: "Un número para ilusionarse por $6.000.", en: "A number to dream on for $6,000." },
+  { es: "El {n} anda libre. Pásale la voz a alguien.", en: "Number {n} is free. Pass the word along." },
+  { es: "Escoge el tuyo antes del 5 de diciembre.", en: "Pick yours before December 5th." },
+  { es: "El {n}: libre, visible, tuyo si quieres.", en: "Number {n}: free, visible, yours if you want." },
+  { es: "Mil números. ¿Empezamos por el tuyo?", en: "A thousand numbers. Shall we start with yours?" }
+];
+let fraseIdx = Math.floor(Math.random() * FRASES.length);
+
+function numeroLibreAzar() {
+  if (!estados) return null;
+  const libres = [];
+  for (const n in estados) { if (estados[n] === "LIBRE") libres.push(n); }
+  if (!libres.length) return null;
+  return libres[Math.floor(Math.random() * libres.length)];
+}
+
+function pintarFrase() {
+  const el = $("#frase");
+  if (!el) return;
+  // Buscar una frase mostrable: si pide {n} y no hay número libre, pasar a la siguiente
+  let intentos = 0, f = FRASES[fraseIdx][idioma] || FRASES[fraseIdx].es;
+  while (f.includes("{n}") && intentos < FRASES.length) {
+    const libre = numeroLibreAzar();
+    if (libre) { f = f.replace("{n}", libre); break; }
+    fraseIdx = (fraseIdx + 1) % FRASES.length;
+    f = FRASES[fraseIdx][idioma] || FRASES[fraseIdx].es;
+    intentos++;
+  }
+  if (f.includes("{n}")) f = idioma === "es" ? "¿Cuál será el tuyo?" : "Which one will be yours?";
+  // texto de inmediato (nunca vacío); fundido suave al cambiar
+  el.style.opacity = 0;
+  el.textContent = f;
+  requestAnimationFrame(() => { el.style.opacity = 1; });
+}
+
+function rotarFrase() { fraseIdx = (fraseIdx + 1) % FRASES.length; pintarFrase(); }
+
+function reloj() {
+  const ms = CIERRE - Date.now();
+  if (ms <= 0) { $("#cReloj").textContent = idioma === "es" ? "cerrado" : "closed"; return; }
+  const d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), mi = Math.floor(ms % 3600000 / 60000);
+  $("#cReloj").textContent = d + "d " + h + "h " + mi + "m";
+}
+
+/* ───── Modal ───── */
+function abrirModal(n) {
+  const e = estados ? estados[n] || "LIBRE" : null;
+  $("#dNum").textContent = n;
+  const T = {
+    es: { LIBRE: "LIBRE", APARTADO: "APARTADO", PAGADO: "PAGADO", NA: "SIN CONFIRMAR",
+      tLIBRE: "Nadie lo tiene. Si lo apartas hoy, tienes 24 horas para pagarlo; después vuelve a quedar libre.",
+      tAPARTADO: "Alguien lo apartó. Si no paga dentro de las 24 horas se suelta solo y te lo puedes quedar. Escríbenos y te avisamos.",
+      tPAGADO: "Este ya tiene dueño y no se mueve. Escoge otro. Si alguien te está ofreciendo este número, mira el nombre de arriba: tiene que ser esa persona.",
+      tNA: "Ahora mismo no podemos confirmar cómo está este número. Escríbenos y lo miramos a mano.",
+      qLIBRE: "Lo quiero", qOTRO: "Preguntar por este", cerrar: "Cerrar" },
+    en: { LIBRE: "FREE", APARTADO: "ON HOLD", PAGADO: "PAID", NA: "UNCONFIRMED",
+      tLIBRE: "Nobody has it. If you hold it today you get 24 hours to pay; after that it's free again.",
+      tAPARTADO: "Someone is holding it. If they don't pay within 24 hours it drops by itself and you can take it. Message us and we'll let you know.",
+      tPAGADO: "This one is taken and won't move. Pick another. If someone is offering you this number, check the name above — it has to be that person.",
+      tNA: "We can't confirm this number right now. Message us and we'll check by hand.",
+      qLIBRE: "I want it", qOTRO: "Ask about this one", cerrar: "Close" }
+  }[idioma];
+  const k = e || "NA";
+  $("#dEstado").textContent = T[k] + (k === "PAGADO" && nombres[n] ? " · " + nombres[n] : "");
+  $("#dTexto").textContent = T["t" + k];
+  const wa = $("#dWa");
+  if (k === "PAGADO") {
+    wa.hidden = true;
+    wa.removeAttribute("href");
+    wa.textContent = "";
+  } else {
+    wa.hidden = false;
+    wa.textContent = k === "LIBRE" ? T.qLIBRE : T.qOTRO;
+    const msg = idioma === "es"
+      ? "Hola, quiero el número " + n + " de la Mega Rifa Fusa." + (vend ? " Vengo por " + vend + "." : "")
+      : "Hi, I'd like number " + n + " in the Mega Rifa Fusa." + (vend ? " I come from " + vend + "." : "");
+    wa.href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg);
+  }
+  $("#dCerrar").textContent = T.cerrar;
+  if (!$("#dlg").open) $("#dlg").showModal();
+}
+$("#dCerrar").onclick = () => $("#dlg").close();
+$("#dlg").onclick = ev => { if (ev.target === $("#dlg")) $("#dlg").close(); };
+
+
+/* ───── Arranque ───── */
+pintarGrid();
+cargar();
+setInterval(cargar, REFRESCO);
+setInterval(reloj, 30000);
+setInterval(rotarFrase, 1200000);   // frase nueva cada 20 minutos
+
+/* ───── Confeti de bienvenida (una vez al entrar) ───── */
+function confeti() {
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv = document.createElement("canvas");
+  cv.id = "confeti";
+  document.body.appendChild(cv);
+  const x = cv.getContext("2d");
+  let W, H;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function medir() { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; }
+  medir();
+  const COLS = ["#C1121F", "#F2B705", "#0A3D62", "#1E6F50", "#FFF4D6"];
+  const N = innerWidth < 480 ? 90 : 160;
+  const piezas = [];
+  for (let i = 0; i < N; i++) {
+    piezas.push({
+      x: Math.random() * W,
+      y: Math.random() * -H * 0.4,
+      w: (6 + Math.random() * 6) * dpr,
+      h: (9 + Math.random() * 9) * dpr,
+      c: COLS[(Math.random() * COLS.length) | 0],
+      vy: (2.2 + Math.random() * 3.2) * dpr,
+      vx: (-1.2 + Math.random() * 2.4) * dpr,
+      rot: Math.random() * 6.28,
+      vr: -0.2 + Math.random() * 0.4
+    });
+  }
+  const DURA = 3200;
+  const t0 = performance.now();
+  function frame(t) {
+    const prog = (t - t0) / DURA;
+    x.clearRect(0, 0, W, H);
+    const alpha = prog > 0.75 ? Math.max(0, 1 - (prog - 0.75) / 0.25) : 1;
+    x.globalAlpha = alpha;
+    for (const p of piezas) {
+      p.y += p.vy; p.x += p.vx; p.vy += 0.03 * dpr; p.rot += p.vr;
+      x.save(); x.translate(p.x, p.y); x.rotate(p.rot);
+      x.fillStyle = p.c; x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      x.restore();
+    }
+    if (prog < 1) requestAnimationFrame(frame);
+    else cv.remove();
+  }
+  requestAnimationFrame(frame);
+}
+confeti();
+</script>
+</body>
+</html>

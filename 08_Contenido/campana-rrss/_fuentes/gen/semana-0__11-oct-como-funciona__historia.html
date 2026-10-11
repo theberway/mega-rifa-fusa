@@ -1,0 +1,51 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../marca.css"><style>
+.lienzo { padding: 44px; gap: 22px; }
+.historia.lienzo { padding: 230px 60px 210px; gap: 30px; }
+.rojo { background: var(--rojo); color: var(--crema); }
+.amarillo { background: var(--amarillo); color: var(--negro); }
+.crema { background: var(--crema); color: var(--negro); }
+.azul { background: var(--azul); color: var(--crema); }
+.tope { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.chip { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 26px; letter-spacing: 3px; padding: 8px 18px; border: 6px solid var(--negro); background: var(--crema); color: var(--rojo); white-space: nowrap; }
+.logoh { font-family: 'Alfa Slab One', serif; font-size: 36px; line-height: 1; white-space: nowrap; }
+.rojo .logoh, .azul .logoh { color: var(--crema); text-shadow: 3px 3px 0 var(--negro); }
+.amarillo .logoh, .crema .logoh { color: var(--rojo); text-shadow: 3px 3px 0 var(--negro); }
+.titular { font-family: 'Alfa Slab One', serif; line-height: 0.98; }
+.rojo .titular, .azul .titular { color: var(--crema); text-shadow: 6px 6px 0 var(--negro); }
+.amarillo .titular { color: var(--negro); }
+.crema .titular { color: var(--rojo); text-shadow: 6px 6px 0 var(--negro); }
+.sub { font-size: 38px; font-weight: 600; line-height: 1.3; }
+.panel { background: var(--crema); border: 8px solid var(--negro); position: relative; flex-shrink: 0; min-height: 200px; }
+.panel img { position: absolute; left: 12px; top: 18px; width: calc(100% - 24px); height: calc(100% - 18px); object-fit: contain; object-position: center bottom; display: block; }
+.banda { background: var(--negro); color: var(--crema); border: 8px solid var(--negro); padding: 14px 24px; }
+.banda .slab { color: var(--amarillo); font-size: 46px; line-height: 1.1; }
+.banda .linea { font-size: 30px; font-weight: 700; margin-top: 2px; }
+.cta { background: var(--crema); border: 8px solid var(--negro); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.cta .slab { font-size: 38px; color: var(--rojo); white-space: nowrap; }
+.cta .mono { font-size: 28px; color: var(--negro); white-space: nowrap; }
+.historia .cta { flex-direction: column; align-items: flex-start; }
+.historia .cta .slab { font-size: 54px; } .historia .cta .mono { font-size: 34px; }
+.firma { font-size: 22px; font-weight: 600; text-align: center; letter-spacing: 1px; }
+.historia .firma { font-size: 28px; }
+.crece { flex: 1; min-height: 0; }
+.fila { display: flex; gap: 24px; }
+.col { display: flex; flex-direction: column; gap: 20px; }
+</style></head>
+<body><div class="lienzo historia amarillo">
+<div class="tope"><span class="chip">CÓMO FUNCIONA</span><span class="logoh">MEGA RIFA FUSA</span></div>
+<div class="titular" style="font-size:118px">ASÍ DE<br>SIMPLE</div>
+<div class="col crece" style="justify-content:center;gap:26px">
+<div class="fila" style="align-items:center;background:var(--crema);color:var(--negro);border:8px solid var(--negro);padding:22px 26px">
+  <div style="width:130px;height:130px;flex-shrink:0;border-radius:50%;background:var(--rojo);border:7px solid var(--negro);display:flex;align-items:center;justify-content:center"><span class="slab" style="font-size:86px;color:var(--crema);text-shadow:4px 4px 0 var(--negro);line-height:1">1</span></div>
+  <div><div class="slab" style="font-size:50px;line-height:1;color:var(--rojo)">ESCOGE TU NÚMERO</div><div style="font-size:33px;font-weight:600;line-height:1.3;margin-top:8px">Entra al tablero en vivo y busca uno libre, del 000 al 999.</div></div>
+</div>
+<div class="fila" style="align-items:center;background:var(--crema);color:var(--negro);border:8px solid var(--negro);padding:22px 26px">
+  <div style="width:130px;height:130px;flex-shrink:0;border-radius:50%;background:var(--rojo);border:7px solid var(--negro);display:flex;align-items:center;justify-content:center"><span class="slab" style="font-size:86px;color:var(--crema);text-shadow:4px 4px 0 var(--negro);line-height:1">2</span></div>
+  <div><div class="slab" style="font-size:50px;line-height:1;color:var(--rojo)">APÁRTALO Y PAGA</div><div style="font-size:33px;font-weight:600;line-height:1.3;margin-top:8px">Toca “Lo quiero”, escríbenos por WhatsApp y paga $6.000 a la llave Bre-B @sbg884 o en efectivo.</div></div>
+</div>
+<div class="fila" style="align-items:center;background:var(--crema);color:var(--negro);border:8px solid var(--negro);padding:22px 26px">
+  <div style="width:130px;height:130px;flex-shrink:0;border-radius:50%;background:var(--rojo);border:7px solid var(--negro);display:flex;align-items:center;justify-content:center"><span class="slab" style="font-size:86px;color:var(--crema);text-shadow:4px 4px 0 var(--negro);line-height:1">3</span></div>
+  <div><div class="slab" style="font-size:50px;line-height:1;color:var(--rojo)">TE LLEGA TU BOLETA</div><div style="font-size:33px;font-weight:600;line-height:1.3;margin-top:8px">Cuando la plata llega, tu número sale pagado en el tablero y te mandamos tu boleta.</div></div>
+</div></div>
+<div class="cta"><span class="slab">ESCOGE EL TUYO →</span><span class="mono">mega-rifa-fusa.vercel.app</span></div><div class="firma">Organizada por Santiago · The Ber Way</div></div></body></html>

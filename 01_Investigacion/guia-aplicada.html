@@ -1,0 +1,364 @@
+<title>Investigación Aplicada Mega Rifa Fusa</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Playfair+Display:ital,wght@0,700;1,700&family=Nunito+Sans:ital,wght@0,400;0,700;0,900;1,400&family=IBM+Plex+Mono:wght@500;700&display=swap">
+
+<style>
+/* Layout: una columna de "boletas" apiladas, cada etapa con su sello y su número de serie */
+:root{
+  --crema:#FFF4D6;
+  --papel:#FFFBF0;
+  --tinta:#17130C;
+  --violeta:#5B2A86;
+  --amarillo:#FCD116;
+  --verde:#0B6E4F;
+  --rojo:#CE1126;
+  --suave:#6B5D44;
+  --linea:#C9B68C;
+
+  --display:"Bungee","Arial Black",system-ui,sans-serif;
+  --boleta:"Playfair Display",Georgia,serif;
+  --texto:"Nunito Sans",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --crema:#15110A;
+    --papel:#1F1A10;
+    --tinta:#F6EBD2;
+    --violeta:#C8A6E8;
+    --amarillo:#FCD116;
+    --verde:#4FC79B;
+    --rojo:#FF7A6B;
+    --suave:#B8A785;
+    --linea:#4A3E27;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --crema:#15110A;
+  --papel:#1F1A10;
+  --tinta:#F6EBD2;
+  --violeta:#C8A6E8;
+  --amarillo:#FCD116;
+  --verde:#4FC79B;
+  --rojo:#FF7A6B;
+  --suave:#B8A785;
+  --linea:#4A3E27;
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--crema);
+  color:var(--tinta);
+  font-family:var(--texto);
+  font-size:16px;
+  line-height:1.6;
+  padding-block:0 56px;
+  padding-left:16px;
+  padding-right:16px;
+}
+.wrap{max-width:720px;margin:0 auto}
+
+/* ---------- rótulo de entrada ---------- */
+.rotulo{
+  margin-top:28px;
+  background:var(--amarillo);
+  border:3px solid var(--tinta);
+  border-radius:4px;
+  padding:26px 20px 22px;
+  text-align:center;
+  box-shadow:7px 7px 0 var(--violeta);
+  position:relative;
+  overflow:hidden;
+}
+.rotulo::before{
+  content:"";position:absolute;inset:-60% -10% auto -10%;height:200%;
+  background:repeating-conic-gradient(from 0deg at 50% 0%, rgba(23,19,12,.07) 0deg 6deg, transparent 6deg 12deg);
+  pointer-events:none;
+}
+.rotulo .kicker{
+  position:relative;font-family:var(--mono);font-size:11px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:#17130C;opacity:.75
+}
+.rotulo h1{
+  position:relative;margin:.3em 0 .2em;font-family:var(--display);
+  font-size:clamp(26px,7.4vw,46px);line-height:1.02;color:#17130C;
+  text-wrap:balance;text-shadow:3px 3px 0 var(--papel),5px 5px 0 #17130C;
+}
+.rotulo p{position:relative;margin:.6em auto 0;max-width:46ch;font-size:15px;color:#17130C;font-weight:700}
+
+/* ---------- cifras duras ---------- */
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin-top:14px}
+.cifra{background:var(--papel);border:2px solid var(--tinta);border-radius:3px;padding:11px 12px}
+.cifra b{display:block;font-family:var(--mono);font-weight:700;font-size:19px;color:var(--violeta);font-variant-numeric:tabular-nums}
+.cifra span{display:block;font-size:11.5px;line-height:1.35;color:var(--suave);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-top:2px}
+
+h2{
+  font-family:var(--display);font-size:clamp(19px,4.6vw,25px);line-height:1.1;
+  margin:44px 0 6px;text-wrap:balance;
+}
+h2 .num{color:var(--violeta)}
+.sub{margin:0 0 16px;color:var(--suave);font-size:14.5px;max-width:62ch}
+
+/* ---------- tarjeta estilo boleta ---------- */
+.boleta{
+  position:relative;background:var(--papel);
+  border:2px solid var(--linea);border-radius:3px;
+  padding:16px 18px;margin-bottom:12px;
+  box-shadow:0 1px 0 var(--linea), 4px 4px 0 rgba(91,42,134,.13);
+}
+.boleta::before{
+  content:"";position:absolute;inset:4px;border:1px dashed var(--linea);border-radius:2px;pointer-events:none
+}
+.boleta > *{position:relative}
+.serie{
+  font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--verde);display:block;margin-bottom:4px
+}
+.boleta h3{font-family:var(--boleta);font-size:19px;line-height:1.25;margin:0 0 7px;text-wrap:balance}
+.boleta p{margin:0 0 9px;font-size:15px}
+.boleta p:last-child{margin-bottom:0}
+.dato{
+  display:block;border-left:4px solid var(--amarillo);padding:5px 0 5px 11px;
+  margin:0 0 10px;font-size:14px;color:var(--suave);font-style:italic
+}
+.dato b{color:var(--tinta);font-style:normal;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.haz{font-weight:700}
+.haz::before{
+  content:"HAZ ESTO";display:inline-block;font-family:var(--mono);font-size:10px;
+  letter-spacing:.12em;background:var(--verde);color:#FFFBF0;padding:2px 6px;border-radius:2px;
+  margin-right:8px;vertical-align:1.5px;font-weight:700
+}
+
+/* ---------- etapas con sello ---------- */
+.etapa{
+  position:relative;background:var(--papel);border:2px solid var(--tinta);border-radius:3px;
+  padding:16px 18px 16px;margin-bottom:12px
+}
+.etapa .cuando{
+  display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;background:var(--amarillo);color:#17130C;
+  padding:3px 8px;border:1.5px solid var(--tinta);border-radius:2px;margin-bottom:8px
+}
+.etapa h3{font-family:var(--display);font-size:16.5px;line-height:1.2;margin:0 0 9px}
+.etapa ul{margin:0;padding-left:1.1em}
+.etapa li{margin-bottom:7px;font-size:15px}
+.etapa li:last-child{margin-bottom:0}
+.etapa li b{color:var(--violeta)}
+.pq{
+  margin:11px 0 0;padding:9px 11px;background:var(--crema);border:1px dashed var(--linea);
+  border-radius:2px;font-size:13.5px;color:var(--suave)
+}
+.pq b{color:var(--tinta);font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- lista roja ---------- */
+.roja{background:var(--papel);border:3px solid var(--rojo);border-radius:3px;padding:16px 18px}
+.roja ul{margin:0;padding-left:1.1em;columns:2;column-gap:26px}
+.roja li{margin-bottom:7px;font-size:14.5px;break-inside:avoid}
+@media (max-width:520px){ .roja ul{columns:1} }
+
+/* ---------- sello final ---------- */
+.cierre{
+  margin-top:40px;text-align:center;border:3px double var(--violeta);border-radius:3px;
+  background:var(--papel);padding:24px 18px
+}
+.sello{
+  width:124px;height:124px;margin:0 auto 12px;border:3px double var(--violeta);border-radius:50%;
+  display:grid;place-content:center;color:var(--violeta);font-family:var(--mono);font-weight:700;
+  font-size:10.5px;letter-spacing:.1em;line-height:1.5;transform:rotate(-7deg);text-align:center
+}
+.sello span{display:block}
+.sello .big{font-family:var(--display);font-size:22px;letter-spacing:0;margin:2px 0}
+.cierre p{margin:0 auto;max-width:48ch;font-size:15px}
+.cierre p + p{margin-top:9px}
+
+footer{margin-top:34px;text-align:center;font-size:12.5px;color:var(--suave);font-family:var(--mono)}
+a{color:var(--violeta)}
+</style>
+
+<div class="wrap">
+  <div style="background:#C1121F;color:#fff;border:4px solid #1A1A1A;border-radius:10px;padding:14px 16px;margin:0 0 16px;font-family:system-ui,sans-serif;line-height:1.5">
+    <b>⚠️ DOCUMENTO HISTÓRICO — NO USAR PARA EJECUTAR.</b><br>
+    Este archivo quedó de una versión vieja (apareció sin dueño, no está en el índice de investigación). Dice <b>sorteo 21 nov</b> y <b>«siempre hay ganador: Boyacá → Cauca»</b>, y las dos cosas <b>ya no son ciertas</b>: el sorteo es el <b>sáb 5 dic 2026</b> (decisión 15) y, si el número de la Boyacá no se vendió, <b>no hay 2M</b> sino un premio de consolación (decisión 37). La Cauca es solo respaldo si la Boyacá no juega.<br>
+    Fuente de verdad: <code>02_Decisiones/plan-maestro.md</code>, <code>02_Decisiones/registro-de-decisiones.md</code> y <code>00_EMPIEZA-AQUI.md</code>.
+  </div>
+
+  <header class="rotulo">
+    <span class="kicker">Guía interna · Sesión 1 · 3 oct 2026</span>
+    <h1>Lo que dijo la investigación y cómo se usa</h1>
+    <p>Los datos que de verdad mueven números, puestos en el día que te sirven. De aquí al sorteo del 21 de noviembre.</p>
+  </header>
+
+  <div class="cifras">
+    <div class="cifra"><b>860–890</b><span>Números para el piso de 3 millones</span></div>
+    <div class="cifra"><b>900+</b><span>La meta de verdad</span></div>
+    <div class="cifra"><b>~20 / día</b><span>Ritmo promedio · 30 la última semana</span></div>
+    <div class="cifra"><b>21 nov</b><span>Sorteo, pase lo que pase</span></div>
+  </div>
+
+  <h2><span class="num">1.</span> Por qué la gente compra</h2>
+  <p class="sub">Seis cosas con evidencia detrás. Cada una ya está metida en el plan; esto es para que sepas por qué está ahí y no la quites sin pensar.</p>
+
+  <article class="boleta">
+    <span class="serie">MRF · 01 — probabilidad</span>
+    <h3>“1 en 1.000” se siente más grande de lo que es</h3>
+    <span class="dato">La gente sobrevalora las probabilidades chiquitas. Y acertar 3 cifras es <b>10 veces</b> más fácil que acertar las 4 de la lotería.</span>
+    <p class="haz">Dilo plano: “1 en 1.000”. No lo adornes ni lo escondas. Es honesto y además vende. Y compáralo con la lotería, que es la referencia que todos tienen en la cabeza.</p>
+  </article>
+
+  <article class="boleta">
+    <span class="serie">MRF · 02 — premio único</span>
+    <h3>Un premio grande gana a varios chiquitos</h3>
+    <span class="dato">Experimento puerta a puerta con <b>4.833</b> hogares: un premio de USD 1.000 recaudó más que cuatro de USD 250. Participación del <b>45,5%</b> contra pedir sin rifa (<b>25,3%</b>).</span>
+    <p class="haz">Los 2 millones son el titular, solos. Por eso se mató la mini-rifa. No vuelvas a repartir el premio en pedacitos.</p>
+  </article>
+
+  <article class="boleta">
+    <span class="serie">MRF · 03 — escoger</span>
+    <h3>El número que uno escoge vale más</h3>
+    <span class="dato">En el experimento de Langer, los que <b>escogieron</b> su boleta pedían <b>USD 8,67</b> para venderla; los que la recibieron asignada, <b>USD 1,96</b>.</span>
+    <p class="haz">El tablero 000–999 existe para esto: que escojan. Pero <strong>nunca digas que escoger mejora las probabilidades</strong>, porque no es cierto. El valor está en que el número se siente suyo.</p>
+  </article>
+
+  <article class="boleta">
+    <span class="serie">MRF · 04 — nadie cambia</span>
+    <h3>Una vez escogen, no sueltan</h3>
+    <span class="dato">En un estudio de campo con <b>472</b> personas, el <b>85%</b> se quedó con su número aunque le ofrecieran un bono del 20–40%.</span>
+    <p class="haz">Pon “no hay cambios” en las reglas y no pierdas tiempo ofreciendo cambios. Si alguien pide cambio, probablemente aún no ha pagado.</p>
+  </article>
+
+  <article class="boleta">
+    <span class="serie">MRF · 05 — escasez</span>
+    <h3>“Quedan X” funciona, pero solo si es verdad</h3>
+    <span class="dato">Metaanálisis de <b>131</b> estudios: las señales de escasez suben la intención de compra (<b>d = 0,31</b>). Y las guías antifraude marcan la urgencia inventada como bandera roja número uno.</span>
+    <p class="haz">El contador real es tu mejor arma y tu mejor señal de confianza al mismo tiempo. Si quedan 300, dices 300. “El 777 ya se fue” solo si se fue.</p>
+  </article>
+
+  <article class="boleta">
+    <span class="serie">MRF · 06 — prueba social</span>
+    <h3>Mueve más ver a un conocido adentro que a un desconocido</h3>
+    <span class="dato">En la lotería holandesa de códigos postales, lo que predecía jugar era imaginarse que ganara <b>el vecino</b>. En el experimento de las toallas de hotel, “la mayoría lo hace” dio <b>44,1%</b> contra <b>35,1%</b>.</span>
+    <p class="haz">Los collages de 1, 3, 5 y 9 fotos son esto. Cifras siempre reales, caras solo con permiso. Y jamás amenaces con el arrepentimiento (“te vas a arrepentir”): eso quema.</p>
+  </article>
+
+  <h2><span class="num">2.</span> Qué haces en cada etapa</h2>
+  <p class="sub">El mismo calendario de la hoja de ruta, pero con el dato que justifica cada movida.</p>
+
+  <section class="etapa">
+    <span class="cuando">Hoy → sáb 10 oct · antes de vender</span>
+    <h3>Congela las reglas y la frase del sorteo</h3>
+    <ul>
+      <li>La regla del sorteo se escribe <b>palabra por palabra</b>: “premio mayor, número de 4 cifras, <b>últimas 3 cifras</b>; no cuenta la serie, ni los secos, ni el lanzamiento adicional”. Y se nombra el <b>sorteo ordinario</b> de ese día.</li>
+      <li>Boyacá juega <b>sábado 10:30 p.m.</b> y no se mueve en todo el trimestre. Cauca juega <b>11:00 p.m.</b>, el mismo sábado: ese es tu respaldo.</li>
+      <li>Enlaza siempre la <b>página oficial</b> de la lotería, nunca una página que recopila resultados.</li>
+    </ul>
+    <div class="pq">El <b>21 de nov</b> también hay un extraordinario de Medellín. Si no dices “ordinario”, alguien va a llegar con el número equivocado a reclamar.</div>
+  </section>
+
+  <section class="etapa">
+    <span class="cuando">Dom 4 → vie 9 oct · reclutar</span>
+    <h3>Nada de comisiones simbólicas</h3>
+    <ul>
+      <li>Con 180 estudiantes recogiendo plata puerta a puerta: <b>sin pago</b> recogieron 238,6 en promedio; con <b>1%</b> de comisión, 153,6; con <b>10%</b>, 219,3. Pagar poquito desmotiva más que no pagar nada.</li>
+      <li>Por eso a familia y amigos: <b>cero comisión</b>, pero 100 mil si pasan de 25 compradores distintos y uno de ellos gana. A tiendas: <b>10% y punto</b>.</li>
+      <li>Recluta <b>con el kit en la mano</b>, no con la idea. Nadie se compromete con algo que no puede ver.</li>
+    </ul>
+  </section>
+
+  <section class="etapa">
+    <span class="cuando">Sáb 10 → lun 12 oct · preventa</span>
+    <h3>Arranca duro con los de confianza</h3>
+    <ul>
+      <li>Las campañas de recaudo tienen forma de <b>U</b>: mucho la primera semana, poco en el medio, mucho al final. El arranque con el círculo cercano es lo que predice si llegas.</li>
+      <li>Véndeles el privilegio real: <b>escogen número primero</b>, antes que todo Fusagasugá.</li>
+      <li>La causa se cuenta <b>en dos frases</b> y solo 1 a 1. Nada de drama ni de tragedia: eso baja la credibilidad en vez de subirla.</li>
+    </ul>
+    <div class="pq">Meta de la preventa: <b>120</b> números. Si cierras el lunes por debajo de <b>108</b>, el problema no es el precio: es el alcance.</div>
+  </section>
+
+  <section class="etapa">
+    <span class="cuando">Mar 13 oct · lanzamiento</span>
+    <h3>Deja que se peleen por los números bonitos</h3>
+    <ul>
+      <li>En datos de lotería, el <b>7</b> fue el número más escogido en <b>118</b> sorteos seguidos. Espera que el 007, el 777, el 123 y las fechas se vayan primero.</li>
+      <li>Úsalo a tu favor: publica <b>qué números bonitos siguen libres</b>. Es escasez real y es contenido gratis.</li>
+      <li>Y ojo al revés: las cifras del sorteo anterior se venden más lento. No te preocupes, se recuperan.</li>
+    </ul>
+  </section>
+
+  <section class="etapa">
+    <span class="cuando">Dom 25 oct → dom 8 nov · la mitad dura</span>
+    <h3>Aquí empiezan los desconocidos y el efectivo</h3>
+    <ul>
+      <li>En Colombia el efectivo sigue siendo el <b>77,8%</b> de los pagos, y entre quienes ganan menos de un mínimo, el <b>87,5%</b> lo prefiere. La ruta de efectivo no es un extra: es media rifa.</li>
+      <li><b>No cuentes con la prima</b>: el <b>54,6%</b> de los ocupados es informal y no la recibe. Las quincenas sí sirven; la prima de diciembre es plan B, no plan A.</li>
+      <li>Es el momento del relanzamiento: Tizumba, grupos de Facebook, las tiendas y un día fuerte en la U. Uno por punto de control, no todos de una.</li>
+    </ul>
+    <div class="pq">Metas: <b>360</b> el 25 oct · <b>470</b> el 1 nov · <b>570</b> el 8 nov. Por debajo del 90% se activa el siguiente refuerzo, ese mismo domingo.</div>
+  </section>
+
+  <section class="etapa">
+    <span class="cuando">Dom 15 → sáb 21 nov · cierre</span>
+    <h3>Cierre duro, con fecha y sin estirarla</h3>
+    <ul>
+      <li>El apoyo se dispara cuando se acerca el límite. Esa última semana exige <b>~27 números al día</b>, y es la que más rinde si la trabajas.</li>
+      <li><b>Jue 19 nov</b> es el último día fuerte en la U: desde el 20 se vacía. Vie 20: mensajes de “últimas 48 horas”.</li>
+      <li><b>6:00 p.m. del 21</b> se cierra y se congela. <b>7:00 p.m.</b> se publica la lista final con iniciales, antes del sorteo. Eso es lo que apaga las peleas después.</li>
+    </ul>
+  </section>
+
+  <section class="etapa">
+    <span class="cuando">Sáb 21 → dom 22 nov · sorteo y entrega</span>
+    <h3>Todo en cámara, todo con papel</h3>
+    <ul>
+      <li>Transmite la lotería en vivo y toma <b>pantallazo de la página oficial</b> de resultados.</li>
+      <li>Entrega el premio <b>en video y con acta firmada</b>, en máximo 24 horas.</li>
+      <li>Publica el informe de cuentas claras. Tu promesa fuerte es que <b>siempre hay ganador esa misma noche</b>: Boyacá → Cauca → el siguiente número vendido.</li>
+    </ul>
+  </section>
+
+  <section class="etapa">
+    <span class="cuando">23 → 27 nov · después</span>
+    <h3>Lo que compras de verdad es la segunda rifa</h3>
+    <ul>
+      <li>Poner una moto a rodar legal cuesta <b>≈ 4,36 millones</b> como mínimo, y <b>≈ 5,36</b> si no tienes licencia A1. Los 3 millones alcanzan para la moto más barata y dejan los extras sin cubrir.</li>
+      <li>Busca <b>hasta 125 cc</b>: exenta de impuesto en Cundinamarca, con A1 te basta y el SOAT es más barato.</li>
+      <li>El video de la entrega y el informe de cuentas son el activo que hace posible la rifa del <b>15 al 20 de diciembre</b> si te quedaste corto.</li>
+    </ul>
+  </section>
+
+  <h2><span class="num">3.</span> Lo que nunca, ni una vez</h2>
+  <p class="sub">Cada uno de estos ya le costó la confianza a alguien. No hay excepciones, ni con familia.</p>
+  <div class="roja">
+    <ul>
+      <li>Aceptar un pantallazo como pago.</li>
+      <li>Decir que la rifa tiene permiso o autorización.</li>
+      <li>Poner un contador que no sea real.</li>
+      <li>Vender a un menor de 18.</li>
+      <li>Dar un número fiado.</li>
+      <li>Apartar números desde la línea personal.</li>
+      <li>Publicar nombre completo de un comprador.</li>
+      <li>Publicar una cara sin permiso.</li>
+      <li>Presionar con culpa o con arrepentimiento.</li>
+      <li>Soltar un chiste sin una prueba al lado.</li>
+      <li>Tocar la reserva del premio.</li>
+      <li>Decir cuánta plata tienes en mano.</li>
+    </ul>
+  </div>
+
+  <section class="cierre">
+    <div class="sello" aria-hidden="true">
+      <span>MEGA RIFA FUSA</span>
+      <span class="big">21·NOV</span>
+      <span>SORTEO 2026</span>
+    </div>
+    <p><strong>El humor llama, la prueba convence.</strong> La investigación es clara en una cosa: el chiste sube la atención pero baja la credibilidad. Entonces cada vaina chistosa va pegada a algo verificable — el contador, la lista, la llave de pago, el video.</p>
+    <p>Esa es toda la estrategia en una frase.</p>
+  </section>
+
+  <footer>
+    Fuentes completas en 01_Investigacion/00_LEEME-indice-y-resumenes.md<br>
+    Guía interna · no es pieza pública
+  </footer>
+
+</div>

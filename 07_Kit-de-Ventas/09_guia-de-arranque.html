@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía de arranque · Mega Rifa Fusa</title>
+<style>
+  :root{--crema:#FFF4D6;--rojo:#C1121F;--amarillo:#F2B705;--azul:#0A3D62;--negro:#1A1A1A;--verde:#1E6F50}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--crema:#15202b;--negro:#e9e6df}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--crema);color:var(--negro);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;padding:16px;max-width:820px;margin:0 auto}
+  h1{color:var(--rojo);font-size:24px;margin:.3em 0}
+  h2{color:#fff;background:var(--azul);font-size:18px;padding:8px 12px;border-radius:8px;margin-top:26px}
+  h3{font-size:16px;margin:16px 0 4px;color:var(--rojo)}
+  .box{border:2px solid var(--negro);border-radius:10px;padding:12px 14px;margin:12px 0}
+  .warn{border-color:var(--rojo);background:rgba(193,18,31,.10)}
+  .ok{border-color:var(--verde);background:rgba(30,111,80,.10)}
+  ol,ul{margin:8px 0 8px 20px;padding:0}
+  li{margin:6px 0}
+  code{background:rgba(0,0,0,.10);padding:1px 6px;border-radius:4px;font-size:.92em;font-family:ui-monospace,Consolas,monospace}
+  .chk{list-style:none;margin-left:0}
+  .chk li{padding-left:28px;position:relative}
+  .chk li::before{content:"☐";position:absolute;left:0;font-size:18px}
+  .paso{background:var(--amarillo);color:var(--negro);font-weight:700;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;margin-right:8px}
+  .never{color:var(--rojo);font-weight:700}
+  .copia{background:rgba(0,0,0,.06);border-left:4px solid var(--azul);padding:8px 12px;margin:6px 0;border-radius:0 8px 8px 0}
+</style>
+</head>
+<body>
+
+<h1>Guía de arranque — Mega Rifa Fusa</h1>
+<p>Dos partes: <b>A)</b> montar todo una sola vez, y <b>B)</b> cómo se hace una venta de principio a fin.
+Guárdala en el celular; no necesitas el PC para la Parte B.</p>
+
+<div class="box warn">
+<b>Las 3 reglas que nunca se rompen:</b>
+<ol>
+<li>Un número está <b>PAGADO solo cuando la plata se ve en la app</b> (Nu / el banco de Sofía). Un pantallazo <span class="never">no</span> es pago.</li>
+<li><b>Solo la línea Business aparta números.</b> La personal invita y manda el link.</li>
+<li>En la hoja <code>NUMEROS</code>, <span class="never">nunca escribas en la columna E</span> (NOMBRE_PUBLICO): es fórmula y es la única pública. Los nombres van en <code>COMPRADORES</code>.</li>
+</ol>
+</div>
+
+<h2>PARTE A · Montar (una sola vez)</h2>
+
+<h3><span class="paso">1</span>El Sheet (la base de todo)</h3>
+<p>El tablero vive en un Google Sheet; la web solo lo lee. Para montarlo tienes dos caminos:</p>
+<ul>
+<li><b>Fácil</b>: abre <code>06_Tablero-Web/PROMPT-claude-en-chrome.md</code>, súbele a Claude-en-Chrome el archivo <code>MEGA-RIFA-FUSA-tablero.xlsx</code> y pégale ese prompt. Él lo deja listo y te da el <b>link del CSV</b>.</li>
+<li><b>A mano</b>: sigue <code>06_Tablero-Web/esquema-google-sheet.md</code> (los 6 pasos del recuadro de arriba).</li>
+</ul>
+<ul class="chk">
+<li>Subido a Drive y convertido a <b>Hoja de cálculo de Google</b>.</li>
+<li>Cálculo en <b>"Al cambiar y cada minuto"</b> y zona <b>Bogotá</b>.</li>
+<li>Script <code>script-tablero.gs</code> pegado y <code>repararTodo</code> ejecutado.</li>
+<li>Compartir → <b>Acceso general: Restringido</b>.</li>
+<li>Hoja <code>NUMEROS</code> publicada como <b>CSV</b> → me pasas ese link para conectar la web.</li>
+</ul>
+
+<h3><span class="paso">2</span>WhatsApp Business</h3>
+<p>Sigue <code>07_Kit-de-Ventas/03_whatsapp-business-y-plantillas.md</code>:</p>
+<ul class="chk">
+<li>Foto de perfil (escoge una de <code>05_Marca/WA-perfil/</code>) y descripción (sección 1.1).</li>
+<li>Mensaje de bienvenida y de ausencia (23:00–12:00).</li>
+<li>Las 8 respuestas rápidas (<code>/precio</code>, <code>/pago</code>, <code>/reglas</code>…).</li>
+<li>Etiquetas: Apartado · Por verificar · Pagado · Vendedor.</li>
+<li>Catálogo (1 ítem) y Canal.</li>
+</ul>
+
+<h3><span class="paso">3</span>Vendedores</h3>
+<ul class="chk">
+<li>Cierra la lista de fijos en <code>08_vendedores-confirmados.md</code>.</li>
+<li>A cada uno: su código (<code>V01</code>…) y su link <code>…/?v=V01</code>. Pruébenlo juntos.</li>
+<li>Mándales las plantillas 1, 2, 3 y 12.</li>
+</ul>
+
+<h3><span class="paso">4</span>Ensayo de punta a punta (antes de vender de verdad)</h3>
+<div class="box ok">
+Haz una <b>venta falsa con el <code>999</code></b>:
+<ol>
+<li>En <code>NUMEROS</code>, pon <code>999</code> en <b>APARTADO</b> → míralo cambiar en la web (hasta ~5 min por el caché).</li>
+<li>Llena la fila de <code>999</code> en <code>COMPRADORES</code> (un nombre de prueba, <code>SI</code>/<code>SI</code>) → queda <b>PAGADO</b> y sale el nombre acortado y el serial.</li>
+<li>Copia el <code>SERIAL</code> y genera la tarjeta en tu <b>generador privado</b> (<code>06_Tablero-Web/generador-privado.html</code>).</li>
+<li>Déjalo igual que estaba: pon <code>999</code> en <b>LIBRE</b>. El script borra la hora y el vendedor solos.</li>
+</ol>
+Si todo esto funcionó, estás listo para vender.
+</div>
+
+<h2>PARTE B · Una venta, de principio a fin</h2>
+<p>Esto es lo que haces (o Sofía) cada vez que alguien compra:</p>
+
+<h3><span class="paso">1</span>Apartar</h3>
+<p>En <code>NUMEROS</code>, pon el número en <b>APARTADO</b> (la hora se pone sola) y responde con <code>/apartado</code>:</p>
+<div class="copia"><i>Listo, te aparté el <b>[###]</b> por 24 horas. Vence hoy a las [hora]. Para confirmarlo, paga a <b>@sbg884</b> (Nu).</i></div>
+
+<h3><span class="paso">2</span>Cobrar y verificar</h3>
+<ul>
+<li>El comprador paga a la llave Bre-B <b><code>@sbg884</code></b> (o efectivo al vendedor).</li>
+<li><b>Abres Nu y confirmas que la plata esté en la app.</b> Un pantallazo <span class="never">no</span> cuenta.</li>
+<li>Si no aparece: queda <b>Por verificar</b>, el apartado sigue corriendo. Plantilla 7.</li>
+</ul>
+
+<h3><span class="paso">3</span>Dejar PAGADO (una sola fila)</h3>
+<p>En <code>COMPRADORES</code>, llena <b>una fila</b>: número, nombre completo, teléfono, <code>SALE_PUBLICO</code> (SI/NO) y <code>QUIERE_TBW</code> (SI/NO).
+Al llenar esa fila, el número <b>queda PAGADO solo</b>, con su nombre acortado y su serial. <b>No toques <code>NUMEROS</code>.</b></p>
+<p>La pregunta de The Ber Way va en el mensaje de pago (plantilla 6 / <code>/pagado</code>): <i>«¿Quieres que te avisemos de lo que hace The Ber Way? SÍ o NO.»</i> → su respuesta va en <code>QUIERE_TBW</code>.</p>
+
+<h3><span class="paso">4</span>Anotar la plata</h3>
+<p>Una fila en <code>PAGOS</code>: fecha/hora en que la viste, número(s), monto, medio, quién verificó.</p>
+
+<h3><span class="paso">5</span>Mandar la tarjeta</h3>
+<p>Copia el <code>SERIAL</code> de <code>NUMEROS</code>, genera la tarjeta en tu <b>generador privado</b> y mándala con <code>/pagado</code>:</p>
+<div class="copia"><i>¡Recibido! 🎉 Tu <b>[###]</b> ya está PAGADO ✅🎟️ Te paso tu tarjeta-boleta. Verifícalo en el tablero cuando quieras 👀 ¡Mucha suerte el 5 dic! 🍀</i></div>
+
+<div class="box warn" style="margin-top:20px">
+<b>Si algo se rompe</b> (número vendido dos veces, pago que no aparece, vendedor que no entrega en 48 h):
+mira la sección «Si algo se rompe» de <code>03_Hoja-de-ruta/rutina-diaria.md</code>. Regla de oro: <b>manda el Sheet</b>.
+</div>
+
+<p style="font-size:12px;color:#778;margin-top:24px">Mega Rifa Fusa · guía de arranque · 2026-10-09. El detalle completo está en el kit de ventas y en la rutina diaria.</p>
+
+</body>
+</html>

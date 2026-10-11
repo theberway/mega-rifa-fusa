@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reglas · Mega Rifa Fusa</title>
+<meta name="description" content="Las reglas de la Mega Rifa Fusa: precio, cómo se paga, el sorteo con la Lotería de Boyacá y los premios.">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo+Narrow:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --crema:#FFF4D6; --rojo:#C1121F; --amarillo:#F2B705; --azul:#0A3D62; --negro:#1A1A1A;
+  --borde:4px; --radio:10px;
+  --titular:"Alfa Slab One",Georgia,serif;
+  --texto:"Archivo Narrow","Arial Narrow",system-ui,sans-serif;
+  --mono:"Space Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--crema);color:var(--negro);font-family:var(--texto);font-size:17px;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 56px}
+header{background:var(--rojo);border-bottom:7px solid var(--negro)}
+.hdr{max-width:720px;margin:0 auto;padding:16px;display:flex;align-items:center;gap:14px}
+.logo{font-family:var(--titular);color:var(--crema);font-size:clamp(20px,6vw,30px);line-height:.96;text-shadow:3px 3px 0 var(--negro)}
+.hdr .right{margin-left:auto}
+.lang{display:flex;border:3px solid var(--negro);border-radius:var(--radio);overflow:hidden;background:var(--crema)}
+.lang button{font-family:var(--texto);font-weight:700;font-size:13px;padding:5px 10px;border:0;background:transparent;color:var(--negro);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--negro);color:var(--crema)}
+h1{font-family:var(--titular);font-size:clamp(26px,6.5vw,36px);margin:22px 0 14px;line-height:1.1}
+.regla{background:var(--crema);border:var(--borde) solid var(--negro);border-radius:var(--radio);box-shadow:5px 5px 0 var(--negro);padding:12px 16px;margin-top:14px}
+.regla b.t{display:block;font-family:var(--titular);color:var(--rojo);font-size:18px;font-weight:400;margin-bottom:2px}
+.regla p{margin:0}
+.premios{background:var(--azul);color:var(--crema)}
+.premios b.t{color:var(--amarillo)}
+.mono{font-family:var(--mono);font-weight:700}
+a{color:var(--azul);font-weight:700}
+.back{display:inline-block;margin-top:18px}
+footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
+.en .es-only{display:none}
+.es .en-only{display:none}
+</style>
+</head>
+<body class="es">
+
+<header>
+  <div class="hdr">
+    <div class="logo">MEGA RIFA<br>FUSA</div>
+    <div class="right">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button id="bES" aria-pressed="true">ES</button>
+        <button id="bEN" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <a class="back" href="/"><span class="es-only">← Volver al tablero</span><span class="en-only">← Back to the board</span></a>
+
+<!-- ═════════ ESPAÑOL ═════════ -->
+<div class="es-only">
+  <h1>Las reglas</h1>
+
+  <div class="regla"><b class="t">1.000 números</b><p>Rifa organizada por <b>Santiago</b>, en Fusagasugá. Del 000 al 999, a <b>COP 6.000</b> cada uno. Un número, un dueño. Máximo 20 por persona. Solo mayores de 18 años.</p></div>
+
+  <div class="regla"><b class="t">Cómo se compra</b><p>Escoge un número libre en el <a href="/">tablero</a> y escríbenos por WhatsApp para apartarlo. El apartado dura <b>24 horas</b>.</p></div>
+
+  <div class="regla"><b class="t">Cómo se paga</b><p>A la llave Bre-B <span class="mono">@sbg884</span>, o en efectivo con un vendedor. Tu número queda <b>pagado</b> cuando la plata se ve en la cuenta. Un pantallazo no cuenta. No hay fiado ni cambios de número.</p></div>
+
+  <div class="regla"><b class="t">El sorteo</b><p><b>Sábado 5 de diciembre de 2026, 10:30 p.m.</b> Gana el número igual a las <b>últimas 3 cifras del premio mayor</b> de la <b>Lotería de Boyacá</b> (no cuentan serie, secos ni sorteos extraordinarios). Si la Boyacá no juega, se usa la Lotería del Cauca de las 11:00 p.m.</p></div>
+
+  <div class="regla premios"><b class="t">Los premios</b><p><b>Si el número ganador está pagado: COP 2.000.000 en efectivo.</b><br>Si no se vendió: el <b>siguiente número vendido</b> gana una botella de whisky Buchanan's Master de 750 ml.</p></div>
+
+  <div class="regla"><b class="t">Cierre</b><p>Las ventas cierran el <b>sábado 5 de diciembre a las 6:00 p.m.</b> A las 7:00 p.m. se publica la lista final de números pagados. Lo que no esté pagado no juega.</p></div>
+
+  <div class="regla"><b class="t">El tablero manda</b><p>Si el tablero dice que un número está pagado, está pagado. Antes de comprarle un número a alguien, búscalo en el tablero. Solo se muestra el nombre acortado del dueño, nunca el teléfono.</p></div>
+
+  <div class="regla"><b class="t">Entrega</b><p>El ganador recibe su premio en máximo <b>24 horas</b>, con video y acta firmada.</p></div>
+
+  <div class="regla"><b class="t">Nueva Zelanda</b><p>NZD 4 por número. Si el número ganador se vendió allá y está pagado, el premio es de <b>NZD 1.000</b>.</p></div>
+
+  <p style="margin-top:20px;font-weight:700">Estas reglas se congelan el 10 de octubre de 2026 y no cambian. Juega solo con plata que te sobre.</p>
+</div>
+
+<!-- ═════════ ENGLISH ═════════ -->
+<div class="en-only">
+  <h1>The rules</h1>
+
+  <div class="regla"><b class="t">1,000 numbers</b><p>Raffle organised by <b>Santiago</b>, in Fusagasugá. 000 to 999, <b>COP 6,000</b> each. One number, one owner. Maximum 20 per person. 18+ only.</p></div>
+
+  <div class="regla"><b class="t">How to buy</b><p>Pick a free number on the <a href="/">board</a> and message us on WhatsApp to hold it. A hold lasts <b>24 hours</b>.</p></div>
+
+  <div class="regla"><b class="t">How to pay</b><p>In Colombia: Bre-B key <span class="mono">@sbg884</span>, or cash with a seller. In New Zealand: <b>NZD 4</b> per number by bank transfer; the details are given in the chat. A number is <b>paid</b> once the money shows up in the account. A screenshot doesn't count. No credit, no number changes.</p></div>
+
+  <div class="regla"><b class="t">The draw</b><p><b>Saturday 5 December 2026, 10:30 p.m. Colombia time</b> (Sunday 6 December, 4:30 p.m. in New Zealand). The winning number is the <b>last 3 digits of the top prize</b> of the <b>Lotería de Boyacá</b> (series, minor prizes and special draws don't count). If Boyacá doesn't draw, Lotería del Cauca at 11:00 p.m. is used.</p></div>
+
+  <div class="regla premios"><b class="t">The prizes</b><p><b>If the winning number is paid: COP 2,000,000 cash</b> (NZD 1,000 if it was sold in New Zealand).<br>If it wasn't sold: the <b>next number sold</b> wins a 750 ml bottle of Buchanan's Master whisky.</p></div>
+
+  <div class="regla"><b class="t">Closing</b><p>Sales close on <b>Saturday 5 December at 6:00 p.m. Colombia time</b>. At 7:00 p.m. the final list of paid numbers is published. Unpaid numbers don't play.</p></div>
+
+  <div class="regla"><b class="t">The board decides</b><p>If the board says a number is paid, it's paid. Before buying a number from anyone, look it up on the board. Only the owner's shortened name is shown, never the phone number.</p></div>
+
+  <div class="regla"><b class="t">Delivery</b><p>The winner gets the prize within <b>24 hours</b>, on video, with a signed record.</p></div>
+
+  <p style="margin-top:20px;font-weight:700">These rules are frozen on 10 October 2026 and don't change. Only play with money you can spare.</p>
+</div>
+
+  <footer>
+    <p>Mega Rifa Fusa · Fusagasugá, 2026</p>
+    <p>The Ber Way (@theberway) by Santiago (@santiagobermudezai)</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var b = document.body, es = document.getElementById("bES"), en = document.getElementById("bEN");
+  function set(l) {
+    b.className = l; document.documentElement.lang = l;
+    es.setAttribute("aria-pressed", l === "es"); en.setAttribute("aria-pressed", l === "en");
+  }
+  es.onclick = function () { set("es"); };
+  en.onclick = function () { set("en"); };
+  if (/[?&]l=en/.test(location.search)) set("en");
+})();
+</script>
+</body>
+</html>
