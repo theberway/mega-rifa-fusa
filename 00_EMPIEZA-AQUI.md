@@ -5,6 +5,9 @@
 ## 11 oct — `SHEET_CSV` actualizado y web redesplegada
 `index.html` y `publicar/index.html` ahora apuntan al Sheet `2PACX-1vSDP5V6…` (gid 540644959). Desplegado en producción (proyecto `mega-rifa-fusa`, dpl_2fr3fdETS3b9sqxVjiJemECjjd71) y verificado en vivo: la web muestra 998 libres, igual que el CSV (998 libres, 1 apartado, 1 pagado de prueba), sin errores. **Ojo:** el Sheet trae datos de prueba (002 apartado, 006 pagado); limpiarlos antes de vender.
 
+## 11 oct (noche 5) — redes y contacto arriba en la web
+Franja de 3 botones justo bajo el encabezado de la web: **Instagram @megarifafusa**, **WhatsApp 333 401 8903** (`wa.me/573334018903`) y **Canal de WhatsApp** (`whatsapp.com/channel/0029VbEFFEuHbFV0qQVLE00y`). ES/EN. Desplegado.
+
 ## 11 oct (noche 4) — generador privado: copiar / compartir la boleta
 `06_Tablero-Web/generador-privado.html` ahora tiene tres botones bajo la boleta: **Copiar imagen** (portapapeles, para pegar en el chat), **Compartir** (menú del celular → WhatsApp; solo aparece donde el navegador lo permite) y **Guardar**. Además se arregló un fallo de fondo: Sutá se cargaba desde `suta-boleta.jpg` y el navegador marcaba el lienzo como «contaminado», así que no dejaba exportar la imagen; ahora Sutá va **incrustada** y el archivo funciona solo (se puede pasar al celular sin la imagen). Probado: copia un PNG de 880×520, comparte el archivo `boleta-NNN.png` y avisa si el navegador no soporta copiar.
 
