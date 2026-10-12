@@ -140,6 +140,25 @@ html{scroll-behavior:smooth}
 .red .rn{font-family:var(--titular);font-size:clamp(13px,3.6vw,16px);line-height:1.1}
 .red .rv{font-family:var(--mono);font-weight:700;font-size:clamp(10px,2.8vw,12.5px);line-height:1.2;overflow-wrap:anywhere}
 .red.ig svg{color:var(--rojo)}.red.wa svg{color:var(--verde)}.red.ch svg{color:var(--azul)}
+
+/* ───── Lupa: busca si tu número está libre ───── */
+.lupa{background:var(--amarillo);border:var(--borde) solid var(--negro);border-radius:var(--radio);box-shadow:6px 6px 0 var(--negro);margin-top:22px;padding:16px}
+.lupa .lt{display:flex;align-items:center;gap:12px}
+.lupa .lt svg{flex:0 0 auto;width:46px;height:46px;color:var(--negro)}
+.lupa h2{margin:0;font-size:clamp(20px,5.6vw,28px);line-height:1.1}
+.lupa .ls{margin:8px 0 0;font-weight:600;font-size:16px}
+.lupa form{display:flex;gap:10px;margin-top:12px}
+.lupa input{flex:1 1 auto;min-width:0;font-family:var(--mono);font-weight:700;font-size:30px;text-align:center;letter-spacing:6px;border:4px solid var(--negro);border-radius:10px;background:#fff;color:var(--negro);padding:6px 8px;width:100%}
+.lupa input::placeholder{color:rgba(26,26,26,.35);letter-spacing:6px}
+.lupa input:focus-visible{outline:4px solid var(--rojo);outline-offset:2px}
+.lupa button.ir{flex:0 0 auto;cursor:pointer;font-family:var(--titular);font-size:20px;background:var(--rojo);color:var(--crema);border:4px solid var(--negro);border-radius:10px;box-shadow:4px 4px 0 var(--negro);padding:6px 16px}
+.lupa button.ir:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--negro)}
+.res{margin-top:12px;border:4px solid var(--negro);border-radius:10px;background:var(--crema);padding:12px;font-weight:600;font-size:17px;line-height:1.3}
+.res .rg{font-family:var(--titular);font-size:24px;line-height:1.1;margin-bottom:4px}
+.res.libre .rg{color:var(--verde)}.res.ocupado .rg{color:var(--rojo)}.res.apart .rg{color:var(--azul)}
+.res .btn{margin-top:10px;font-size:16px;padding:10px}
+.res .sug{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.res .sug button{font-family:var(--mono);font-weight:700;font-size:18px;background:#fff;color:var(--negro);border:3px solid var(--negro);border-radius:8px;padding:4px 10px;cursor:pointer}
 footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
 .en .es-only{display:none}
 .es .en-only{display:none}
@@ -168,7 +187,7 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
   <!-- REDES Y CONTACTO -->
   <nav class="redes" aria-label="Redes y contacto">
     <a class="red ig" href="https://instagram.com/megarifafusa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span class="rn">Instagram</span><span class="rv">@megarifafusa</span></a>
-    <a class="red wa" href="https://wa.me/573334018903" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.6A8.5 8.5 0 1 1 8.2 19.3z"/><path d="M9 8.6c.3 2.9 3.2 5.6 6 6l1.2-1.3-2.3-1.2-1 .8c-.9-.4-1.8-1.3-2.2-2.200l.8-1-1.200-2.300z" fill="currentColor" stroke="none"/></svg><span class="rn">WhatsApp</span><span class="rv">333 401 8903</span></a>
+    <a class="red wa" id="waTop" href="https://wa.me/573334018903?text=%C2%A1Hola!%20Quiero%20m%C3%A1s%20informaci%C3%B3n%20de%20la%20Mega%20Rifa%20Fusa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.6A8.5 8.5 0 1 1 8.2 19.3z"/><path d="M9 8.6c.3 2.9 3.2 5.6 6 6l1.2-1.3-2.3-1.2-1 .8c-.9-.4-1.8-1.3-2.2-2.200l.8-1-1.200-2.300z" fill="currentColor" stroke="none"/></svg><span class="rn">WhatsApp</span><span class="rv">333 401 8903</span></a>
     <a class="red ch" href="https://whatsapp.com/channel/0029VbEFFEuHbFV0qQVLE00y" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l7 4.5V5.500L7 10z"/><path d="M17.500 9.500a4 4 0 0 1 0 5"/><path d="M20 7a7.500 7.500 0 0 1 0 10"/></svg><span class="rn es-only">Canal</span><span class="rn en-only">Channel</span><span class="rv es-only">de WhatsApp</span><span class="rv en-only">on WhatsApp</span></a>
   </nav>
 
@@ -184,18 +203,30 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
     <p class="nota en-only">NZD 1,000 if it was sold in New Zealand · Draw 10:30 p.m. Colombia time</p>
   </section>
 
+  <!-- LUPA: BUSCA TU NÚMERO -->
+  <section class="lupa" id="lupa" aria-label="Buscar un número">
+    <div class="lt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><h2><span class="es-only">¡Busca si tu número está libre!</span><span class="en-only">Check if your number is free!</span></h2></div>
+    <p class="ls es-only">Escribe tus 3 cifras (del 000 al 999) y te decimos al instante.</p>
+    <p class="ls en-only">Type your 3 digits (000 to 999) and we'll tell you right away.</p>
+    <form id="fBuscar" autocomplete="off">
+      <input id="inBuscar" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="000" aria-label="Número a buscar">
+      <button class="ir" type="submit"><span class="es-only">Buscar</span><span class="en-only">Search</span></button>
+    </form>
+    <div id="resBuscar" role="status" aria-live="polite" hidden></div>
+  </section>
+
   <!-- CÓMO PAGAR -->
   <section class="pagar" id="pagar" aria-label="Cómo pagar">
     <h2 class="es-only">Así de fácil se paga</h2><h2 class="en-only">Paying is easy</h2>
     <ol class="pasos es-only">
       <li><span>Toca tu número más abajo y pulsa <b>«Lo quiero»</b>: te lo apartamos <b>24 horas</b>.</span></li>
       <li><span>Paga <b>$6.000 por número</b> a la llave Bre-B de Nubank, o en efectivo al vendedor.</span></li>
-      <li><span>Cuando la plata aparece en la app, queda <b>PAGADO</b> y te mandamos tu tarjeta-boleta.</span></li>
+      <li><span>Cuando la plata aparece en la app, tu número queda <b>OCUPADO</b> a tu nombre y te mandamos tu tarjeta-boleta.</span></li>
     </ol>
     <ol class="pasos en-only">
       <li><span>Tap your number further down and press <b>“I want it”</b>: we hold it for <b>24 hours</b>.</span></li>
       <li><span>In Colombia, pay <b>COP 6,000 per number</b> to the Nubank Bre-B key below. In New Zealand it's <b>NZD 4</b> by bank transfer; we send the details in the chat.</span></li>
-      <li><span>Once the money shows up in the app, it's <b>PAID</b> and we send your ticket card.</span></li>
+      <li><span>Once the money shows up in the app, your number is <b>TAKEN</b> in your name and we send your ticket card.</span></li>
     </ol>
     <div class="llave-fila">
       <button type="button" class="btn-copiar" id="btnCopiar" aria-label="Copiar la llave Bre-B @sbg884">
@@ -206,8 +237,8 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
       </button>
       <div class="suta-señala"><img src="suta-senalando.webp" alt="" width="140" height="171" loading="lazy"></div>
     </div>
-    <p class="pie es-only">Pagado es cuando la plata se ve en la app: un pantallazo no cuenta. Pega la llave en tu app del banco y escribe tu número en el mensaje.</p>
-    <p class="pie en-only">Paid means the money shows up in the app: a screenshot doesn't count. Paste the key in your bank app and put your number in the message.</p>
+    <p class="pie es-only">Ocupado es cuando la plata se ve en la app: un pantallazo no cuenta. Pega la llave en tu app del banco y escribe tu número en el mensaje.</p>
+    <p class="pie en-only">Taken means the money shows up in the app: a screenshot doesn't count. Paste the key in your bank app and put your number in the message.</p>
   </section>
 
   <!-- IR A LOS NÚMEROS -->
@@ -234,7 +265,7 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
     <div class="legend">
       <span><i class="sw" style="background:var(--crema)"></i><b data-es="Libre" data-en="Free">Libre</b></span>
       <span><i class="sw" style="background:var(--amarillo)"></i><b data-es="Apartado" data-en="On hold">Apartado</b></span>
-      <span><i class="sw" style="background:var(--azul)"></i><b data-es="Pagado" data-en="Paid">Pagado</b></span>
+      <span><i class="sw" style="background:var(--azul)"></i><b data-es="Ocupado" data-en="Taken">Ocupado</b></span>
     </div>
     <div class="grid" id="grid" role="grid" aria-label="Los 1.000 números"></div>
   </section>
@@ -260,17 +291,17 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
     <ol class="es-only">
       <li><b>1.000 números</b>, del 000 al 999. Un número, un dueño.</li>
       <li>Apartar <b>no</b> es comprar. Un apartado se cae solo a las <b>24 horas</b> si no llega el pago, y el número vuelve a quedar libre para cualquiera.</li>
-      <li>Un número queda <b>PAGADO</b> cuando la plata se ve dentro de la app que recibe. Ahí se manda la tarjeta-boleta con su serial.</li>
+      <li>Un número queda <b>OCUPADO</b> (pagado) cuando la plata se ve dentro de la app que recibe. Ahí se manda la tarjeta-boleta con su serial.</li>
       <li>Pago: llave Bre-B de Nubank <b class="mono">@sbg884</b>, o efectivo en mano.</li>
-      <li>El tablero manda. Si el tablero dice pagado, está pagado, y el premio es de quien diga el tablero — no de quien tenga la tarjeta.</li>
+      <li>El tablero manda. Si el tablero dice ocupado, está pagado, y el premio es de quien diga el tablero — no de quien tenga la tarjeta.</li>
       <li><b>Antes de comprarle un número a alguien que no sea un vendedor</b>, busca ese número aquí: tiene que decir el nombre de esa persona. Si no coincide, no es de ella.</li>
-      <li>En el tablero, cada número pagado sale <b>a nombre de su dueño, acortado</b> (así: <b>Dav*** G.</b>). Nunca el nombre completo, nunca el teléfono. Quien no quiera salir, sale como <b>Reservado</b>.</li>
+      <li>En el tablero, cada número ocupado sale <b>a nombre de su dueño, acortado</b> (así: <b>Dav*** G.</b>). Nunca el nombre completo, nunca el teléfono. Quien no quiera salir, sale como <b>Reservado</b>.</li>
       <li>Las reglas se congelan el <b>10 de octubre de 2026</b> y después no se cambian.</li>
     </ol>
     <ol class="en-only">
       <li><b>1,000 numbers</b>, 000 to 999. One number, one owner.</li>
       <li>Holding is <b>not</b> buying. A hold drops by itself after <b>24 hours</b> if payment doesn't arrive, and the number is free again for anyone.</li>
-      <li>A number is <b>PAID</b> once the money shows up inside the receiving app. That's when the ticket card with its serial is sent.</li>
+      <li>A number is <b>TAKEN</b> (paid) once the money shows up inside the receiving app. That's when the ticket card with its serial is sent.</li>
       <li>In New Zealand it is NZD 4 per number, paid by bank transfer. The payment details are given in the chat.</li>
       <li>The board decides. If the board says paid, it's paid — and the prize goes to whoever the board names, not to whoever holds a card.</li>
       <li><b>Before buying a number from anyone who isn't a seller</b>, look that number up here: it has to show that person's name. If it doesn't match, it isn't theirs.</li>
@@ -359,6 +390,8 @@ function setIdioma(l) {
   $("#bEN").setAttribute("aria-pressed", l === "en");
   document.querySelectorAll("[data-es]").forEach(n => { n.textContent = n.dataset[l]; });
   if (vend) $("#seller").textContent = (l === "es" ? "te atiende " : "your seller: ") + vend;
+  const wt = l === "es" ? "¡Hola! Quiero más información de la Mega Rifa Fusa 🎟️" : "Hi! I'd like more information about the Mega Rifa Fusa 🎟️";
+  $("#waTop").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(wt);
   pintarContadores();
   if ($("#dlg").open) abrirModal($("#dNum").textContent);
 }
@@ -398,7 +431,7 @@ async function cargarAPI() {
       const n = String(f[0] || "").padStart(3, "0");
       if (!(n in m)) continue;
       m[n] = f[1] === "PAGADO" ? "PAGADO" : "APARTADO";
-      if (m[n] === "PAGADO") nm[n] = String(f[2] || "").trim();
+      if (m[n] === "PAGADO") nm[n] = acortar(f[2]);
     }
     estados = m; nombres = nm;
     $("#estadoDatos").hidden = true;
@@ -429,8 +462,8 @@ async function cargarCSV() {
       const e = (filas[i][iEst] || "").trim().toUpperCase();
       if (!/^\d{3}$/.test(n)) continue;
       m[n] = (e === "PAGADO" || e === "APARTADO") ? e : "LIBRE";
-      // Solo se muestra el nombre de un número PAGADO, y solo lo que el Sheet ya enmascaró.
-      if (m[n] === "PAGADO" && iNom >= 0) nm[n] = (filas[i][iNom] || "").trim();
+      // Solo se muestra el nombre de un número PAGADO, siempre acortado (aunque en el Sheet esté completo).
+      if (m[n] === "PAGADO" && iNom >= 0) nm[n] = acortar(filas[i][iNom]);
     }
     if (!Object.keys(m).length) throw new Error("el CSV llegó vacío");
     estados = m; nombres = nm;
@@ -456,6 +489,19 @@ function sinDatos(tipo, detalle) {
   pintarGrid(); pintarContadores();
 }
 
+/* ───── Nombre acortado: "Juan Perez" -> "Jua*** P." (misma regla que la fórmula del Sheet) ─────
+   Se aplica a todo nombre que llegue del Sheet. Si ya viene acortado (con *) o es "Reservado", se deja igual. */
+function acortar(txt) {
+  const t = String(txt || "").trim().replace(/\s+/g, " ");
+  if (/^reservad[oa]$/i.test(t)) return "Reservado";
+  if (!t || t.includes("*")) return t;
+  const cap = w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  const p = t.split(" ");
+  const a = cap(Array.from(p[0]).slice(0, 3).join(""));
+  const b = p[1] ? " " + Array.from(p[1])[0].toUpperCase() + "." : "";
+  return a + "***" + b;
+}
+
 /* ───── Pintar ───── */
 function pintarGrid() {
   const g = $("#grid");
@@ -478,6 +524,7 @@ function pintarGrid() {
 }
 
 function pintarContadores() {
+  if (typeof mostrarBusqueda === "function") mostrarBusqueda();
   if (!estados) { $("#cLibre").textContent = "—"; reloj(); pintarFrase(); return; }
   let p = 0, a = 0;
   for (const n in estados) { if (estados[n] === "PAGADO") p++; else if (estados[n] === "APARTADO") a++; }
@@ -579,6 +626,59 @@ function reloj() {
   $("#cReloj").textContent = d + "d " + h + "h " + mi + "m";
 }
 
+/* ───── Lupa: buscar un número ───── */
+let ultimaBusqueda = null;
+function mostrarBusqueda() {
+  const box = $("#resBuscar");
+  if (!ultimaBusqueda) { box.hidden = true; return; }
+  const n = ultimaBusqueda, es = idioma === "es";
+  box.hidden = false;
+  if (!estados) {
+    box.className = "res";
+    box.textContent = es ? "Ahora mismo no podemos leer el tablero. Escríbenos por WhatsApp y lo miramos a mano." : "We can't read the board right now. Message us on WhatsApp and we'll check by hand.";
+    return;
+  }
+  const e = estados[n] || "LIBRE";
+  const cercanos = () => Object.keys(estados).filter(k => estados[k] === "LIBRE")
+    .sort((a, b) => Math.abs(a - n) - Math.abs(b - n)).slice(0, 4);
+  box.innerHTML = "";
+  const t = document.createElement("div"); t.className = "rg";
+  const p = document.createElement("div");
+  if (e === "LIBRE") {
+    box.className = "res libre";
+    t.textContent = es ? "¡El " + n + " está LIBRE!" : "Number " + n + " is FREE!";
+    p.textContent = es ? "Nadie lo tiene. Si lo quieres, lo apartamos 24 horas por WhatsApp." : "Nobody has it. If you want it, we hold it for 24 hours on WhatsApp.";
+    box.append(t, p);
+    const b = document.createElement("button"); b.type = "button"; b.className = "btn";
+    b.textContent = es ? "¡Lo quiero!" : "I want it!"; b.onclick = () => abrirModal(n); box.append(b);
+  } else {
+    box.className = "res " + (e === "APARTADO" ? "apart" : "ocupado");
+    if (e === "APARTADO") {
+      t.textContent = es ? "El " + n + " está apartado" : "Number " + n + " is on hold";
+      p.textContent = es ? "Alguien lo apartó. Si no paga en 24 horas, se suelta solo." : "Someone is holding it. If they don't pay within 24 hours it drops by itself.";
+    } else {
+      t.textContent = es ? "El " + n + " ya está OCUPADO" : "Number " + n + " is TAKEN";
+      p.textContent = es ? "Ya tiene dueño. Mira cuáles te quedan cerca:" : "It already has an owner. Here are some free ones close to it:";
+    }
+    box.append(t, p);
+    const c = cercanos();
+    if (c.length) {
+      const s = document.createElement("div"); s.className = "sug";
+      c.forEach(k => { const b = document.createElement("button"); b.type = "button"; b.textContent = k; b.onclick = () => abrirModal(k); s.append(b); });
+      if (e === "APARTADO") { const q = document.createElement("div"); q.style.marginTop = "6px"; q.textContent = es ? "O escoge uno libre cerca:" : "Or pick a free one nearby:"; box.append(q); }
+      box.append(s);
+    }
+  }
+}
+$("#fBuscar").onsubmit = ev => {
+  ev.preventDefault();
+  const raw = ($("#inBuscar").value || "").replace(/\D/g, "");
+  if (!raw) { $("#inBuscar").focus(); return; }
+  ultimaBusqueda = raw.padStart(3, "0");
+  mostrarBusqueda();
+};
+$("#inBuscar").addEventListener("input", e => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3); });
+
 /* ───── Copiar la llave ───── */
 const LLAVE = "@sbg884";
 $("#btnCopiar").onclick = async () => {
@@ -601,13 +701,13 @@ function abrirModal(n) {
   const e = estados ? estados[n] || "LIBRE" : null;
   $("#dNum").textContent = n;
   const T = {
-    es: { LIBRE: "LIBRE", APARTADO: "APARTADO", PAGADO: "PAGADO", NA: "SIN CONFIRMAR",
+    es: { LIBRE: "LIBRE", APARTADO: "APARTADO", PAGADO: "OCUPADO", NA: "SIN CONFIRMAR",
       tLIBRE: "Nadie lo tiene. Si lo apartas hoy, tienes 24 horas para pagarlo; después vuelve a quedar libre.",
       tAPARTADO: "Alguien lo apartó. Si no paga dentro de las 24 horas se suelta solo y te lo puedes quedar. Escríbenos y te avisamos.",
       tPAGADO: "Este ya tiene dueño y no se mueve. Escoge otro. Si alguien te está ofreciendo este número, mira el nombre de arriba: tiene que ser esa persona.",
       tNA: "Ahora mismo no podemos confirmar cómo está este número. Escríbenos y lo miramos a mano.",
       qLIBRE: "Lo quiero", qOTRO: "Preguntar por este", cerrar: "Cerrar" },
-    en: { LIBRE: "FREE", APARTADO: "ON HOLD", PAGADO: "PAID", NA: "UNCONFIRMED",
+    en: { LIBRE: "FREE", APARTADO: "ON HOLD", PAGADO: "TAKEN", NA: "UNCONFIRMED",
       tLIBRE: "Nobody has it. If you hold it today you get 24 hours to pay; after that it's free again.",
       tAPARTADO: "Someone is holding it. If they don't pay within 24 hours it drops by itself and you can take it. Message us and we'll let you know.",
       tPAGADO: "This one is taken and won't move. Pick another. If someone is offering you this number, check the name above — it has to be that person.",

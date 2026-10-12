@@ -5,6 +5,12 @@
 ## 11 oct — `SHEET_CSV` actualizado y web redesplegada
 `index.html` y `publicar/index.html` ahora apuntan al Sheet `2PACX-1vSDP5V6…` (gid 540644959). Desplegado en producción (proyecto `mega-rifa-fusa`, dpl_2fr3fdETS3b9sqxVjiJemECjjd71) y verificado en vivo: la web muestra 998 libres, igual que el CSV (998 libres, 1 apartado, 1 pagado de prueba), sin errores. **Ojo:** el Sheet trae datos de prueba (002 apartado, 006 pagado); limpiarlos antes de vender.
 
+## 12 oct — nombres automáticos, «Ocupado», lupa y WhatsApp con mensaje
+- **Nombres**: en `NUMEROS!E` se puede escribir el nombre completo; la web lo acorta sola (`Juan Perez` → `Jua*** P.`, `Reservado` se respeta). Mismo criterio en `doGet` del script. **Ojo:** el CSV publicado sigue mostrando lo que se escriba en E a quien abra ese link; la web ya no, pero para que el CSV tampoco, hay que activar el servicio en vivo (`API_URL`).
+- La web dice **«Ocupado»** (antes «Pagado») en leyenda, ventana del número y textos; en el Sheet el estado interno sigue siendo PAGADO.
+- **Lupa «¡Busca si tu número está libre!»** entre el premio y «Así de fácil se paga»: libre → botón «¡Lo quiero!»; apartado u ocupado → 4 libres cercanos.
+- **WhatsApp de la franja** abre con el mensaje «¡Hola! Quiero más información de la Mega Rifa Fusa 🎟️» (ES/EN).
+
 ## 11 oct (noche 5) — redes y contacto arriba en la web
 Franja de 3 botones justo bajo el encabezado de la web: **Instagram @megarifafusa**, **WhatsApp 333 401 8903** (`wa.me/573334018903`) y **Canal de WhatsApp** (`whatsapp.com/channel/0029VbEFFEuHbFV0qQVLE00y`). ES/EN. Desplegado.
 

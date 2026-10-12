@@ -223,7 +223,7 @@ function doGet() {
         n = ('000' + n).slice(-3);
         var est = String(vals[i][iE]).trim().toUpperCase();
         if (est !== 'PAGADO' && est !== 'APARTADO') continue;
-        filas.push([n, est, (est === 'PAGADO' && iM >= 0) ? String(vals[i][iM] || '').trim() : '']);
+        filas.push([n, est, (est === 'PAGADO' && iM >= 0) ? acortarNombre_(vals[i][iM]) : '']);
       }
       out = JSON.stringify({ ok: true, t: Date.now(), v: filas });
       cache.put('tablero_v1', out, 5);
@@ -232,4 +232,15 @@ function doGet() {
     }
   }
   return ContentService.createTextOutput(out).setMimeType(ContentService.MimeType.JSON);
+}
+
+
+/** "Juan Perez" -> "Jua*** P." (igual que la web). Si ya viene acortado o es "Reservado", lo deja igual. */
+function acortarNombre_(txt) {
+  var t = String(txt || '').replace(/\s+/g, ' ').trim();
+  if (/^reservad[oa]$/i.test(t)) return 'Reservado';
+  if (!t || t.indexOf('*') >= 0) return t;
+  var p = t.split(' ');
+  var cap = function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); };
+  return cap(p[0].slice(0, 3)) + '***' + (p[1] ? ' ' + p[1].charAt(0).toUpperCase() + '.' : '');
 }
