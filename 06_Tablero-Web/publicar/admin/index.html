@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://oyvrdwkoorkidoadnzmc.supabase.co https://cdn.jsdelivr.net; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://cdn.jsdelivr.net; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<title>Panel · Mega Rifa Fusa</title>
+<meta name="color-scheme" content="light">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo+Narrow:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/estilo.css">
+</head>
+<body>
+<header>
+  <strong>MEGA RIFA FUSA</strong>
+  <span id="modo-sel" class="chip-modo">modo ensayo</span>
+  <span id="yo" class="yo"></span>
+</header>
+
+<main class="w" id="app" hidden></main>
+
+<!-- login -->
+<section id="login" class="w">
+  <div class="card">
+    <h1>Entrar al panel</h1>
+    <p>Solo Santiago y Sofía. Si llegaste acá por error, no vas a poder entrar.</p>
+    <form id="fLogin" autocomplete="on">
+      <label>Correo</label>
+      <input id="iCorreo" type="email" required inputmode="email" autocomplete="username">
+      <label>Contraseña</label>
+      <input id="iPass" type="password" required autocomplete="current-password">
+      <button type="submit">Entrar</button>
+      <p class="err" id="errLogin" hidden></p>
+    </form>
+  </div>
+</section>
+
+<!-- 2FA -->
+<section id="mfa" class="w" hidden>
+  <div class="card">
+    <h1>Código de 2FA</h1>
+    <p>Abre Google Authenticator (o la app que usas), busca «Mega Rifa Fusa» y escribe el código de 6 dígitos.</p>
+    <form id="fMfa">
+      <input id="iMfa" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000" autofocus>
+      <button type="submit">Verificar</button>
+      <p class="err" id="errMfa" hidden></p>
+    </form>
+    <details><summary>¿Primera vez? Activar 2FA</summary>
+      <p>Supabase lo activa desde Perfil → Multi-Factor. Si no lo tienes aún, inicia sesión aquí, abre el panel, y aparece la opción. También lo puedes activar <a href="https://supabase.com/dashboard/account/me" target="_blank" rel="noopener">en tu perfil de Supabase</a>.</p>
+    </details>
+  </div>
+</section>
+
+<nav id="tabs" class="tabs" hidden>
+  <button data-tab="vendedores" class="tab activo">Vendedores</button>
+  <button data-tab="pendientes" class="tab">Pendientes</button>
+  <button data-tab="salir" class="tab salir">Salir</button>
+</nav>
+
+<script type="module" src="/admin/app.js"></script>
+</body>
+</html>

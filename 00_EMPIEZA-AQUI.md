@@ -2,6 +2,22 @@
 
 > Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-09: todo construido; falta que Santiago ejecute lo de "Siguiente paso" antes del sáb 10 oct.**
 
+## 13 oct — Fase 2: panel admin con login + 2FA y gestión de vendedores
+- **`/admin` en vivo**: https://mega-rifa-fusa.vercel.app/admin (`noindex`, `X-Frame-Options: DENY`, `no-store`, CSP estricta). Login con Supabase Auth + 2FA TOTP obligatorio para `admin`. Usuarios en la lista blanca: Santiago (`admin`, `f987cff5-…`) y Sofía (`turno`, `62b89bb4-…`).
+- **Sección Vendedores**: lista con filtro (todos / activos / inactivos, por tipo), tarjetas con conteos (pagados, compradores distintos, apartados, cuánto le falta para el premio), botones «Copiar link» y «Compartir por WhatsApp», y para admin: Editar, Activar/Desactivar, + Alias y Detalle. Botón **«+ Agregar vendedor»** sugiere el código al escribir el nombre (mismas reglas del 10 oct) y da el link listo. **Descargar links (CSV)** en un botón.
+- **Sección Pendientes**: cola «Otra persona…» para asignar un texto suelto a un vendedor (con un toque, con o sin crear alias). Si el panel aún no tiene pendientes, dice «Nada pendiente».
+- **Mini-tarjeta `/v/CODIGO`** en vivo. Probado: `/v/JUANCARLOS` carga; códigos que no existen muestran el aviso dentro.
+- **RPCs del panel**: `mi_perfil`, `listar_vendedores`, `crear_vendedor`, `editar_vendedor`, `cambiar_estado_vendedor`, `fusionar_alias`, `referidos_pendientes`, `resolver_referido`, `detalle_vendedor`, `sugerir_codigo` (puente). Todas revisan rol y 2FA en el servidor (`rifa.rol_actor()`). `turno` solo puede listar y pedir detalle; `admin` hace todo.
+- **La web pública NO cambió**: sigue leyendo el Google Sheet. Fase 4 (cutover) la aprueba Santiago.
+
+**Siguiente paso para ti:**
+1. Entra a https://mega-rifa-fusa.vercel.app/admin con el correo y contraseña que creaste en Supabase.
+2. La primera vez que entres el panel te muestra un QR para activar 2FA — escanéalo con Google Authenticator (o la app que uses), escribe los 6 dígitos y listo.
+3. Ya adentro, verifica que la lista de vendedores sale completa (14 personas + 16 inactivos entre V01–T03/N02). Si quieres, agrega uno nuevo y mándale el link por WhatsApp desde el mismo panel.
+4. Dile a Sofía su correo y contraseña (ella no necesita 2FA; entra directo).
+
+**Lo que queda (Fase 3 en adelante):** panel de ventas (registrar venta en 4 toques + boleta), plata/consignación, estadísticas, auditoría con deshacer, respaldo diario, Edge Function de push + VAPID, y el cutover del tablero público (Fase 4). Detalle en `02_Decisiones/plan-panel-y-vendedores.md`.
+
 ## 12–13 oct — Fase 1 de la base de datos y vendedores lista
 Santiago aprobó el plan `02_Decisiones/plan-panel-y-vendedores.md` (decisiones 45–55). Lo que quedó en pie:
 - **Supabase conectado y poblado** (proyecto `oyvrdwkoorkidoadnzmc`): 1.000 números, 32 vendedores (14 cargados + SBG/DIR + los V01–T03 inactivos), 3 alias (N01→SOFIA, MARIAJO→MARIAJOSE, TIAJULY→JULIANA), cron de vencimientos cada 5 min.
