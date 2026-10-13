@@ -1,6 +1,6 @@
 # Handoff para la próxima sesión local — Mega Rifa Fusa
 
-*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. Fases 3A y 3B desplegadas; siguiente sesión arranca en Fase 3C.*
+*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. Fases 3A, 3B y 3C desplegadas; siguiente sesión arranca en Fase 4 (cutover del tablero).*
 
 ## Qué está hecho
 
@@ -8,6 +8,7 @@
 - **Fase 2** · Panel `/admin` en vivo con login + 2FA (TOTP) y pestañas **Vendedores** y **Pendientes**. Mini-tarjeta pública en `/v/CODIGO`.
 - **Fase 3A** (13 oct) · **Ventas en 4 toques + boleta**, en vivo. Migraciones **006 / 006b / 006c** (`06_Tablero-Web/supabase/migraciones/006_rpcs_ventas.sql`). Panel con pestañas nuevas **Inicio · Vender · Números** y boleta reutilizando el generador privado (`publicar/admin/boleta.js`, oculta `SBG`/`DIR` y achica la letra si el código es largo). Decisiones 56–58.
 - **Fase 3B** (13 oct) · **Plata y estadísticas**, en vivo. Migración **007** (`007_plata_estadisticas.sql`). Pestañas nuevas solo-admin: **Plata** (consignación en lote) y **Más** (REAL vs PROYECCIÓN separadas + ranking de vendedores con aviso 35/43 sin vendedor). Fórmulas EMPIEZA C8/C10/C12 y REGLA-PREMIO en SQL leyendo `rifa.config`; paridad al peso con el xlsx recalculado. Decisiones 59–60.
+- **Fase 3C** (13 oct) · **Auditoría + exportar + respaldo diario**, en vivo. Migración **008** (`008_auditoria_respaldo.sql`). RPC: `auditoria`, `deshacer_lote` (números y pagos), `exportar` (4 tablas, CSV con BOM), `respaldos_lista`. Cron `respaldo_diario` en pg_cron a las `0 8 * * *` UTC (03:00 Bogotá), retención 30 días. Panel con 3 secciones nuevas dentro de Más (solo admin). Decisiones 61–62.
 - Lista blanca: Santiago (`admin`, `f987cff5-3429-4f01-a5f3-4d5adb1046dc`) y Sofía (`turno`, `62b89bb4-0fe3-4365-b675-24fabec11bd3`).
 - La web pública **sigue leyendo el Google Sheet**. Nada le cambió a nadie que ya compró. `SHEET_CSV` sigue presente y no hay rastro de `supabase` en `publicar/index.html` (comprobado byte a byte).
 

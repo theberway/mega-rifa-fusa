@@ -2,6 +2,22 @@
 
 > Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-09: todo construido; falta que Santiago ejecute lo de "Siguiente paso" antes del sáb 10 oct.**
 
+## 13 oct — Fase 3C: auditoría + exportar + respaldo diario
+
+Rama `claude/sweet-maxwell-bvoqti`. Dentro de la pestaña **Más** del panel `/admin` (solo admin), tres secciones nuevas al final:
+
+- **Auditoría**: filtros por acción y clave (número o id de pago), lista los últimos 50 lotes con fecha, acción, clave y botón **↩ Deshacer** salvo cuando el lote ya fue revertido o la acción es `DESHACER`. `deshacer_lote` revierte **cualquier** lote: para números restaura `rifa.numeros` desde `antes` (igual que `deshacer_ultima`); para pagos (`ENTREGAR_EFECTIVO`, `CONSIGNAR`) restaura `tiene`, `entregado_en` y `consignado_en`. Doble reversión bloqueada en SQL.
+- **Exportar CSV**: dropdown con 4 tablas (`numeros`, `pagos`, `compradores`, `vendedores`) y botón **Descargar**. CSV con BOM UTF-8 (Excel lo abre con tildes bien), nombre con fecha ISO.
+- **Respaldos diarios**: lista de respaldos con fecha, pagados, pagos y tamaño en KB. **Cron**: `rifa.respaldo_diario()` corre todos los días a las **03:00 Bogotá** (`0 8 * * *` UTC), guarda un snapshot JSON en `rifa.respaldos` (PK por fecha, pisa el mismo día) y borra lo que tenga más de 30 días. Al aplicar la migración se guardó el primer respaldo del 2026-10-13 (23.9 KB, 37 pagados, 4 pagos, 19 compradores).
+
+**Migración 008** aplicada: `auditoria`, `deshacer_lote`, `exportar`, `respaldos_lista`, `rifa.respaldo_diario`. Cron `respaldo_diario` registrado y activo.
+
+**Decisiones 61 y 62** anotadas.
+
+La web pública **sigue intacta**: md5 `f41b42dc7becddbff1d2d7a06bc3431e` (local = vivo), `SHEET_CSV` presente, cero menciones de `supabase` o `FUENTE`.
+
+**Lo que queda (Fase 4 → 5):** cutover del tablero (encender `FUENTE="supabase"` en la web, poner `rifa.config.modo='real'`, proteger el Sheet y dejar de publicar su CSV) + push de la PWA cuando Santiago genere la VAPID + actualizar guías de vendedores y rutina diaria.
+
 ## 13 oct — Fase 3B: plata y estadísticas en vivo
 
 Rama `claude/sweet-maxwell-bvoqti`. El panel `/admin` ahora tiene dos pestañas más (solo admin): **Plata** y **Más**.

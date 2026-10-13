@@ -370,6 +370,115 @@ async function pantallaMas(cont) {
   }
   cont.appendChild(bP);
 
+  // AUDITORÍA (dentro de Más)
+  const bAud = el("div", { className: "bloque-stats" });
+  bAud.appendChild(el("h2", { textContent: "Auditoría" }));
+  const audFiltro = el("div", { className: "filtro" });
+  audFiltro.innerHTML =
+    `<select id="audAcc"><option value="">Toda acción</option>` +
+    `<option>REGISTRAR_VENTA</option><option>MARCAR_PAGADO</option><option>MARCAR_POR_VERIFICAR</option>` +
+    `<option>LIBERAR</option><option>DAR_24H</option><option>DESHACER</option>` +
+    `<option>ENTREGAR_EFECTIVO</option><option>CONSIGNAR</option></select>` +
+    `<input id="audClave" placeholder="Clave (número o id de pago)" style="max-width:200px">` +
+    `<button class="chico" id="bAud">Buscar</button>`;
+  bAud.appendChild(audFiltro);
+  const audOut = el("div"); bAud.appendChild(audOut);
+  const buscarAud = async () => {
+    audOut.innerHTML = "Cargando…";
+    try {
+      const a = await rpc("auditoria", {
+        p_accion: audFiltro.querySelector("#audAcc").value || null,
+        p_clave: audFiltro.querySelector("#audClave").value.trim() || null,
+        p_limit: 50
+      });
+      audOut.innerHTML = "";
+      const info = el("p", { textContent: `${a.total} fila(s) totales · muestra: ${(a.filas || []).length}` });
+      audOut.appendChild(info);
+      const tbl = el("table");
+      tbl.innerHTML = "<thead><tr><th align='left'>Cuándo</th><th>Acción</th><th>Clave</th><th>Lote</th><th></th></tr></thead>";
+      const tb = el("tbody");
+      const lotesVistos = new Set();
+      for (const f of (a.filas || [])) {
+        if (lotesVistos.has(f.lote)) continue;
+        lotesVistos.add(f.lote);
+        const tr = el("tr");
+        const td1 = el("td", { textContent: new Date(f.en).toLocaleString("es-CO") });
+        const td2 = el("td", { textContent: f.accion });
+        const td3 = el("td", { className: "mono", textContent: f.clave });
+        const td4 = el("td", { className: "mono", textContent: (f.lote || "").slice(0, 8) });
+        const td5 = el("td");
+        if (f.revertido || f.accion === "DESHACER") {
+          td5.textContent = "revertido";
+          td5.style.color = "var(--rojo)";
+        } else {
+          const b = el("button", { className: "chico rojo", textContent: "↩ Deshacer" });
+          b.onclick = async () => {
+            if (!confirm(`Deshacer el lote ${f.lote.slice(0,8)}… (${f.accion})?`)) return;
+            try {
+              const r = await rpc("deshacer_lote", { p_lote: f.lote });
+              toast(`Deshecho · ${r.cambios} cambio(s)`, "verde");
+              buscarAud();
+            } catch (e) { err(e); }
+          };
+          td5.appendChild(b);
+        }
+        tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4); tr.appendChild(td5);
+        tb.appendChild(tr);
+      }
+      tbl.appendChild(tb); audOut.appendChild(tbl);
+    } catch (e) { audOut.innerHTML = ""; audOut.appendChild(el("p", { className: "err", textContent: e.message })); }
+  };
+  audFiltro.querySelector("#bAud").onclick = buscarAud;
+  cont.appendChild(bAud);
+  buscarAud();
+
+  // EXPORTAR
+  const bEx = el("div", { className: "bloque-stats" });
+  bEx.appendChild(el("h2", { textContent: "Exportar CSV" }));
+  bEx.appendChild(el("p", { textContent: "Para auditar en el PC, pegar en Excel o guardar un respaldo externo." }));
+  const exBox = el("div", { className: "filtro" });
+  exBox.innerHTML = `<select id="exT"><option value="numeros">Números</option><option value="pagos">Pagos</option><option value="compradores">Compradores</option><option value="vendedores">Vendedores</option></select>`;
+  const bDesc = el("button", { className: "chico verde", textContent: "Descargar" });
+  bDesc.onclick = async () => {
+    const t = exBox.querySelector("#exT").value;
+    try {
+      const csv = await rpc("exportar", { p_tabla: t });
+      const u = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      const a = el("a", { href: u, download: `mrf-${t}-${new Date().toISOString().slice(0,10)}.csv` });
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(u), 1000);
+      toast("Descargado", "verde");
+    } catch (e) { err(e); }
+  };
+  exBox.appendChild(bDesc);
+  bEx.appendChild(exBox);
+  cont.appendChild(bEx);
+
+  // RESPALDOS
+  const bResp = el("div", { className: "bloque-stats" });
+  bResp.appendChild(el("h2", { textContent: "Respaldos diarios" }));
+  bResp.appendChild(el("p", { textContent: "Snapshot JSON automático a las 3 a.m. (hora Bogotá). Se guardan los últimos 30 días." }));
+  try {
+    const resp = await rpc("respaldos_lista");
+    if (!resp.length) bResp.appendChild(el("p", { className: "err", textContent: "Sin respaldos aún." }));
+    else {
+      const tbl = el("table");
+      tbl.innerHTML = "<thead><tr><th align='left'>Fecha</th><th>Pagados</th><th>Pagos</th><th align='right'>Tamaño</th></tr></thead>";
+      const tb = el("tbody");
+      for (const r of resp) {
+        const tr = el("tr");
+        tr.innerHTML =
+          `<td>${r.fecha}</td>` +
+          `<td align="center">${r.pagados}</td>` +
+          `<td align="center">${r.pagos}</td>` +
+          `<td align="right">${r.tamano_kb} KB</td>`;
+        tb.appendChild(tr);
+      }
+      tbl.appendChild(tb); bResp.appendChild(tbl);
+    }
+  } catch (e) { bResp.appendChild(el("p", { className: "err", textContent: e.message })); }
+  cont.appendChild(bResp);
+
   // RANKING
   const bRk = el("div", { className: "bloque-stats" });
   bRk.appendChild(el("h2", { textContent: `Ranking de vendedores` }));

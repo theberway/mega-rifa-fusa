@@ -83,13 +83,14 @@ Debe decir «Diferencias: 0». Si no, no se hace el cambio.
 - **Fase 3B (plata y estadísticas)** — ✅ en vivo. Migración **007** (`007_plata_estadisticas.sql`). RPC nuevas: `entregar_efectivo`, `consignar`, `pagos_efectivo_pendientes`, `estadisticas`, `stats_vendedores`, más el helper `rifa.proyeccion_regla_premio`. Pestañas nuevas (solo admin): **Plata** (lotes de consignación con selección) y **Más** (REAL vs PROYECCIÓN separadas, ranking con aviso `35/43 sin vendedor`). Las fórmulas leen `rifa.config`: EMPIEZA!C8 (`caso_malo = pagados·precio − premio − premio_vend − varios`), C10 (`faltan = max(0, ceil((piso+premio+premio_vend+varios)/precio) − pagados)`), C12 (`caso_malo ≥ piso`) y REGLA-PREMIO G al nivel N (`prob·neto_vendido + (1−prob)·neto_consolacion`). **Paridad al peso contra el xlsx recalculado 2026-10-13**: G(0)=−360.000, G(300)=917.928, G(750)=2.834.820, G(860)=3.303.668, G(900)=3.473.784. Decisiones 59 y 60.
 - **Decisiones nuevas de 3A**: 56 (plata arranca en cero), 57 (push se difiere a 3C+), 58 (Fase 3 por bloques).
 - **Decisiones nuevas de 3B**: 59 (fuente única de las fórmulas en SQL), 60 (REAL vs PROYECCIÓN separadas, aviso de ventas sin vendedor).
+- **Fase 3C (auditoría + exportar + respaldo diario)** — ✅ en vivo. Migración **008** (`008_auditoria_respaldo.sql`). RPC nuevas: `auditoria`, `deshacer_lote`, `exportar`, `respaldos_lista`, más la función privada `rifa.respaldo_diario`. Cron `respaldo_diario` registrado en pg_cron a las `0 8 * * *` UTC (03:00 Bogotá), con retención de 30 días. Primer respaldo del 2026-10-13 ya guardado (23.9 KB). Panel con secciones nuevas dentro de Más (solo admin): Auditoría con botón Deshacer, Exportar CSV y Respaldos diarios. Decisiones 61 y 62.
 
 ## Lo que falta
 
 | Fase | Qué queda | Dónde |
 |---|---|---|
 | **3B · Plata y estadísticas** | ✅ hecho (ver estado arriba) | `publicar/admin/`, `supabase/migraciones/007_plata_estadisticas.sql` |
-| **3C · Auditoría, exportar y respaldo** | `auditoria`, `deshacer_lote` por lote arbitrario, `exportar()` → CSV, cron de respaldo diario a `rifa.respaldos`. Pestaña **Más** | `publicar/admin/`, `supabase/migraciones/008_auditoria_respaldo.sql` |
+| **3C · Auditoría, exportar y respaldo** | ✅ hecho (ver estado arriba) | `publicar/admin/`, `supabase/migraciones/008_auditoria_respaldo.sql` |
 | **4 · Cambio del tablero** | Encender `FUENTE="supabase"` en la web, poner `rifa.config.modo='real'`, dejar el Sheet protegido y dejar de publicar su CSV | `publicar/index.html` |
 | **5 · Mini-tarjetas y retiro del Excel** | `/v/CODIGO` ya construida en Fase 1; falta actualizar las guías de vendedores y la rutina diaria | `codigos-de-vendedores.md` ya actualizado; falta `07_Kit-de-Ventas/05_...md` y `03_Hoja-de-ruta/rutina-diaria.md` |
 
