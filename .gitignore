@@ -1,0 +1,5 @@
+# Datos privados de compradores, telefonos, llaves y tokens: nunca al repositorio
+06_Tablero-Web/_privado/
+.env
+.env.*
+*.pem

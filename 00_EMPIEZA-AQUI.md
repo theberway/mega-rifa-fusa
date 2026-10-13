@@ -2,6 +2,20 @@
 
 > Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-09: todo construido; falta que Santiago ejecute lo de "Siguiente paso" antes del sáb 10 oct.**
 
+## 12–13 oct — Fase 1 de la base de datos y vendedores lista
+Santiago aprobó el plan `02_Decisiones/plan-panel-y-vendedores.md` (decisiones 45–55). Lo que quedó en pie:
+- **Supabase conectado y poblado** (proyecto `oyvrdwkoorkidoadnzmc`): 1.000 números, 32 vendedores (14 cargados + SBG/DIR + los V01–T03 inactivos), 3 alias (N01→SOFIA, MARIAJO→MARIAJOSE, TIAJULY→JULIANA), cron de vencimientos cada 5 min.
+- **Copia del tablero cargada** (31 pagados, 6 apartados, 963 libres, 15 compradores): la verificación 1:1 contra el CSV del Sheet pasa con cero diferencias. `cargar_copia` solo funciona en `modo='ensayo'`.
+- **4 RPC públicas** (`tablero_publico`, `vendedores_selector`, `resolver_codigo`, `mini_tarjeta`) probadas con la llave publicable. Las tablas privadas (`rifa.*`) no se ven desde la API: 404.
+- **Links listos** en `06_Tablero-Web/codigos-de-vendedores.md`. Los links viejos con `?v=N01` siguen contando (alias). Detalle completo en `06_Tablero-Web/base-de-datos.md`.
+- **Mini-tarjeta `/v/CODIGO`** construida (`publicar/v.html` + rewrite en `vercel.json`). Pendiente de desplegar junto con el resto del cambio.
+- **La web pública NO se tocó todavía**: sigue leyendo el Google Sheet. La Fase 4 (cambio) la aprueba Santiago.
+
+**Siguiente paso (Fase 2 — panel admin con login y 2FA):**
+1. En Supabase (Authentication → Users), crear tu usuario y el de Sofía con 2FA. Apagar «Allow new users to sign up».
+2. Pasarme sus `user_id` (los copias del listado) para agregarlos a `rifa.usuarios_panel` (admin + turno).
+3. En la próxima sesión se construyen las RPC del panel (`registrar_venta`, `marcar_pagado`, `liberar`, `dar_24h`, `crear_vendedor`, etc.), el panel `/admin` y la boleta.
+
 ## 11 oct — `SHEET_CSV` actualizado y web redesplegada
 `index.html` y `publicar/index.html` ahora apuntan al Sheet `2PACX-1vSDP5V6…` (gid 540644959). Desplegado en producción (proyecto `mega-rifa-fusa`, dpl_2fr3fdETS3b9sqxVjiJemECjjd71) y verificado en vivo: la web muestra 998 libres, igual que el CSV (998 libres, 1 apartado, 1 pagado de prueba), sin errores. **Ojo:** el Sheet trae datos de prueba (002 apartado, 006 pagado); limpiarlos antes de vender.
 
