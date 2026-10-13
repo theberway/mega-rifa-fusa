@@ -48,6 +48,21 @@ button.chico{padding:4px 10px;font-size:13px;margin:0}
 .pendiente select{max-width:220px}
 footer{text-align:center;font-size:12px;opacity:.8;margin-top:20px;padding-bottom:14px}
 .toast{position:fixed;left:50%;top:12px;transform:translateX(-50%);background:var(--negro);color:var(--crema);padding:10px 16px;border-radius:999px;z-index:10;font-weight:700;font-size:14px;box-shadow:4px 4px 0 rgba(0,0,0,.3)}
+.aviso-amarillo{background:#fff6c7;border:3px dashed var(--amarillo);border-radius:10px;padding:10px 12px;margin:12px 0;font-weight:700}
+.aviso-amarillo b{color:var(--rojo)}
+.bloque-stats{background:#fff;border:4px solid var(--negro);border-radius:12px;padding:14px;margin-top:16px;box-shadow:5px 5px 0 var(--negro)}
+.bloque-stats h2{margin-top:0;color:var(--azul)}
+.bloque-stats.proy h2{color:var(--verde)}
+.bloque-stats .label{font-size:11px;text-transform:uppercase;font-weight:700;opacity:.7}
+.bloque-stats .cifra{font-family:"Alfa Slab One",serif;font-size:22px;line-height:1;color:var(--negro)}
+.bloque-stats table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.bloque-stats td{padding:4px 0;border-bottom:1px solid #eee}
+.bloque-stats td b{font-family:"Space Mono",monospace}
+.franja-rojo{background:var(--rojo);color:var(--crema);padding:8px 12px;border-radius:8px;font-weight:700;margin-top:8px}
+.pago-fila{display:flex;gap:8px;justify-content:space-between;align-items:center;padding:8px 10px;border:2px solid var(--negro);border-radius:8px;background:#fff;margin-top:6px;flex-wrap:wrap}
+.pago-fila.urgente{background:#ffe0e0;border-color:var(--rojo)}
+.pago-fila .mono{font-family:"Space Mono",monospace;font-size:12px}
+.pago-fila .monto{font-weight:700;font-size:16px}
 .toast.verde{background:var(--verde)}
 .toast.rojo{background:var(--rojo)}
 details{margin-top:10px;font-size:14px}

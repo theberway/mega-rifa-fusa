@@ -1,12 +1,13 @@
 # Handoff para la próxima sesión local — Mega Rifa Fusa
 
-*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. Fase 3A desplegada; siguiente sesión arranca en Fase 3B.*
+*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. Fases 3A y 3B desplegadas; siguiente sesión arranca en Fase 3C.*
 
 ## Qué está hecho
 
 - **Fase 1** · Base de datos Supabase (proyecto `oyvrdwkoorkidoadnzmc`): esquema `rifa`, 1.000 números, 32 vendedores + alias, 4 RPC públicas, cron de vencimientos cada 5 min. Carga 1:1 del Sheet verificada con cero diferencias (31 pagados · 6 apartados · 963 libres · 15 compradores).
 - **Fase 2** · Panel `/admin` en vivo con login + 2FA (TOTP) y pestañas **Vendedores** y **Pendientes**. Mini-tarjeta pública en `/v/CODIGO`.
 - **Fase 3A** (13 oct) · **Ventas en 4 toques + boleta**, en vivo. Migraciones **006 / 006b / 006c** (`06_Tablero-Web/supabase/migraciones/006_rpcs_ventas.sql`). Panel con pestañas nuevas **Inicio · Vender · Números** y boleta reutilizando el generador privado (`publicar/admin/boleta.js`, oculta `SBG`/`DIR` y achica la letra si el código es largo). Decisiones 56–58.
+- **Fase 3B** (13 oct) · **Plata y estadísticas**, en vivo. Migración **007** (`007_plata_estadisticas.sql`). Pestañas nuevas solo-admin: **Plata** (consignación en lote) y **Más** (REAL vs PROYECCIÓN separadas + ranking de vendedores con aviso 35/43 sin vendedor). Fórmulas EMPIEZA C8/C10/C12 y REGLA-PREMIO en SQL leyendo `rifa.config`; paridad al peso con el xlsx recalculado. Decisiones 59–60.
 - Lista blanca: Santiago (`admin`, `f987cff5-3429-4f01-a5f3-4d5adb1046dc`) y Sofía (`turno`, `62b89bb4-0fe3-4365-b675-24fabec11bd3`).
 - La web pública **sigue leyendo el Google Sheet**. Nada le cambió a nadie que ya compró. `SHEET_CSV` sigue presente y no hay rastro de `supabase` en `publicar/index.html` (comprobado byte a byte).
 
@@ -14,8 +15,7 @@
 
 | Fase | Qué | Dónde escribirlo |
 |---|---|---|
-| **3B · Plata y estadísticas** | `entregar_efectivo`, `consignar`, `estadisticas`, `stats_vendedores`, pestaña **Plata** (solo admin). Las fórmulas vienen de `04_Finanzas/modelo-financiero.xlsx` (EMPIEZA!C8/C10/C12, REGLA-PREMIO). Separar `real` de `proyeccion` en el panel; con 35 de 37 ventas sin vendedor el desglose por vendedor sale casi vacío y hay que decirlo | `supabase/migraciones/007_plata_estadisticas.sql`, `publicar/admin/app.js` |
-| **3C · Auditoría, exportar y respaldo** | `auditoria`, `deshacer_lote` arbitrario, `exportar()` → CSV con BOM (como `descargarCsv()` que ya existe), cron de respaldo diario a `rifa.respaldos`. Pestaña **Más** | `supabase/migraciones/008_auditoria_respaldo.sql`, `publicar/admin/app.js` |
+| **3C · Auditoría, exportar y respaldo** | `auditoria` (consulta por filtros), `deshacer_lote` arbitrario, `exportar()` → CSV con BOM (como `descargarCsv()` que ya existe), cron de respaldo diario a `rifa.respaldos`. Nueva pestaña **Auditoría** (dentro de **Más** o aparte) | `supabase/migraciones/008_auditoria_respaldo.sql`, `publicar/admin/app.js` |
 | **4 · Cutover** · ⏸ aprobación | Encender `FUENTE="supabase"` en `publicar/index.html`, poner `rifa.config.modo='real'`, dejar el Sheet protegido. Antes: `verificar.py` da cero diferencias | `publicar/index.html`, SQL `update rifa.config set valor='"real"' where clave='modo'` |
 | **5 · Retiro del Excel** | Actualizar `07_Kit-de-Ventas/05_guia-vendedores-y-tiendas.md`, `03_Hoja-de-ruta/rutina-diaria.md`, `codigos-de-vendedores.md` y `LEEME-como-publicar.md` | esos archivos |
 

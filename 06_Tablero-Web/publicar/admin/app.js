@@ -156,6 +156,10 @@ async function mostrarApp(yo) {
   YO = yo;
   $("#login").hidden = true; $("#mfa").hidden = true; $("#app").hidden = false; $("#tabs").hidden = false;
   $("#yo").textContent = (yo.rol === "admin" ? "admin · " : "turno · ") + (yo.email || "");
+  // Pestañas solo-admin
+  for (const b of document.querySelectorAll(".tabs .solo-admin")) {
+    b.hidden = (yo.rol !== "admin");
+  }
   $$tabs();
   render();
 }
@@ -180,6 +184,216 @@ async function render() {
   if (TAB_ACTUAL === "numeros")    return pantallaNumeros(app);
   if (TAB_ACTUAL === "vendedores") return pantallaVendedores(app);
   if (TAB_ACTUAL === "pendientes") return pantallaPendientes(app);
+  if (TAB_ACTUAL === "plata")      return pantallaPlata(app);
+  if (TAB_ACTUAL === "mas")        return pantallaMas(app);
+}
+
+// ────────── PLATA (solo admin) ──────────
+
+const fmtCOP = (n) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(Number(n) || 0);
+const fmtHoras = (h) => {
+  const x = Number(h) || 0;
+  if (x < 1) return Math.round(x * 60) + " min";
+  if (x < 48) return x.toFixed(1) + " h";
+  return Math.floor(x / 24) + " d " + Math.round(x % 24) + " h";
+};
+
+async function pantallaPlata(cont) {
+  if (YO.rol !== "admin") { cont.appendChild(el("p", { className: "err", textContent: "Solo admin." })); return; }
+  cont.appendChild(el("h1", { textContent: "Plata" }));
+  const estado = el("p", { textContent: "Cargando…" }); cont.appendChild(estado);
+  let d;
+  try { d = await rpc("pagos_efectivo_pendientes"); }
+  catch (e) { estado.className = "err"; estado.textContent = "No pudimos cargar: " + e.message; return; }
+  estado.remove();
+
+  const umbralEnt = d.umbral_entregar_h || 48;
+  const umbralCon = d.umbral_consignar_h || 24;
+
+  // Aviso de contexto
+  const aviso = el("div", { className: "aviso-amarillo" });
+  aviso.innerHTML = `El efectivo con vendedor se vuelve urgente a las <b>${umbralEnt} h</b>; lo tuyo sin consignar, a las <b>${umbralCon} h</b>.`;
+  cont.appendChild(aviso);
+
+  // Bloque 1: con vendedor
+  const b1 = el("div", { className: "bloque-stats" });
+  b1.appendChild(el("h2", { textContent: `Efectivo con vendedor (${(d.con_vendedor || []).length})` }));
+  if (!d.con_vendedor.length) b1.appendChild(el("p", { className: "ok", textContent: "Nada pendiente. Buena." }));
+  for (const p of (d.con_vendedor || [])) {
+    const f = el("div", { className: "pago-fila" + (p.horas >= umbralEnt ? " urgente" : "") });
+    const izq = el("div");
+    izq.appendChild(el("div", { textContent: (p.codigo || "sin código") + " · " + (p.nombre || "") }));
+    izq.appendChild(el("div", { className: "mono", textContent: `#${(p.numeros || []).join(", ") || "—"} · ${fmtHoras(p.horas)}` }));
+    f.appendChild(izq);
+    const der = el("div");
+    der.appendChild(el("div", { className: "monto", textContent: fmtCOP(p.monto_cop) }));
+    const bEnt = el("button", { className: "chico verde", textContent: "Me entregó" });
+    bEnt.onclick = async () => {
+      if (!confirm(`Marcar ${fmtCOP(p.monto_cop)} de ${p.codigo || "ese pago"} como recibido por ti?`)) return;
+      try { await rpc("entregar_efectivo", { p_pago_id: p.pago_id }); toast("Entregado"); render(); }
+      catch (e) { err(e); }
+    };
+    der.appendChild(bEnt);
+    f.appendChild(der);
+    b1.appendChild(f);
+  }
+  cont.appendChild(b1);
+
+  // Bloque 2: sin consignar
+  const b2 = el("div", { className: "bloque-stats" });
+  b2.appendChild(el("h2", { textContent: `Tuyo sin consignar (${(d.sin_consignar || []).length})` }));
+  if (!d.sin_consignar.length) b2.appendChild(el("p", { className: "ok", textContent: "Al día. Buena." }));
+  const seleccion = new Set();
+  const barraLote = el("div", { className: "acciones" });
+  const bConsig = el("button", { className: "verde", textContent: "Consignar seleccionados" });
+  bConsig.disabled = true;
+  const info = el("span", { textContent: "0 seleccionados" });
+  barraLote.appendChild(bConsig); barraLote.appendChild(info);
+  b2.appendChild(barraLote);
+  const refrescarSel = () => {
+    info.textContent = seleccion.size + " seleccionados";
+    bConsig.disabled = seleccion.size === 0;
+  };
+  for (const p of (d.sin_consignar || [])) {
+    const f = el("div", { className: "pago-fila" + (p.horas >= umbralCon ? " urgente" : "") });
+    const check = el("input", { type: "checkbox" });
+    check.style.cssText = "width:auto;margin-right:8px";
+    check.onchange = () => { if (check.checked) seleccion.add(p.pago_id); else seleccion.delete(p.pago_id); refrescarSel(); };
+    const izq = el("div");
+    izq.appendChild(check);
+    const info2 = el("span");
+    info2.innerHTML = `<b>${p.medio}</b>${p.codigo_vendedor ? " · " + p.codigo_vendedor : ""}<br><span class="mono">#${(p.numeros || []).join(", ") || "—"} · ${fmtHoras(p.horas)}</span>`;
+    izq.appendChild(info2);
+    f.appendChild(izq);
+    f.appendChild(el("div", { className: "monto", textContent: fmtCOP(p.monto_cop) }));
+    b2.appendChild(f);
+  }
+  bConsig.onclick = async () => {
+    if (!seleccion.size) return;
+    if (!confirm(`Marcar ${seleccion.size} pago(s) como consignados?`)) return;
+    try {
+      const r = await rpc("consignar", { p_pago_ids: Array.from(seleccion) });
+      toast(`Consignados ${r.consignados}` + (r.omitidos ? ` (${r.omitidos} ya estaban)` : ""), "verde");
+      render();
+    } catch (e) { err(e); }
+  };
+  cont.appendChild(b2);
+}
+
+// ────────── MÁS (estadísticas + ranking) ──────────
+
+async function pantallaMas(cont) {
+  cont.appendChild(el("h1", { textContent: "Más" }));
+  if (YO.rol !== "admin") {
+    cont.appendChild(el("p", { textContent: "Solo admin puede ver estadísticas y ranking." }));
+    return;
+  }
+  const estado = el("p", { textContent: "Cargando…" }); cont.appendChild(estado);
+  let s, r;
+  try {
+    [s, r] = await Promise.all([rpc("estadisticas"), rpc("stats_vendedores")]);
+  } catch (e) { estado.className = "err"; estado.textContent = "No pudimos cargar: " + e.message; return; }
+  estado.remove();
+
+  // Aviso 35/43
+  if ((s.real.sin_vendedor || 0) > 0) {
+    const total = (s.real.con_vendedor || 0) + (s.real.sin_vendedor || 0);
+    const aviso = el("div", { className: "aviso-amarillo" });
+    aviso.innerHTML = `<b>${s.real.sin_vendedor} de ${total}</b> ventas no tienen vendedor asignado todavía (vienen del Sheet). El desglose por vendedor sale casi vacío hasta que lleguen los CSV privados.`;
+    cont.appendChild(aviso);
+  }
+
+  // BLOQUE REAL
+  const bR = el("div", { className: "bloque-stats" });
+  bR.appendChild(el("h2", { textContent: "Real · lo que ya pasó" }));
+  const grid = el("div", { className: "cifras" });
+  grid.innerHTML =
+    `<div><b>${s.real.pagados}</b><span>pagados</span></div>` +
+    `<div><b>${s.real.apartados}</b><span>apartados</span></div>` +
+    `<div><b>${s.real.libres}</b><span>libres</span></div>` +
+    `<div><b>${s.real.compradores}</b><span>compradores</span></div>`;
+  bR.appendChild(grid);
+  const tR = el("table");
+  const casoMalo = Number(s.real.caso_malo_cop);
+  tR.innerHTML =
+    `<tr><td>Ingresos cobrados</td><td align="right"><b>${fmtCOP(s.real.ingresos_cop)}</b></td></tr>` +
+    `<tr><td>Pagos registrados</td><td align="right"><b>${s.real.pagos_registrados}</b></td></tr>` +
+    `<tr><td>Caso malo con hoy (EMPIEZA!C8)</td><td align="right"><b style="color:${casoMalo >= 0 ? 'var(--verde)' : 'var(--rojo)'}">${fmtCOP(casoMalo)}</b></td></tr>` +
+    `<tr><td>Faltan al piso (EMPIEZA!C10)</td><td align="right"><b>${s.real.faltan_al_piso}</b> números</td></tr>` +
+    `<tr><td>¿Llegó al piso? (EMPIEZA!C12)</td><td align="right"><b style="color:${s.real.llego_al_piso ? 'var(--verde)' : 'var(--rojo)'}">${s.real.llego_al_piso ? 'SÍ' : 'todavía no'}</b></td></tr>`;
+  bR.appendChild(tR);
+
+  // Por método (muy visible lo sin método)
+  const porMetodo = s.real.por_metodo || {};
+  const sinMet = porMetodo.sin_metodo || 0;
+  const bMet = el("p");
+  bMet.innerHTML = "<b>Pagados por método:</b> " +
+    Object.entries(porMetodo).filter(([k]) => k !== "sin_metodo").map(([k, v]) => `${k} ${v}`).join(" · ") +
+    (sinMet ? ` · <span style="color:var(--rojo);font-weight:700">sin método ${sinMet}</span>` : "");
+  bR.appendChild(bMet);
+
+  // Punto de control
+  if (s.real.punto_control) {
+    const pc = s.real.punto_control;
+    bR.appendChild(el("p", { innerHTML: `<b>Punto de control:</b> meta ${pc.meta} para ${pc.fecha} · faltan ${pc.faltan_a_meta} · ${pc.pct}% cumplido` }));
+  }
+  cont.appendChild(bR);
+
+  // BLOQUE PROYECCIÓN
+  const bP = el("div", { className: "bloque-stats proy" });
+  bP.appendChild(el("h2", { textContent: "Proyección · si el ritmo sigue igual" }));
+  const p = s.proyeccion;
+  bP.appendChild(el("p", { textContent: `Ritmo últimos 7 días: ${p.ventas_ultimos_7d} pagados · faltan ${p.dias_hasta_cierre} días para el cierre.` }));
+
+  const bloqueCaso = (titulo, caso, color) => {
+    const d = el("div", { style: "margin-top:10px;padding:10px;border-left:4px solid " + color + ";background:#fafafa" });
+    d.innerHTML =
+      `<div class="label">${titulo}</div>` +
+      `<div class="cifra">${caso.vendidos} vendidos</div>` +
+      `<table>` +
+      `<tr><td>Esperado (REGLA-PREMIO)</td><td align="right"><b>${fmtCOP(caso.esperado)}</b></td></tr>` +
+      `<tr><td>Neto si gana un vendido</td><td align="right">${fmtCOP(caso.neto_vendido)}</td></tr>` +
+      `<tr><td>Neto si va consolación</td><td align="right">${fmtCOP(caso.neto_consolacion)}</td></tr>` +
+      `</table>`;
+    return d;
+  };
+  bP.appendChild(bloqueCaso("Al ritmo actual (proyección)", p.al_ritmo_actual, "var(--azul)"));
+  bP.appendChild(bloqueCaso("Si llegas al piso (860)", p.al_nivel_del_piso, "var(--verde)"));
+  bP.appendChild(bloqueCaso("Si llegas a la meta (900)", p.al_nivel_de_meta, "var(--amarillo)"));
+
+  const esperado = Number(p.al_ritmo_actual.esperado);
+  const piso = Number(s.real.pagados) * 6000; // referencia visual sencilla
+  if (esperado < 3000000) {
+    const f = el("div", { className: "franja-rojo" });
+    f.textContent = `Alerta: la proyección actual (${fmtCOP(esperado)}) queda por debajo del piso de ${fmtCOP(3000000)}.`;
+    bP.appendChild(f);
+  }
+  cont.appendChild(bP);
+
+  // RANKING
+  const bRk = el("div", { className: "bloque-stats" });
+  bRk.appendChild(el("h2", { textContent: `Ranking de vendedores` }));
+  const total = (r.con_vendedor || 0) + (r.sin_vendedor || 0);
+  bRk.appendChild(el("p", { innerHTML: `<b>${r.con_vendedor}</b> ventas con vendedor · <b>${r.sin_vendedor}</b> sin vendedor (de ${total}).` }));
+  if (r.con_vendedor < 10) {
+    bRk.appendChild(el("p", { className: "err", textContent: "El ranking está casi vacío porque las ventas viejas del Sheet no tienen vendedor." }));
+  }
+  const tbl = el("table");
+  tbl.innerHTML = "<thead><tr><th align='left'>Vendedor</th><th>Pag.</th><th>Comp.</th><th align='right'>Ingresos</th><th align='right'>Efectivo pend.</th></tr></thead>";
+  const tb = el("tbody");
+  for (const v of (r.ranking || [])) {
+    const tr = el("tr");
+    tr.innerHTML =
+      `<td><b>${v.codigo}</b> · ${v.nombre}</td>` +
+      `<td align="center">${v.pagados}</td>` +
+      `<td align="center">${v.compradores}</td>` +
+      `<td align="right">${fmtCOP(v.ingresos_cop)}</td>` +
+      `<td align="right">${v.efectivo_pendiente_entregar ? '<span style="color:var(--rojo);font-weight:700">' + fmtCOP(v.efectivo_pendiente_entregar) + '</span>' : '—'}</td>`;
+    tb.appendChild(tr);
+  }
+  tbl.appendChild(tb);
+  bRk.appendChild(tbl);
+  cont.appendChild(bRk);
 }
 
 // ---------- Vendedores ----------

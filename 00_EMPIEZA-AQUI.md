@@ -2,6 +2,21 @@
 
 > Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-09: todo construido; falta que Santiago ejecute lo de "Siguiente paso" antes del sáb 10 oct.**
 
+## 13 oct — Fase 3B: plata y estadísticas en vivo
+
+Rama `claude/sweet-maxwell-bvoqti`. El panel `/admin` ahora tiene dos pestañas más (solo admin): **Plata** y **Más**.
+
+- **Plata**: dos listas (efectivo con vendedor con antigüedad, rojo ≥ 48 h; tuyo sin consignar, rojo ≥ 24 h) con botones «Me entregó» y «Consigné» (consignación en lote por selección). Las umbrales vienen de `rifa.config` (`horas_efectivo_vendedor`, `horas_consignar`).
+- **Más**: dos bloques separados — **REAL** (pagados · apartados · libres, compradores, pagos registrados, ingresos cobrados, EMPIEZA!C8/C10/C12 con los pagados de hoy, pagos por método con «sin método» muy visible, punto de control activo y % cumplido) y **PROYECCIÓN** (ritmo de 7 días → vendidos al 5 dic, G al ritmo actual, G al nivel 860 y G al nivel 900, con franja roja si la proyección queda bajo COP 3M). Debajo, **Ranking de vendedores** con el aviso explícito «**X de Y ventas no tienen vendedor asignado todavía**».
+- **Migración 007** aplicada (`entregar_efectivo`, `consignar`, `pagos_efectivo_pendientes`, `estadisticas`, `stats_vendedores`, helper `rifa.proyeccion_regla_premio`). **Paridad al peso con el xlsx recalculado 2026-10-13**: G(0)=−360.000, G(300)=917.928, G(750)=2.834.820, G(860)=3.303.668, G(900)=3.473.784. EMPIEZA!C8 con pagados=0 = −2.150.000; C10 = 859.
+- **Decisiones 59 y 60**: fuente única de las fórmulas en SQL leyendo `rifa.config`; REAL vs PROYECCIÓN separadas y aviso visible de las ventas sin vendedor.
+
+Lo que todavía **no** entrega 3B (va en 3C):
+- Pestaña **Auditoría** con `deshacer_lote` arbitrario, botón **Exportar CSV** (con BOM), cron de **respaldo diario** a `rifa.respaldos`.
+- **Push de la PWA** (decisión 57) sigue diferido.
+
+La web pública **sigue intacta**: md5 `f41b42dc7becddbff1d2d7a06bc3431e` (local = vivo), `SHEET_CSV` presente, cero menciones de `supabase` o `FUENTE`.
+
 ## 13 oct — Fase 3A: panel para vender + boleta en 4 toques
 
 En la rama `claude/sweet-maxwell-bvoqti`. El panel `/admin` ahora tiene **Inicio · Vender · Números**: **Vender** registra una venta en 4 toques (pegar el mensaje de WhatsApp → nombre → chip de estado → Guardar) y emite la boleta reutilizando el generador privado. Estados: `APARTADO`, `PAGADO · Nu`, `PAGADO · Efectivo`, `Efectivo con vendedor (48 h)`, `Por verificar` y `PAGADO · NZ`; Sofía solo puede apartar, por verificar y PAGADO NZ (decisión 46). Botón **Deshacer la última** en Inicio.
