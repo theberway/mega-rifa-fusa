@@ -1,6 +1,12 @@
 # EMPIEZA AQUÍ — Mega Rifa Fusa
 
-> Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-09: todo construido; falta que Santiago ejecute lo de "Siguiente paso" antes del sáb 10 oct.**
+> Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto.
+
+## ⏭ Siguiente paso: Fase 4 — cutover del tablero público
+
+**Fases 3A, 3B y 3C están desplegadas (13 oct)**. El panel `/admin` ya vende, cobra, muestra estadísticas, audita, exporta y respalda. La web pública **todavía lee el Google Sheet**: la Fase 4 cambia esa fuente a Supabase.
+
+Checklist ejecutable paso a paso en **`02_Decisiones/plan-fase-4-cutover.md`**. Requiere ventana nocturna aprobada por Santiago (decisión 52 ya aprobada; sin regreso automático al Sheet; rollback = promover deployment anterior en Vercel). Antes de desplegar, **`verificar.py` tiene que dar `Diferencias: 0`**.
 
 ## 13 oct — Fase 3C: auditoría + exportar + respaldo diario
 

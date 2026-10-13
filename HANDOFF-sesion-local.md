@@ -1,6 +1,6 @@
 # Handoff para la próxima sesión local — Mega Rifa Fusa
 
-*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. Fases 3A, 3B y 3C desplegadas; siguiente sesión arranca en Fase 4 (cutover del tablero).*
+*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. **Fases 3A, 3B y 3C desplegadas**. Siguiente sesión arranca en **Fase 4 (cutover del tablero)**: ver `02_Decisiones/plan-fase-4-cutover.md`.*
 
 ## Qué está hecho
 
@@ -12,7 +12,11 @@
 - Lista blanca: Santiago (`admin`, `f987cff5-3429-4f01-a5f3-4d5adb1046dc`) y Sofía (`turno`, `62b89bb4-0fe3-4365-b675-24fabec11bd3`).
 - La web pública **sigue leyendo el Google Sheet**. Nada le cambió a nadie que ya compró. `SHEET_CSV` sigue presente y no hay rastro de `supabase` en `publicar/index.html` (comprobado byte a byte).
 
-## Qué falta (Fase 3B → Fase 5)
+## Siguiente paso: Fase 4
+
+Checklist ejecutable paso a paso en **`02_Decisiones/plan-fase-4-cutover.md`**. La sesión nueva lee ese archivo y arranca. Requiere aprobación de Santiago para la ventana nocturna. Decisión 52 ya aprobada (la fuente cambia, no hay vuelta al Sheet, el rollback es un paso en Vercel). Decisión 63 se escribe al terminar el cutover.
+
+## Qué falta (Fase 4 → Fase 5)
 
 | Fase | Qué | Dónde escribirlo |
 |---|---|---|
