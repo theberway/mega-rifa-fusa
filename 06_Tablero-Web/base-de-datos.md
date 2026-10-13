@@ -75,14 +75,25 @@ python3 06_Tablero-Web/migracion/verificar.py
 
 Debe decir «Diferencias: 0». Si no, no se hace el cambio.
 
-## Lo que falta de las fases siguientes
+## Estado al 2026-10-13 — Fases 1, 2 y 3A
+
+- **Fase 1 (base + copia)** — ✅ en vivo. Migraciones 001, 002, 003 y 004/005 aplicadas; 1.000 números, 32 vendedores, 15 compradores. `modo = ensayo`.
+- **Fase 2 (panel con 2FA + Vendedores + Pendientes)** — ✅ en vivo en https://mega-rifa-fusa.vercel.app/admin.
+- **Fase 3A (ventas en 4 toques + boleta)** — ✅ en vivo. Migraciones **006, 006b, 006c** (`006_rpcs_ventas.sql`). RPC nuevas: `registrar_venta`, `marcar_pagado`, `marcar_por_verificar`, `liberar`, `dar_24h`, `deshacer_ultima`, `buscar_comprador`, `ficha_numero`, `tablero_admin`, `inicio_cifras`, más los ayudantes `rifa.comprador_para`, `rifa.resolver_vendedor_para_venta`, `rifa.serial_de`. Pestañas nuevas del panel: **Inicio** (alertas + cifras + botón grande), **Vender** (parse del mensaje de WhatsApp → nombre → chip de estado → Guardar), **Números** (filtros + ficha). Boleta en `publicar/admin/boleta.js` (copia 1:1 del generador privado, con la Sutá incrustada; `SBG`/`DIR` no se imprimen).
+- **Decisiones nuevas de 3A**: 56 (plata arranca en cero), 57 (push se difiere a 3C+), 58 (Fase 3 por bloques).
+
+## Lo que falta
 
 | Fase | Qué queda | Dónde |
 |---|---|---|
-| **2 · Panel admin** | `/admin` con login + 2FA, roles, pestañas Vender · Números · Vendedores. También las RPC con `SECURITY DEFINER` del esquema `rifa` para registrar venta, marcar pagado, liberar, dar 24 h, crear vendedor, editar vendedor, activar/desactivar, fusionar alias y resolver referido. **PARADA**: antes de la Fase 2 tienes que crear los dos usuarios en Supabase (Authentication → Add user), apagar «Allow new users to sign up» y pasarme sus `user_id` para agregarlos a `rifa.usuarios_panel` | `publicar/admin/`, `supabase/migraciones/005_...sql` |
-| **3 · Plata y alertas** | Efectivo con botones «Ya me entregó» / «Ya consigné», estadísticas (con las fórmulas del modelo), auditoría con deshacer, exportar CSV, respaldo diario (cron) y Edge Function de push + VAPID | `publicar/admin/`, `supabase/funciones/alertas/`, `supabase/migraciones/006_...sql` |
+| **3B · Plata y estadísticas** | `entregar_efectivo`, `consignar`, `estadisticas` con las fórmulas de `04_Finanzas/modelo-financiero.xlsx` (EMPIEZA!C8/C10/C12, REGLA-PREMIO), pestaña **Plata** (solo admin), ranking de vendedores | `publicar/admin/`, `supabase/migraciones/007_plata_estadisticas.sql` |
+| **3C · Auditoría, exportar y respaldo** | `auditoria`, `deshacer_lote` por lote arbitrario, `exportar()` → CSV, cron de respaldo diario a `rifa.respaldos`. Pestaña **Más** | `publicar/admin/`, `supabase/migraciones/008_auditoria_respaldo.sql` |
 | **4 · Cambio del tablero** | Encender `FUENTE="supabase"` en la web, poner `rifa.config.modo='real'`, dejar el Sheet protegido y dejar de publicar su CSV | `publicar/index.html` |
 | **5 · Mini-tarjetas y retiro del Excel** | `/v/CODIGO` ya construida en Fase 1; falta actualizar las guías de vendedores y la rutina diaria | `codigos-de-vendedores.md` ya actualizado; falta `07_Kit-de-Ventas/05_...md` y `03_Hoja-de-ruta/rutina-diaria.md` |
+
+**Push de la PWA (decisión 57, modifica la 53):** no se construye en 3A; alertas solo dentro del panel. Para encenderlo después hace falta Edge Function `alertas`, service worker, llave VAPID (privada en Vault, pública en el panel) y, en iPhone, instalar la PWA en la pantalla de inicio.
+
+**La plata del Sheet (decisión 56):** `rifa.pagos` arranca vacía; las 31 ventas pre-existentes no tienen método ni vendedor. Se corrige cuando Santiago pase los CSV privados a `_privado/` y se recargue con `importar.py`.
 
 ## Avisos de seguridad del linter (todos son a propósito)
 

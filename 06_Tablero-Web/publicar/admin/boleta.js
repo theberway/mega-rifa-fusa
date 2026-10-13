@@ -1,0 +1,95 @@
+// Boleta — módulo ES usado por /admin.
+// serial() y dibujar() son copia 1:1 del `06_Tablero-Web/generador-privado.html` (líneas 58-114).
+// Dos ajustes propios: oculta vendedor SBG/DIR y achica la letra del renglón inferior si el código es largo.
+// La Sutá va incrustada como data URI, para que el canvas se pueda exportar sin pedir imagen externa.
+
+const SITIO = "mega-rifa-fusa.vercel.app";
+const suta = new Image();
+suta.src = "data:image/jpeg;base64,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";
+
+export function serial(n) {
+  return "ABCDEFGHIJ"[Math.floor(parseInt(n, 10) / 100)] + "-" + n;
+}
+
+// Dibuja en el canvas que se le pase (ya con 880×520). No toca ningún otro elemento del DOM.
+// args: { numero: "123", nombre: "Jua*** P.", vendedor: "ANDRES", idioma: "es"|"en" }
+// Dos ajustes propios del panel:
+//   - `vendedor` SBG o DIR no se imprime.
+//   - Si "VENDEDOR " + vend es largo, baja la fuente del renglón inferior a 13 px.
+export function dibujarEn(cv, { numero: n, nombre, vendedor: vend, idioma }) {
+  idioma = idioma === "en" ? "en" : "es";
+  nombre = (nombre || "").trim();
+  vend = (vend || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (vend === "SBG" || vend === "DIR") vend = "";
+
+  const x = cv.getContext("2d");
+  const CREMA = "#FFF4D6", ROJO = "#C1121F", AZUL = "#0A3D62", NEGRO = "#1A1A1A", AMA = "#F2B705";
+  x.fillStyle = CREMA; x.fillRect(0, 0, 880, 520);
+  x.strokeStyle = NEGRO; x.lineWidth = 14; x.strokeRect(7, 7, 866, 506);
+  x.fillStyle = ROJO; x.fillRect(21, 21, 838, 104);
+  x.fillStyle = NEGRO; x.font = '44px "Alfa Slab One", serif'; x.textBaseline = "middle";
+  x.fillText("MEGA RIFA FUSA", 47, 76);
+  x.fillStyle = CREMA; x.fillText("MEGA RIFA FUSA", 43, 72);
+  x.fillStyle = AMA; x.fillRect(21, 141, 470, 230);
+  x.strokeStyle = NEGRO; x.lineWidth = 7; x.strokeRect(21, 141, 470, 230);
+  x.fillStyle = NEGRO; x.font = '700 20px "Archivo Narrow", sans-serif';
+  x.fillText(idioma === "es" ? "TU NÚMERO" : "YOUR NUMBER", 45, 176);
+  x.font = '158px "Alfa Slab One", serif';
+  x.fillStyle = NEGRO; x.fillText(n, 50, 282);
+  x.fillStyle = ROJO; x.fillText(n, 44, 276);
+  x.fillStyle = NEGRO; x.font = '700 26px "Space Mono", monospace';
+  x.fillText(serial(n), 46, 340);
+  x.font = '700 22px "Archivo Narrow", sans-serif'; x.textAlign = "right";
+  x.fillText(nombre, 470, 340); x.textAlign = "left";
+  if (suta.complete && suta.naturalWidth) {
+    x.save(); x.beginPath(); x.rect(521, 141, 190, 230); x.clip();
+    x.fillStyle = CREMA; x.fillRect(521, 141, 190, 230);
+    x.drawImage(suta, 521, 161, 190, 190); x.restore();
+    x.strokeStyle = NEGRO; x.lineWidth = 6; x.strokeRect(521, 141, 190, 230);
+  }
+  x.beginPath(); x.arc(800, 256, 56, 0, 6.2832);
+  x.fillStyle = AZUL; x.fill(); x.lineWidth = 6; x.strokeStyle = NEGRO; x.stroke();
+  x.fillStyle = CREMA; x.textAlign = "center";
+  x.font = '700 19px "Space Mono", monospace'; x.fillText("MRF", 800, 243);
+  x.font = '700 13px "Space Mono", monospace'; x.fillText("FUSA 2026", 800, 268);
+  x.textAlign = "left";
+  x.fillStyle = AZUL; x.fillRect(21, 387, 838, 112);
+  x.fillStyle = CREMA; x.font = '700 21px "Archivo Narrow", sans-serif';
+  x.fillText(
+    idioma === "es"
+      ? "PREMIO COP 2.000.000 · SORTEO SÁB 5 DIC 2026, 10:30 P.M."
+      : "PRIZE NZD 1,000 · DRAW SAT 5 DEC 2026, 10:30 P.M.",
+    45, 423
+  );
+  x.font = '17px "Archivo Narrow", sans-serif';
+  x.fillText(
+    idioma === "es"
+      ? "Últimas 3 cifras del premio mayor de la Lotería de Boyacá."
+      : "Last 3 digits of the top prize of the Lotería de Boyacá.",
+    45, 452
+  );
+  // Renglón inferior: nombre + vendedor. Si vendedor es largo, baja la fuente para que no se corte.
+  const vendTxt = vend ? ("  ·  " + (idioma === "es" ? "VENDEDOR " : "SELLER ") + vend) : "";
+  const bajoTxt = (idioma === "es" ? "A NOMBRE DE " : "ISSUED TO ") + (nombre || "—") + vendTxt;
+  const bajoSize = bajoTxt.length > 60 ? 13 : 15;
+  x.font = '700 ' + bajoSize + 'px "Space Mono", monospace';
+  x.fillText(bajoTxt, 45, 479);
+  x.textAlign = "right"; x.font = '13px "Archivo Narrow", sans-serif';
+  x.fillText(
+    (idioma === "es" ? "verifica este número en " : "check this number at ") + SITIO,
+    835, 479
+  );
+  x.textAlign = "left";
+}
+
+// Devuelve el canvas como Blob (lo que piden Clipboard, Share y descargar).
+export function obtenerBlob(cv) {
+  return new Promise(r => cv.toBlob(r, "image/png"));
+}
+
+// Espera a que las fuentes estén listas antes de dibujar; devuelve el nombre de archivo sugerido.
+export async function dibujarCuandoListo(cv, datos) {
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch {}
+  dibujarEn(cv, datos);
+  return "boleta-" + datos.numero + ".png";
+}

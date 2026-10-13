@@ -2,6 +2,17 @@
 
 > Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-09: todo construido; falta que Santiago ejecute lo de "Siguiente paso" antes del sáb 10 oct.**
 
+## 13 oct — Fase 3A: panel para vender + boleta en 4 toques
+
+En la rama `claude/sweet-maxwell-bvoqti`. El panel `/admin` ahora tiene **Inicio · Vender · Números**: **Vender** registra una venta en 4 toques (pegar el mensaje de WhatsApp → nombre → chip de estado → Guardar) y emite la boleta reutilizando el generador privado. Estados: `APARTADO`, `PAGADO · Nu`, `PAGADO · Efectivo`, `Efectivo con vendedor (48 h)`, `Por verificar` y `PAGADO · NZ`; Sofía solo puede apartar, por verificar y PAGADO NZ (decisión 46). Botón **Deshacer la última** en Inicio.
+
+Lo que todavía **no** entrega 3A (va en 3B/3C):
+- Pestaña **Plata** (consignación, efectivo por vendedor), **estadísticas** con las fórmulas de `04_Finanzas/modelo-financiero.xlsx`, **auditoría** con lotes arbitrarios, **exportar CSV** y **respaldo diario**.
+- **Push de la PWA** (decisión 57): se difiere hasta que Santiago genere la llave VAPID en Supabase e instale el panel como PWA en el iPhone. Las alertas de 24 h, 48 h y 3 h sí llegan al panel por dentro.
+- Las **31 ventas viejas** del Sheet siguen sin vendedor ni método (decisión 56): se arreglan cuando lleguen los CSV privados.
+
+La web pública **no se tocó**: `publicar/index.html` sigue byte-a-byte igual que la rama, con `SHEET_CSV` presente y cero menciones de `supabase`. Nadie que ya compró se vio afectado.
+
 ## 13 oct — Fase 2: panel admin con login + 2FA y gestión de vendedores
 - **`/admin` en vivo**: https://mega-rifa-fusa.vercel.app/admin (`noindex`, `X-Frame-Options: DENY`, `no-store`, CSP estricta). Login con Supabase Auth + 2FA TOTP obligatorio para `admin`. Usuarios en la lista blanca: Santiago (`admin`, `f987cff5-…`) y Sofía (`turno`, `62b89bb4-…`).
 - **Sección Vendedores**: lista con filtro (todos / activos / inactivos, por tipo), tarjetas con conteos (pagados, compradores distintos, apartados, cuánto le falta para el premio), botones «Copiar link» y «Compartir por WhatsApp», y para admin: Editar, Activar/Desactivar, + Alias y Detalle. Botón **«+ Agregar vendedor»** sugiere el código al escribir el nombre (mismas reglas del 10 oct) y da el link listo. **Descargar links (CSV)** en un botón.

@@ -1,23 +1,27 @@
 # Handoff para la próxima sesión local — Mega Rifa Fusa
 
-*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. Último commit: `dd7455b` (Fase 2).*
+*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. Fase 3A desplegada; siguiente sesión arranca en Fase 3B.*
 
 ## Qué está hecho
 
-- **Fase 1** · Base de datos Supabase (proyecto `oyvrdwkoorkidoadnzmc`): esquema `rifa`, 1.000 números, 32 vendedores + alias, 4 RPC públicas (`tablero_publico`, `vendedores_selector`, `resolver_codigo`, `mini_tarjeta`), cron de vencimientos cada 5 min, carga 1:1 del Sheet verificada con cero diferencias (31 pagados · 6 apartados · 963 libres · 15 compradores).
-- **Fase 2** · Panel `/admin` en vivo en https://mega-rifa-fusa.vercel.app/admin con login + 2FA (TOTP) y pestañas **Vendedores** y **Pendientes**. Mini-tarjeta pública en `/v/CODIGO`.
+- **Fase 1** · Base de datos Supabase (proyecto `oyvrdwkoorkidoadnzmc`): esquema `rifa`, 1.000 números, 32 vendedores + alias, 4 RPC públicas, cron de vencimientos cada 5 min. Carga 1:1 del Sheet verificada con cero diferencias (31 pagados · 6 apartados · 963 libres · 15 compradores).
+- **Fase 2** · Panel `/admin` en vivo con login + 2FA (TOTP) y pestañas **Vendedores** y **Pendientes**. Mini-tarjeta pública en `/v/CODIGO`.
+- **Fase 3A** (13 oct) · **Ventas en 4 toques + boleta**, en vivo. Migraciones **006 / 006b / 006c** (`06_Tablero-Web/supabase/migraciones/006_rpcs_ventas.sql`). Panel con pestañas nuevas **Inicio · Vender · Números** y boleta reutilizando el generador privado (`publicar/admin/boleta.js`, oculta `SBG`/`DIR` y achica la letra si el código es largo). Decisiones 56–58.
 - Lista blanca: Santiago (`admin`, `f987cff5-3429-4f01-a5f3-4d5adb1046dc`) y Sofía (`turno`, `62b89bb4-0fe3-4365-b675-24fabec11bd3`).
-- La web pública **sigue leyendo el Google Sheet**. Nada le cambió a nadie que ya compró.
+- La web pública **sigue leyendo el Google Sheet**. Nada le cambió a nadie que ya compró. `SHEET_CSV` sigue presente y no hay rastro de `supabase` en `publicar/index.html` (comprobado byte a byte).
 
-## Qué falta (Fase 3 → Fase 5)
+## Qué falta (Fase 3B → Fase 5)
 
 | Fase | Qué | Dónde escribirlo |
 |---|---|---|
-| **3 · Ventas** | RPC `registrar_venta`, `marcar_pagado`, `marcar_por_verificar`, `liberar`, `dar_24h`, `deshacer_ultima` + pestaña Vender (4 toques) y generador de boleta reutilizando `generador-privado.html` | `06_Tablero-Web/supabase/migraciones/006_rpcs_ventas.sql`, `publicar/admin/boleta.js`, `publicar/admin/app.js` |
-| **3 · Plata y auditoría** | `entregar_efectivo`, `consignar`, `estadisticas`, `stats_vendedores`, `deshacer_ultima`, `exportar`. Pestañas Plata y Más | `publicar/admin/app.js`, `supabase/migraciones/007_plata_estadisticas.sql` |
-| **3 · Push + respaldo** | Edge Function `alertas` (con VAPID en Vault), cron de respaldo diario a `rifa.respaldos`, service worker en `publicar/admin/sw.js` | `supabase/funciones/alertas/`, `publicar/admin/sw.js`, `publicar/admin/manifest.webmanifest` |
-| **4 · Cutover** · ⏸ aprobación | Encender `FUENTE="supabase"` en `publicar/index.html`, poner `rifa.config.modo='real'`, actualizar `publicar/vercel.json` para dejar de servir el Sheet. Antes: `verificar.py` da cero diferencias | `publicar/index.html`, SQL `update rifa.config set valor='"real"' where clave='modo'` |
-| **5 · Retiro del Excel** | Actualizar `07_Kit-de-Ventas/05_guia-vendedores-y-tiendas.md`, `03_Hoja-de-ruta/rutina-diaria.md`, `codigos-de-vendedores.md` y `LEEME-como-publicar.md` para la nueva rutina | esos archivos |
+| **3B · Plata y estadísticas** | `entregar_efectivo`, `consignar`, `estadisticas`, `stats_vendedores`, pestaña **Plata** (solo admin). Las fórmulas vienen de `04_Finanzas/modelo-financiero.xlsx` (EMPIEZA!C8/C10/C12, REGLA-PREMIO). Separar `real` de `proyeccion` en el panel; con 35 de 37 ventas sin vendedor el desglose por vendedor sale casi vacío y hay que decirlo | `supabase/migraciones/007_plata_estadisticas.sql`, `publicar/admin/app.js` |
+| **3C · Auditoría, exportar y respaldo** | `auditoria`, `deshacer_lote` arbitrario, `exportar()` → CSV con BOM (como `descargarCsv()` que ya existe), cron de respaldo diario a `rifa.respaldos`. Pestaña **Más** | `supabase/migraciones/008_auditoria_respaldo.sql`, `publicar/admin/app.js` |
+| **4 · Cutover** · ⏸ aprobación | Encender `FUENTE="supabase"` en `publicar/index.html`, poner `rifa.config.modo='real'`, dejar el Sheet protegido. Antes: `verificar.py` da cero diferencias | `publicar/index.html`, SQL `update rifa.config set valor='"real"' where clave='modo'` |
+| **5 · Retiro del Excel** | Actualizar `07_Kit-de-Ventas/05_guia-vendedores-y-tiendas.md`, `03_Hoja-de-ruta/rutina-diaria.md`, `codigos-de-vendedores.md` y `LEEME-como-publicar.md` | esos archivos |
+
+**Push de la PWA (decisión 57):** se difiere hasta que Santiago genere e instale la llave VAPID en los secretos de Supabase y agregue el panel a la pantalla de inicio de su iPhone. Fase 3 entrega solo avisos dentro del panel.
+
+**Plata vieja (decisión 56):** las 31 ventas que llegaron del Sheet quedan sin fila de pago y 35 de 37 sin vendedor. Se corrigen cuando lleguen los CSV privados y se vuelva a correr `importar.py`.
 
 Detalle completo en `02_Decisiones/plan-panel-y-vendedores.md`.
 

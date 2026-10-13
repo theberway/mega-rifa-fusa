@@ -1,6 +1,7 @@
 // Panel admin · Mega Rifa Fusa
 // Usa supabase-js v2 (ESM) con versión fija. CSP permite el host de Supabase y jsDelivr.
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.46.1/+esm";
+import { dibujarCuandoListo, obtenerBlob, serial } from "/admin/boleta.js";
 
 const SUPA_URL = "https://oyvrdwkoorkidoadnzmc.supabase.co";
 const SUPA_KEY = "sb_publishable_t_e7HPMI1g7rINUYIr0Ehg_OlzMMm3d";
@@ -149,7 +150,7 @@ async function salir(msg) {
 
 let YO = null;
 let VENDEDORES_CACHE = [];
-let TAB_ACTUAL = "vendedores";
+let TAB_ACTUAL = "inicio";
 
 async function mostrarApp(yo) {
   YO = yo;
@@ -174,6 +175,9 @@ function $$tabs() {
 async function render() {
   const app = $("#app");
   app.innerHTML = "";
+  if (TAB_ACTUAL === "inicio")     return pantallaInicio(app);
+  if (TAB_ACTUAL === "vender")     return pantallaVender(app);
+  if (TAB_ACTUAL === "numeros")    return pantallaNumeros(app);
   if (TAB_ACTUAL === "vendedores") return pantallaVendedores(app);
   if (TAB_ACTUAL === "pendientes") return pantallaPendientes(app);
 }
@@ -462,6 +466,329 @@ async function pantallaPendientes(cont) {
 }
 
 // ---------- Arranque ----------
+
+
+// ────────── INICIO (home) ──────────
+
+async function pantallaInicio(cont) {
+  cont.appendChild(el("h1", { textContent: "Inicio" }));
+  const estado = el("p", { textContent: "Cargando…" });
+  cont.appendChild(estado);
+  let c;
+  try { c = await rpc("inicio_cifras"); } catch (e) {
+    estado.className = "err"; estado.textContent = "No pudimos cargar: " + e.message; return;
+  }
+  estado.remove();
+
+  // Alertas rojas (lo que requiere acción humana ahora)
+  const alertas = [];
+  if (c.vencen_pronto > 0)        alertas.push(c.vencen_pronto + " apartados vencen en menos de 3 h");
+  if (c.por_verificar > 0)        alertas.push(c.por_verificar + " pago(s) por verificar en Nu");
+  if (c.apartados_sin_fecha > 0)  alertas.push(c.apartados_sin_fecha + " apartados sin fecha (decide: dar 24 h o liberar)");
+  if (c.referidos_pendientes > 0) alertas.push(c.referidos_pendientes + " referido(s) por resolver");
+  if (alertas.length) {
+    const box = el("div", { className: "pendiente" });
+    box.appendChild(el("div", { className: "t", textContent: "Qué revisar hoy" }));
+    for (const a of alertas) box.appendChild(el("div", { className: "m", textContent: "· " + a }));
+    cont.appendChild(box);
+  } else {
+    cont.appendChild(el("p", { className: "ok", textContent: "Nada urgente ahora mismo." }));
+  }
+
+  // Cifras clave
+  const cifras = el("div", { className: "vend-tarjeta" });
+  const bloque = el("div", { className: "cifras" });
+  bloque.innerHTML =
+    `<div><b>${c.pagados}</b><span>pagados</span></div>` +
+    `<div><b>${c.apartados}</b><span>apartados</span></div>` +
+    `<div><b>${c.libres}</b><span>libres</span></div>` +
+    `<div><b>${Math.max(0, 859 - c.pagados)}</b><span>faltan al piso</span></div>`;
+  cifras.appendChild(el("header", {}, el("span", { className: "nom", textContent: "Hoy" })));
+  cifras.appendChild(bloque);
+  cont.appendChild(cifras);
+
+  // Botón grande para registrar venta
+  const b = el("button", { textContent: "+ Registrar venta", style: "width:100%;margin-top:16px;font-size:19px;padding:16px" });
+  b.onclick = () => { TAB_ACTUAL = "vender"; marcarTab("vender"); render(); };
+  cont.appendChild(b);
+
+  // Botón discreto: deshacer la última acción mía
+  const bU = el("button", { className: "chico gris", textContent: "↩ Deshacer la última", style: "margin-top:12px" });
+  bU.onclick = deshacerUltima;
+  cont.appendChild(bU);
+}
+
+function marcarTab(nombre) {
+  for (const t of document.querySelectorAll(".tabs .tab")) {
+    if (t.dataset.tab === nombre) t.classList.add("activo"); else t.classList.remove("activo");
+  }
+}
+
+// ────────── VENDER (4 toques) ──────────
+
+// Parsea el texto que llega por WhatsApp: números 3 cifras y, si viene, el código entre paréntesis.
+// Ej.: "Quiero el 607 de la Mega Rifa Fusa, me dijo Juan Carlos (JUANCARLOS)"
+function parsearMensaje(txt) {
+  if (!txt) return { numeros: [], vendedor: null };
+  const nums = (txt.match(/\b\d{3}\b/g) || []).map(x => x.padStart(3, "0"));
+  const unicos = Array.from(new Set(nums));
+  const m = txt.match(/\(([A-Z0-9]{1,24})\)/);
+  const vendedor = m ? m[1] : null;
+  return { numeros: unicos, vendedor };
+}
+
+async function pantallaVender(cont) {
+  cont.appendChild(el("h1", { textContent: "Registrar venta" }));
+
+  // Toque 1
+  const c1 = el("div", { className: "card" });
+  c1.innerHTML =
+    `<label>1. Pegar el mensaje de WhatsApp (si viene)</label>` +
+    `<textarea id="vMsg" rows="2" placeholder="Pega aquí lo que te mandó el comprador…" ` +
+    `style="width:100%;font-family:inherit;font-size:16px;padding:10px;border:3px solid var(--negro);border-radius:8px"></textarea>` +
+    `<label>Números (3 cifras, separa con espacios o comas)</label>` +
+    `<input id="vNums" inputmode="numeric" placeholder="607, 123, 456">` +
+    `<label>Vendedor (código, se completa del mensaje)</label>` +
+    `<input id="vVend" placeholder="JUANCARLOS · deja vacío si fue directa">`;
+  cont.appendChild(c1);
+
+  // Toque 2
+  const c2 = el("div", { className: "card" });
+  c2.innerHTML =
+    `<label>2. Nombre del comprador</label>` +
+    `<input id="vNom" placeholder="Nombre y apellido" autocomplete="off">` +
+    `<div id="vSug" style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap"></div>` +
+    `<label>Teléfono (opcional, nunca sale al tablero)</label>` +
+    `<input id="vTel" inputmode="tel" placeholder="310…">` +
+    `<label><input type="checkbox" id="vPub" checked style="width:auto;margin-right:6px">Mostrar en el tablero (si no: aparece como «Reservado»)</label>` +
+    `<label><input type="checkbox" id="vTbw" style="width:auto;margin-right:6px">Dijo SÍ a recibir info de The Ber Way</label>`;
+  cont.appendChild(c2);
+
+  // Toque 3: chip de estado (según rol)
+  const c3 = el("div", { className: "card" });
+  c3.appendChild(el("label", { textContent: "3. Estado" }));
+  const chips = el("div", { className: "acciones" });
+  const opcs = YO.rol === "admin"
+    ? [["APARTADO", "Apartado", "gris"], ["PAGADO_NU", "Pagado · Nu", "verde"],
+       ["PAGADO_EFECTIVO", "Pagado · Efectivo", "verde"],
+       ["EFECTIVO_VENDEDOR", "Efectivo con vendedor (48 h)", "gris"],
+       ["POR_VERIFICAR", "Por verificar", "gris"]]
+    : [["APARTADO", "Apartado", "gris"], ["POR_VERIFICAR", "Por verificar", "gris"],
+       ["PAGADO_NZ", "Pagado · NZ", "verde"]];
+  let estadoSel = null;
+  for (const [k, lbl, cls] of opcs) {
+    const b = el("button", { className: "chico " + cls, textContent: lbl });
+    b.onclick = (e) => { e.preventDefault(); estadoSel = k;
+      for (const x of chips.querySelectorAll("button")) x.style.outline = "";
+      b.style.outline = "4px solid var(--rojo)";
+    };
+    chips.appendChild(b);
+  }
+  c3.appendChild(chips);
+  cont.appendChild(c3);
+
+  // Toque 4: Guardar
+  const c4 = el("div", { className: "card" });
+  const bGuardar = el("button", { className: "verde", textContent: "4. Guardar", style: "width:100%;font-size:19px;padding:16px" });
+  const msg = el("p", { className: "err", id: "vErr" }); msg.style.display = "none";
+  c4.appendChild(bGuardar); c4.appendChild(msg);
+  cont.appendChild(c4);
+
+  // Pegar mensaje → autollenar números y vendedor
+  const txMsg = c1.querySelector("#vMsg"), txNums = c1.querySelector("#vNums"), txVend = c1.querySelector("#vVend");
+  txMsg.oninput = () => {
+    const r = parsearMensaje(txMsg.value);
+    if (r.numeros.length && !txNums.value) txNums.value = r.numeros.join(", ");
+    if (r.vendedor && !txVend.value) txVend.value = r.vendedor;
+  };
+
+  // Autocompletado de comprador
+  const nomInp = c2.querySelector("#vNom"), sugDiv = c2.querySelector("#vSug");
+  let tDebounce;
+  nomInp.oninput = () => {
+    clearTimeout(tDebounce);
+    const q = nomInp.value.trim();
+    sugDiv.innerHTML = "";
+    if (q.length < 2) return;
+    tDebounce = setTimeout(async () => {
+      try {
+        const res = await rpc("buscar_comprador", { p_q: q });
+        for (const c of (res || []).slice(0, 6)) {
+          const chip = el("button", { className: "chico gris", textContent: c.nombre + (c.numeros_vigentes ? ` (${c.numeros_vigentes})` : "") });
+          chip.onclick = (e) => { e.preventDefault(); nomInp.value = c.nombre; sugDiv.innerHTML = ""; };
+          sugDiv.appendChild(chip);
+        }
+      } catch (_) {}
+    }, 220);
+  };
+
+  // Guardar
+  bGuardar.onclick = async (e) => {
+    e.preventDefault(); msg.style.display = "none";
+    try {
+      const nums = txNums.value.split(/[^0-9]+/).filter(Boolean).map(x => x.padStart(3, "0"));
+      if (!nums.length) throw new Error("Faltan los números");
+      if (!estadoSel) throw new Error("Toca un estado");
+      const nombre = nomInp.value.trim();
+      if (!nombre) throw new Error("Falta el nombre");
+      const vend = (txVend.value || "").toUpperCase().replace(/[^A-Z0-9]/g, "") || null;
+      const r = await rpc("registrar_venta", {
+        p_numeros: nums, p_nombre: nombre, p_estado: estadoSel,
+        p_vendedor: vend, p_telefono: c2.querySelector("#vTel").value || null,
+        p_sale_publico: c2.querySelector("#vPub").checked,
+        p_quiere_tbw: c2.querySelector("#vTbw").checked,
+        p_pais: null, p_nota: null
+      });
+      if (r.vendedor_no_resuelto) toast("Vendedor «" + vend + "» quedó en Pendientes", "rojo");
+      else toast("Guardado · " + r.estado_interno, "verde");
+      await mostrarBoleta(nums[0], nombre, vend || "", nums.length);
+    } catch (ex) { msg.textContent = String(ex.message || ex); msg.style.display = "block"; }
+  };
+}
+
+async function mostrarBoleta(numero, nombre, vendedor, cantidad) {
+  const dlg = el("div", { className: "card", id: "dlg-boleta" });
+  dlg.appendChild(el("h2", { textContent: "Boleta de " + numero + (cantidad > 1 ? " (y " + (cantidad - 1) + " más)" : "") }));
+  const sel = el("select");
+  sel.innerHTML = '<option value="es">Español</option><option value="en">English</option>';
+  dlg.appendChild(sel);
+  const cv = el("canvas"); cv.width = 880; cv.height = 520;
+  cv.style.cssText = "max-width:100%;height:auto;border:3px solid var(--negro);border-radius:8px;margin-top:12px;display:block";
+  dlg.appendChild(cv);
+  const acc = el("div", { className: "acciones" });
+  const bCopiar = el("button", { className: "chico rojo", textContent: "📋 Copiar imagen" });
+  const bCompartir = el("button", { className: "chico", textContent: "📤 Compartir" }); bCompartir.hidden = true;
+  const bGuardar = el("a", { className: "chico verde", textContent: "💾 Guardar", download: "boleta-" + numero + ".png" });
+  bGuardar.style.cssText = "text-decoration:none;display:inline-block;padding:6px 10px;font-weight:700;border:3px solid var(--negro);border-radius:8px;background:var(--verde);color:var(--crema)";
+  const bCerrar = el("button", { className: "chico gris", textContent: "Cerrar" });
+  acc.appendChild(bCopiar); acc.appendChild(bCompartir); acc.appendChild(bGuardar); acc.appendChild(bCerrar);
+  dlg.appendChild(acc);
+  dlg.appendChild(el("p", { className: "nota", textContent: "Copiar queda en el portapapeles; en WhatsApp mantén presionado el cuadro y Pegar." }));
+  $("#app").appendChild(dlg);
+
+  async function pintar() {
+    await dibujarCuandoListo(cv, { numero, nombre, vendedor: vendedor || "", idioma: sel.value });
+    bGuardar.href = cv.toDataURL("image/png");
+  }
+  await pintar();
+  sel.onchange = pintar;
+
+  try {
+    const prueba = new File([new Blob(["x"], { type: "image/png" })], "x.png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [prueba] })) bCompartir.hidden = false;
+  } catch {}
+
+  bCopiar.onclick = async () => {
+    try {
+      if (!(navigator.clipboard && window.ClipboardItem)) throw new Error("sin-soporte");
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": obtenerBlob(cv) })]);
+      bCopiar.textContent = "✅ ¡Copiada!";
+      setTimeout(() => (bCopiar.textContent = "📋 Copiar imagen"), 2200);
+    } catch { toast("No se pudo copiar. Usa Compartir o Guardar.", "rojo"); }
+  };
+  bCompartir.onclick = async () => {
+    try {
+      const b = await obtenerBlob(cv);
+      const f = new File([b], "boleta-" + numero + ".png", { type: "image/png" });
+      await navigator.share({ files: [f], title: "Mega Rifa Fusa " + numero });
+    } catch { toast("No se pudo compartir", "rojo"); }
+  };
+  bCerrar.onclick = () => dlg.remove();
+}
+
+// ────────── NÚMEROS ──────────
+
+async function pantallaNumeros(cont) {
+  cont.appendChild(el("h1", { textContent: "Números" }));
+  const filtros = el("div", { className: "filtro" });
+  filtros.innerHTML =
+    `<select id="fFil"><option value="todos">Todos</option><option value="pagados">Pagados</option>` +
+    `<option value="apartados">Apartados</option><option value="por_verificar">Por verificar</option>` +
+    `<option value="libres">Libres</option></select>` +
+    `<input id="fBus" placeholder="Busca un número">`;
+  cont.appendChild(filtros);
+  const estado = el("p", { textContent: "Cargando…" });
+  cont.appendChild(estado);
+
+  const filtro = filtros.querySelector("#fFil"), busca = filtros.querySelector("#fBus");
+  let datos = [];
+  async function cargar() {
+    try { datos = await rpc("tablero_admin", { p_filtro: filtro.value }); }
+    catch (e) { estado.className = "err"; estado.textContent = e.message; return; }
+    pintar();
+  }
+  function pintar() {
+    const q = (busca.value || "").trim();
+    for (const vieja of cont.querySelectorAll(".lista-num")) vieja.remove();
+    try { estado.remove(); } catch {}
+    const lista = el("div", { className: "lista-num" });
+    const vis = datos.filter(d => !q || d.numero.includes(q));
+    lista.appendChild(el("p", { textContent: vis.length + " números" }));
+    for (const d of vis.slice(0, 300)) {
+      const t = el("div", { className: "vend-tarjeta" });
+      const h = el("header");
+      h.appendChild(el("span", { className: "cod", textContent: d.numero }));
+      h.appendChild(el("span", { className: "nom", textContent: d.estado + (d.por_verificar ? " · ⚠ por verificar" : "") }));
+      if (d.vendedor) h.appendChild(el("span", { className: "tipo", textContent: d.vendedor }));
+      t.appendChild(h);
+      if (d.comprador) t.appendChild(el("p", { textContent: d.comprador }));
+      const acc = el("div", { className: "acciones" });
+      if (d.estado === "APARTADO") {
+        if (YO.rol === "admin") {
+          const bPag = el("button", { className: "chico verde", textContent: "Pagado · Nu" });
+          bPag.onclick = () => confirmar("Marcar " + d.numero + " como PAGADO (Nu)?", () =>
+            rpc("marcar_pagado", { p_numeros: [d.numero], p_metodo: "NU" }).then(() => { toast("Pagado"); cargar(); }).catch(err));
+          acc.appendChild(bPag);
+          const bPagEf = el("button", { className: "chico verde", textContent: "Pagado · Efectivo" });
+          bPagEf.onclick = () => rpc("marcar_pagado", { p_numeros: [d.numero], p_metodo: "EFECTIVO" }).then(() => { toast("Pagado"); cargar(); }).catch(err);
+          acc.appendChild(bPagEf);
+        }
+        const bNZ = el("button", { className: "chico verde", textContent: "Pagado · NZ" });
+        bNZ.onclick = () => rpc("marcar_pagado", { p_numeros: [d.numero], p_metodo: "NZ" }).then(() => { toast("Pagado"); cargar(); }).catch(err);
+        acc.appendChild(bNZ);
+        const b24 = el("button", { className: "chico gris", textContent: "Darle 24 h" });
+        b24.onclick = () => rpc("dar_24h", { p_numeros: [d.numero] }).then(() => { toast("24 h más"); cargar(); }).catch(err);
+        acc.appendChild(b24);
+        if (YO.rol === "admin") {
+          const bLib = el("button", { className: "chico rojo", textContent: "Liberar" });
+          bLib.onclick = () => confirmar("Liberar " + d.numero + " ahora?", () =>
+            rpc("liberar", { p_numeros: [d.numero] }).then(() => { toast("Libre"); cargar(); }).catch(err));
+          acc.appendChild(bLib);
+        }
+      }
+      const bFicha = el("button", { className: "chico gris", textContent: "Ficha" });
+      bFicha.onclick = async () => {
+        try {
+          const f = await rpc("ficha_numero", { p_numero: d.numero });
+          const body = el("div");
+          body.innerHTML = `<p><b>${f.numero}</b> · ${f.serial} · ${f.estado}${f.por_verificar ? " · por verificar" : ""}</p>`;
+          if (f.comprador) body.innerHTML += `<p>Comprador: ${f.comprador.nombre}${f.comprador.telefono ? " · " + f.comprador.telefono : ""}</p>`;
+          if (f.vendedor) body.innerHTML += `<p>Vendedor: ${f.vendedor.codigo} (${f.vendedor.nombre})</p>`;
+          if (f.vendedor_texto && !f.vendedor) body.innerHTML += `<p>Vendedor (texto): «${f.vendedor_texto}»</p>`;
+          if (f.vence_en) body.innerHTML += `<p>Vence: ${new Date(f.vence_en).toLocaleString("es-CO")}</p>`;
+          if (f.pagado_en) body.innerHTML += `<p>Pagado: ${new Date(f.pagado_en).toLocaleString("es-CO")} · ${f.metodo}</p>`;
+          if (f.notas) body.innerHTML += `<p>Notas: ${f.notas}</p>`;
+          const dlg = dialogo("Ficha · " + f.numero, body, [["Cerrar", () => dlg.remove(), "gris chico"]]);
+          $("#app").appendChild(dlg);
+        } catch (e) { err(e); }
+      };
+      acc.appendChild(bFicha);
+      t.appendChild(acc);
+      lista.appendChild(t);
+    }
+    cont.appendChild(lista);
+  }
+  filtro.onchange = cargar;
+  busca.oninput = () => pintar();
+  cargar();
+}
+
+function confirmar(txt, fn) { if (confirm(txt)) fn(); }
+
+async function deshacerUltima() {
+  try { const r = await rpc("deshacer_ultima", { p_lote: null }); toast("Deshecho · " + r.cambios + " cambio(s)", "verde"); render(); }
+  catch (e) { err(e); }
+}
 
 supabase.auth.onAuthStateChange((event) => {
   if (event === "SIGNED_OUT") location.reload();
