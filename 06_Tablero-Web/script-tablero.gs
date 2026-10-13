@@ -192,3 +192,55 @@ function alPagar_(e, hojaC) {
     }
   }
 }
+
+
+/**
+ * ── SERVICIO EN VIVO PARA LA WEB (doGet) ──────────────────────────────────
+ * La web lo llama cada 20 s. Responde en ~1 s con el estado REAL de la hoja, sin
+ * esperar los ~5 min de "Publicar en la web". Solo entrega lo que ya es público:
+ * número, estado y nombre acortado de los PAGADOS. Nada de COMPRADORES, teléfonos
+ * ni plata. Guarda 5 s en memoria para aguantar muchas visitas.
+ *
+ * Cómo se publica (una vez): Implementar -> Nueva implementación -> tipo
+ * "Aplicación web" -> Ejecutar como: Yo -> Quién tiene acceso: Cualquier persona
+ * -> Implementar. Copiar la URL que termina en /exec y pasársela a Claude.
+ * Si después se cambia este código: Implementar -> Administrar implementaciones
+ * -> lápiz -> Versión nueva -> Implementar (la URL no cambia).
+ */
+function doGet() {
+  var cache = CacheService.getScriptCache();
+  var out = cache.get('tablero_v1');
+  if (!out) {
+    var sh = SpreadsheetApp.getActive().getSheetByName(HOJA);
+    var vals = sh.getRange(1, 1, FILAS + 1, 9).getValues();
+    var h = vals[0].map(function (x) { return String(x).trim().toUpperCase(); });
+    var iN = h.indexOf('NUMERO'), iE = h.indexOf('ESTADO'), iM = h.indexOf('NOMBRE_PUBLICO');
+    var filas = [];
+    if (iN >= 0 && iE >= 0) {
+      for (var i = 1; i < vals.length; i++) {
+        var n = String(vals[i][iN]).trim();
+        if (!/^\d{1,3}$/.test(n)) continue;
+        n = ('000' + n).slice(-3);
+        var est = String(vals[i][iE]).trim().toUpperCase();
+        if (est !== 'PAGADO' && est !== 'APARTADO') continue;
+        filas.push([n, est, (est === 'PAGADO' && iM >= 0) ? acortarNombre_(vals[i][iM]) : '']);
+      }
+      out = JSON.stringify({ ok: true, t: Date.now(), v: filas });
+      cache.put('tablero_v1', out, 5);
+    } else {
+      out = JSON.stringify({ ok: false });
+    }
+  }
+  return ContentService.createTextOutput(out).setMimeType(ContentService.MimeType.JSON);
+}
+
+
+/** "Juan Perez" -> "Jua*** P." (igual que la web). Si ya viene acortado o es "Reservado", lo deja igual. */
+function acortarNombre_(txt) {
+  var t = String(txt || '').replace(/\s+/g, ' ').trim();
+  if (/^reservad[oa]$/i.test(t)) return 'Reservado';
+  if (!t || t.indexOf('*') >= 0) return t;
+  var p = t.split(' ');
+  var cap = function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); };
+  return cap(p[0].slice(0, 3)) + '***' + (p[1] ? ' ' + p[1].charAt(0).toUpperCase() + '.' : '');
+}

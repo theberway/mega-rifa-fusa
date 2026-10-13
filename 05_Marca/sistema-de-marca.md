@@ -77,6 +77,9 @@ El **777** de la pose 3 es adorno de marca, no un dato. Nunca se acompaña de un
 | Plantilla de feed | 600 × 600 | IG y TikTok; rótulo simplificado |
 | Collages 1 / 3 / 5 / 9 | 600 × 600 cada uno | Prueba social, cada foto con su número |
 | Plantilla del tablero | 1200 × 900 | La imagen diaria del tablero |
+| QR de la web (digital) | 1080 × 1080 | Compartir por WhatsApp y redes. `08_Contenido/qr/qr-digital.png` |
+| QR cartel carta | Carta (816 × 1056) | Tiendas y vitrinas. `08_Contenido/qr/qr-cartel-carta.pdf` |
+| QR stickers | 6 por carta (5 hojas = 30) | Para pegar por Fusa. `08_Contenido/qr/qr-stickers-30.pdf`. El QR siempre negro sobre blanco (decisión 44) |
 
 **Huecos que se llenan con datos reales**, nunca inventados: `[VAN]`, `[QUEDAN]`, `[###]`, nombre acortado `[Dav*** G.]`, `[CÓDIGO]` del vendedor, `[FECHA]`, `[HORA]` y los seriales `[A-0000]`. Los colores del tablero de la plantilla son un ejemplo de cómo se ve, no datos: cada día se pintan con lo que diga el Google Sheet.
 

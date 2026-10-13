@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Portada Facebook — Mega Rifa Fusa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo+Narrow:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
+/* Marca estilo A (05_Marca/sistema-de-marca.md). Portada de Facebook: 820 × 312 px (se exporta a 2× = 1640 × 624) */
+:root{--crema:#FFF4D6;--rojo:#C1121F;--amarillo:#F2B705;--azul:#0A3D62;--negro:#1A1A1A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--rojo)}
+body{font-family:'Archivo Narrow',sans-serif;color:var(--negro);-webkit-font-smoothing:antialiased}
+.slab{font-family:'Alfa Slab One',serif;font-weight:400}
+.mono{font-family:'Space Mono',monospace;font-weight:700}
+.banner{position:relative;width:820px;height:312px;background:var(--rojo);overflow:hidden}
+.caja{position:absolute;border:4px solid var(--negro)}
+/* Logo */
+.logo{left:44px;top:26px;width:292px;height:136px;background:var(--crema);display:flex;align-items:center;justify-content:center}
+.logo h1{font-size:40px;line-height:1;white-space:nowrap;color:var(--rojo);text-shadow:3px 3px 0 var(--negro);letter-spacing:.5px}
+/* Premio */
+.premio{left:44px;top:174px;width:292px;height:92px;background:var(--amarillo);padding:8px 14px 0}
+.premio .et{font-weight:700;font-size:13px;letter-spacing:2.5px;text-transform:uppercase}
+.premio .cifra{font-size:37px;line-height:1.08;white-space:nowrap}
+.premio .nota{font-size:12px;font-weight:600;margin-top:1px}
+/* Datos */
+.datos{left:354px;top:26px;width:240px;height:240px;background:var(--negro);color:var(--crema);padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between}
+.datos .n{color:var(--amarillo);font-size:23px;white-space:nowrap;line-height:1.05}
+.datos .n small{display:block;font-size:30px}
+.datos .lbl{font-weight:700;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--crema);opacity:.85}
+.datos .t{font-weight:700;font-size:18px;line-height:1.2}
+.datos hr{border:0;border-top:2px solid var(--crema);opacity:.35}
+/* Sutá */
+.suta{left:612px;top:26px;width:164px;height:240px;background:#F8EFDE;overflow:hidden}
+.suta img{position:absolute;left:-9px;top:12px;width:205px;max-width:none}
+.sello{position:absolute;left:640px;top:14px;transform:rotate(-6deg);background:var(--crema);border:3px solid var(--negro);color:var(--rojo);font-size:10px;letter-spacing:2px;padding:3px 7px;z-index:3;font-family:'Space Mono',monospace;font-weight:700}
+/* CTA */
+.cta{left:44px;top:278px;width:732px;height:0;border:0}
+.pie{position:absolute;left:44px;right:44px;bottom:7px;display:flex;justify-content:space-between;align-items:center;color:var(--crema);font-weight:700;font-size:13px}
+.pie .url{font-size:15px;letter-spacing:.5px}
+.flecha{color:var(--amarillo)}
+</style>
+</head>
+<body>
+<div class="banner" id="banner">
+  <div class="caja logo"><h1 class="slab">MEGA RIFA<br>FUSA</h1></div>
+
+  <div class="caja premio">
+    <div class="et">Premio en efectivo</div>
+    <div class="cifra slab">$2.000.000</div>
+    <div class="nota">Si el número ganador está vendido.</div>
+  </div>
+
+  <div class="caja datos">
+    <div>
+      <div class="n slab">1.000 números</div>
+      <div class="n slab">a $6.000</div>
+    </div>
+    <hr>
+    <div>
+      <div class="lbl">Sorteo</div>
+      <div class="t">Sáb 5 dic 2026 · 10:30 p.m.<br>Lotería de Boyacá</div>
+    </div>
+  </div>
+
+  <div class="caja suta"><img src="suta-senalando.jpg" alt="Sutá"></div>
+
+  <div class="pie">
+    <span>Fusagasugá · Organizada por Santiago · The Ber Way</span>
+    <span class="mono url"><span class="flecha">→</span> mega-rifa-fusa.vercel.app</span>
+  </div>
+</div>
+</body>
+</html>

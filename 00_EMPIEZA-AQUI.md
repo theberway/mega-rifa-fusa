@@ -2,6 +2,78 @@
 
 > Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto. **Estado al 2026-10-09: todo construido; falta que Santiago ejecute lo de "Siguiente paso" antes del sáb 10 oct.**
 
+## 13 oct — Fase 3A: panel para vender + boleta en 4 toques
+
+En la rama `claude/sweet-maxwell-bvoqti`. El panel `/admin` ahora tiene **Inicio · Vender · Números**: **Vender** registra una venta en 4 toques (pegar el mensaje de WhatsApp → nombre → chip de estado → Guardar) y emite la boleta reutilizando el generador privado. Estados: `APARTADO`, `PAGADO · Nu`, `PAGADO · Efectivo`, `Efectivo con vendedor (48 h)`, `Por verificar` y `PAGADO · NZ`; Sofía solo puede apartar, por verificar y PAGADO NZ (decisión 46). Botón **Deshacer la última** en Inicio.
+
+Lo que todavía **no** entrega 3A (va en 3B/3C):
+- Pestaña **Plata** (consignación, efectivo por vendedor), **estadísticas** con las fórmulas de `04_Finanzas/modelo-financiero.xlsx`, **auditoría** con lotes arbitrarios, **exportar CSV** y **respaldo diario**.
+- **Push de la PWA** (decisión 57): se difiere hasta que Santiago genere la llave VAPID en Supabase e instale el panel como PWA en el iPhone. Las alertas de 24 h, 48 h y 3 h sí llegan al panel por dentro.
+- Las **31 ventas viejas** del Sheet siguen sin vendedor ni método (decisión 56): se arreglan cuando lleguen los CSV privados.
+
+La web pública **no se tocó**: `publicar/index.html` sigue byte-a-byte igual que la rama, con `SHEET_CSV` presente y cero menciones de `supabase`. Nadie que ya compró se vio afectado.
+
+## 13 oct — Fase 2: panel admin con login + 2FA y gestión de vendedores
+- **`/admin` en vivo**: https://mega-rifa-fusa.vercel.app/admin (`noindex`, `X-Frame-Options: DENY`, `no-store`, CSP estricta). Login con Supabase Auth + 2FA TOTP obligatorio para `admin`. Usuarios en la lista blanca: Santiago (`admin`, `f987cff5-…`) y Sofía (`turno`, `62b89bb4-…`).
+- **Sección Vendedores**: lista con filtro (todos / activos / inactivos, por tipo), tarjetas con conteos (pagados, compradores distintos, apartados, cuánto le falta para el premio), botones «Copiar link» y «Compartir por WhatsApp», y para admin: Editar, Activar/Desactivar, + Alias y Detalle. Botón **«+ Agregar vendedor»** sugiere el código al escribir el nombre (mismas reglas del 10 oct) y da el link listo. **Descargar links (CSV)** en un botón.
+- **Sección Pendientes**: cola «Otra persona…» para asignar un texto suelto a un vendedor (con un toque, con o sin crear alias). Si el panel aún no tiene pendientes, dice «Nada pendiente».
+- **Mini-tarjeta `/v/CODIGO`** en vivo. Probado: `/v/JUANCARLOS` carga; códigos que no existen muestran el aviso dentro.
+- **RPCs del panel**: `mi_perfil`, `listar_vendedores`, `crear_vendedor`, `editar_vendedor`, `cambiar_estado_vendedor`, `fusionar_alias`, `referidos_pendientes`, `resolver_referido`, `detalle_vendedor`, `sugerir_codigo` (puente). Todas revisan rol y 2FA en el servidor (`rifa.rol_actor()`). `turno` solo puede listar y pedir detalle; `admin` hace todo.
+- **La web pública NO cambió**: sigue leyendo el Google Sheet. Fase 4 (cutover) la aprueba Santiago.
+
+**Siguiente paso para ti:**
+1. Entra a https://mega-rifa-fusa.vercel.app/admin con el correo y contraseña que creaste en Supabase.
+2. La primera vez que entres el panel te muestra un QR para activar 2FA — escanéalo con Google Authenticator (o la app que uses), escribe los 6 dígitos y listo.
+3. Ya adentro, verifica que la lista de vendedores sale completa (14 personas + 16 inactivos entre V01–T03/N02). Si quieres, agrega uno nuevo y mándale el link por WhatsApp desde el mismo panel.
+4. Dile a Sofía su correo y contraseña (ella no necesita 2FA; entra directo).
+
+**Lo que queda (Fase 3 en adelante):** panel de ventas (registrar venta en 4 toques + boleta), plata/consignación, estadísticas, auditoría con deshacer, respaldo diario, Edge Function de push + VAPID, y el cutover del tablero público (Fase 4). Detalle en `02_Decisiones/plan-panel-y-vendedores.md`.
+
+## 12–13 oct — Fase 1 de la base de datos y vendedores lista
+Santiago aprobó el plan `02_Decisiones/plan-panel-y-vendedores.md` (decisiones 45–55). Lo que quedó en pie:
+- **Supabase conectado y poblado** (proyecto `oyvrdwkoorkidoadnzmc`): 1.000 números, 32 vendedores (14 cargados + SBG/DIR + los V01–T03 inactivos), 3 alias (N01→SOFIA, MARIAJO→MARIAJOSE, TIAJULY→JULIANA), cron de vencimientos cada 5 min.
+- **Copia del tablero cargada** (31 pagados, 6 apartados, 963 libres, 15 compradores): la verificación 1:1 contra el CSV del Sheet pasa con cero diferencias. `cargar_copia` solo funciona en `modo='ensayo'`.
+- **4 RPC públicas** (`tablero_publico`, `vendedores_selector`, `resolver_codigo`, `mini_tarjeta`) probadas con la llave publicable. Las tablas privadas (`rifa.*`) no se ven desde la API: 404.
+- **Links listos** en `06_Tablero-Web/codigos-de-vendedores.md`. Los links viejos con `?v=N01` siguen contando (alias). Detalle completo en `06_Tablero-Web/base-de-datos.md`.
+- **Mini-tarjeta `/v/CODIGO`** construida (`publicar/v.html` + rewrite en `vercel.json`). Pendiente de desplegar junto con el resto del cambio.
+- **La web pública NO se tocó todavía**: sigue leyendo el Google Sheet. La Fase 4 (cambio) la aprueba Santiago.
+
+**Siguiente paso (Fase 2 — panel admin con login y 2FA):**
+1. En Supabase (Authentication → Users), crear tu usuario y el de Sofía con 2FA. Apagar «Allow new users to sign up».
+2. Pasarme sus `user_id` (los copias del listado) para agregarlos a `rifa.usuarios_panel` (admin + turno).
+3. En la próxima sesión se construyen las RPC del panel (`registrar_venta`, `marcar_pagado`, `liberar`, `dar_24h`, `crear_vendedor`, etc.), el panel `/admin` y la boleta.
+
+## 11 oct — `SHEET_CSV` actualizado y web redesplegada
+`index.html` y `publicar/index.html` ahora apuntan al Sheet `2PACX-1vSDP5V6…` (gid 540644959). Desplegado en producción (proyecto `mega-rifa-fusa`, dpl_2fr3fdETS3b9sqxVjiJemECjjd71) y verificado en vivo: la web muestra 998 libres, igual que el CSV (998 libres, 1 apartado, 1 pagado de prueba), sin errores. **Ojo:** el Sheet trae datos de prueba (002 apartado, 006 pagado); limpiarlos antes de vender.
+
+## 12 oct — nombres automáticos, «Ocupado», lupa y WhatsApp con mensaje
+- **Nombres**: en `NUMEROS!E` se puede escribir el nombre completo; la web lo acorta sola (`Juan Perez` → `Jua*** P.`, `Reservado` se respeta). Mismo criterio en `doGet` del script. **Ojo:** el CSV publicado sigue mostrando lo que se escriba en E a quien abra ese link; la web ya no, pero para que el CSV tampoco, hay que activar el servicio en vivo (`API_URL`).
+- La web dice **«Ocupado»** (antes «Pagado») en leyenda, ventana del número y textos; en el Sheet el estado interno sigue siendo PAGADO.
+- **Lupa «¡Busca si tu número está libre!»** entre el premio y «Así de fácil se paga»: libre → botón «¡Lo quiero!»; apartado u ocupado → 4 libres cercanos.
+- **WhatsApp de la franja** abre con el mensaje «¡Hola! Quiero más información de la Mega Rifa Fusa 🎟️» (ES/EN).
+
+## 11 oct (noche 5) — redes y contacto arriba en la web
+Franja de 3 botones justo bajo el encabezado de la web: **Instagram @megarifafusa**, **WhatsApp 333 401 8903** (`wa.me/573334018903`) y **Canal de WhatsApp** (`whatsapp.com/channel/0029VbEFFEuHbFV0qQVLE00y`). ES/EN. Desplegado.
+
+## 11 oct (noche 4) — generador privado: copiar / compartir la boleta
+`06_Tablero-Web/generador-privado.html` ahora tiene tres botones bajo la boleta: **Copiar imagen** (portapapeles, para pegar en el chat), **Compartir** (menú del celular → WhatsApp; solo aparece donde el navegador lo permite) y **Guardar**. Además se arregló un fallo de fondo: Sutá se cargaba desde `suta-boleta.jpg` y el navegador marcaba el lienzo como «contaminado», así que no dejaba exportar la imagen; ahora Sutá va **incrustada** y el archivo funciona solo (se puede pasar al celular sin la imagen). Probado: copia un PNG de 880×520, comparte el archivo `boleta-NNN.png` y avisa si el navegador no soporta copiar.
+
+## 11 oct (noche 3) — velocidad del tablero + ALERTA de nombres completos
+- La web ahora relee cada **20 s** (antes 60) y al volver a la pestaña. El retraso grande es de Google ("Publicar en la web" tarda hasta ~5 min). **Solución lista, falta que Santiago la active:** `doGet` al final de `06_Tablero-Web/script-tablero.gs` (servicio en vivo, solo datos ya públicos) → publicarlo como aplicación web, pasar la URL `/exec` y ponerla en `API_URL` de `publicar/index.html`. Si falla, la web cae sola al CSV.
+- **ALERTA (privacidad, decisión 35):** en `NUMEROS!E` (NOMBRE_PUBLICO) los números **575 y 718 tienen el nombre completo** escrito a mano y salen así en la web. Hay que restaurar la fórmula de E (ejecutar `repararTodo` en Apps Script, o copiar la fórmula de una fila vecina) y poner los nombres solo en `COMPRADORES`.
+
+## 11 oct (noche 2) — historia «Premio 2M» y reorden de la web
+- **Historia de Instagram/WhatsApp** (1080×1920, estilo de la web, zona segura respetada): `08_Contenido/historia-premio/` (`historia-premio.html` + `historia-premio.png`). Premio $2.000.000, boleta a $6.000, sorteo 5 dic, Sutá señalando, link. Sin whisky ni causa.
+- **Web**: el bloque «Así de fácil se paga» ahora va **justo debajo del premio**, y entre él y el contador hay un botón amarillo con flechas **«¡ESCOGE TU NÚMERO AQUÍ ABAJO!»** que baja directo a la cuadrícula. Desplegado y probado en vivo.
+
+## 11 oct (noche) — web: premio arriba + bloque de pago con botón de copiar
+`06_Tablero-Web/publicar/index.html` (y copia en `06_Tablero-Web/index.html`): bloque **¡¡PREMIO DE $2.000.000!!** + «Boleta a $6.000» + «Se juega el 5 de diciembre» como **lo primero que se ve**, y debajo de la cuadrícula el bloque **«Así de fácil se paga»** (3 pasos, botón grande **COPIAR LLAVE @sbg884** con aviso «¡LLAVE COPIADA!», y Sutá señalando el botón; imagen `suta-senalando.webp`). ES y EN. Se arregló además un error de ortografía que estaba en vivo: **«Boyaquí» → «Boyacá»** (2 veces en la web). Desplegado y probado en vivo (copia la llave al portapapeles).
+
+## Novedades del 11 oct — portada de Facebook y QR de la web
+- **Portada de Facebook** (estilo de marca, 1640×624): `08_Contenido/banner-facebook/` (HTML + PNG). Reemplaza al `banner-facebook.html` viejo (negro, Arial Black), que sigue ahí sin usarse.
+- **QR de la web** (**decisión 44**): `08_Contenido/qr/` (empezar por `00_LEEME.md`). Digital 1080×1080, cartel carta, **hoja de 6 stickers × 5 = 30** y SVG vectorial. Verificado: los 4 formatos leen `https://mega-rifa-fusa.vercel.app`. Imprimir en papel blanco, escala 100 %, adhesivo mate; **probar una hoja con dos celulares antes de pegar los 30**. **No cambiar el dominio después de imprimir.**
+- La web ya lee el Sheet nuevo (`2PACX-1vSDP5V6…`, desplegada el 11 oct). **El Sheet trae datos de prueba (002 apartado, 006 pagado): limpiarlos antes de vender.**
+
 ## Novedades del 10 oct — campaña de redes (IG · FB · TikTok) LISTA
 
 Todo en `08_Contenido/campana-rrss/` (empezar por `00_LEEME.md` y `calendario-publicacion.md`). Nada publicado: Santiago publica.

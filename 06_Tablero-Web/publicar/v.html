@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Tu panel de vendedor · Mega Rifa Fusa</title>
+<meta name="color-scheme" content="light">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo+Narrow:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--crema:#FFF4D6;--rojo:#C1121F;--amarillo:#F2B705;--azul:#0A3D62;--negro:#1A1A1A;--verde:#1E6F50}
+*{box-sizing:border-box}body{margin:0;background:var(--crema);color:var(--negro);font-family:"Archivo Narrow",sans-serif;font-size:17px;line-height:1.4}
+.w{max-width:520px;margin:0 auto;padding:0 16px 48px}
+header{background:var(--rojo);padding:16px;border-bottom:5px solid var(--negro);text-align:center;color:var(--crema);font-family:"Alfa Slab One",serif;font-size:22px;letter-spacing:.5px;text-shadow:2px 2px 0 var(--negro)}
+.card{background:#fff;border:4px solid var(--negro);border-radius:12px;box-shadow:5px 5px 0 var(--negro);padding:18px;margin-top:20px}
+h1{font-family:"Alfa Slab One",serif;font-size:28px;margin:0 0 6px}
+h2{font-family:"Alfa Slab One",serif;font-size:20px;margin:14px 0 8px}
+.cifras{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.c{border:3px solid var(--negro);border-radius:10px;padding:10px;text-align:center;background:var(--crema)}
+.c b{display:block;font-family:"Alfa Slab One",serif;font-size:34px;line-height:1;color:var(--rojo)}
+.c span{font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.05em}
+.bar{height:14px;background:#eee;border:2px solid var(--negro);border-radius:999px;overflow:hidden;margin-top:8px}
+.bar>i{display:block;height:100%;background:var(--verde)}
+.link-box{display:flex;gap:8px;margin-top:10px}
+.link-box input{flex:1;font-family:"Space Mono",monospace;font-size:14px;border:3px solid var(--negro);border-radius:8px;padding:8px}
+button{cursor:pointer;font-family:"Archivo Narrow",sans-serif;font-weight:700;background:var(--amarillo);color:var(--negro);border:3px solid var(--negro);border-radius:8px;padding:8px 14px;box-shadow:3px 3px 0 var(--negro)}
+button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--negro)}
+.wa{display:inline-block;margin-top:10px;text-decoration:none;color:var(--crema);background:var(--verde);border:3px solid var(--negro);border-radius:8px;padding:10px 14px;font-weight:700;box-shadow:4px 4px 0 var(--negro)}
+.err{color:var(--rojo);font-weight:700}
+.inactivo{background:#eee;border:3px dashed var(--negro);padding:10px;border-radius:10px;margin-top:12px;font-weight:600}
+.pie{margin-top:20px;font-size:12px;opacity:.8;text-align:center}
+</style>
+</head>
+<body>
+<header>MEGA RIFA FUSA</header>
+<main class="w">
+  <div class="card" id="caja">
+    <p id="estado">Cargando…</p>
+  </div>
+  <p class="pie">Esta página solo muestra tus propios conteos. Nunca aparecen nombres de compradores, teléfonos ni dinero.</p>
+</main>
+<script>
+// Mini-tarjeta de vendedor: solo conteos. Vive en /v/CODIGO (ver vercel.json: rewrite /v/:c → /v.html).
+const SUPABASE_URL = "https://oyvrdwkoorkidoadnzmc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_t_e7HPMI1g7rINUYIr0Ehg_OlzMMm3d";
+
+// Admite /v/CODIGO (rewrite) o /v.html?c=CODIGO (fallback local)
+function sacarCodigo() {
+  const u = new URL(location.href);
+  const q = (u.searchParams.get("c") || "").trim();
+  if (q) return q;
+  const partes = u.pathname.split("/").filter(Boolean);
+  // partes: ["v", "ANGELICA"] en producción
+  if (partes[0] === "v" && partes[1]) return partes[1];
+  return "";
+}
+
+async function rpc(fn, body) {
+  const r = await fetch(SUPABASE_URL + "/rest/v1/rpc/" + fn, {
+    method: "POST",
+    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(body || {})
+  });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+async function pintar() {
+  const codigo = sacarCodigo().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 24);
+  const caja = document.getElementById("caja");
+  if (!codigo) {
+    caja.innerHTML = '<p class="err">No viene ningún código en el link. Pídele el link completo a Santiago.</p>';
+    return;
+  }
+  try {
+    const d = await rpc("mini_tarjeta", { p_codigo: codigo });
+    if (!d || !d.ok) {
+      caja.innerHTML = '<p class="err">No encontramos el código <b>' + codigo + '</b>. Revisa el link con Santiago.</p>';
+      return;
+    }
+    const link = "https://mega-rifa-fusa.vercel.app/?v=" + d.codigo;
+    const falta = Math.max(0, d.faltan);
+    const prog = Math.min(100, Math.round(100 * d.compradores / (d.umbral + 1)));
+    caja.innerHTML =
+      '<h1>' + escape_(d.etiqueta) + '</h1>' +
+      '<p>Código: <b style="font-family:Space Mono,monospace">' + d.codigo + '</b></p>' +
+      (d.activo ? '' : '<div class="inactivo">⚠️ Tu código está <b>inactivo</b>: ya no sale en la lista pública, pero este link sigue contando. Pregúntale a Santiago si lo quieres volver a activar.</div>') +
+      '<div class="cifras">' +
+        '<div class="c"><b>' + d.pagados + '</b><span>pagados</span></div>' +
+        '<div class="c"><b>' + d.compradores + '</b><span>compradores distintos</span></div>' +
+        '<div class="c"><b>' + d.apartados + '</b><span>apartados</span></div>' +
+        '<div class="c"><b>' + falta + '</b><span>para el premio</span></div>' +
+      '</div>' +
+      '<h2>Avance hacia el premio</h2>' +
+      '<p>Si vendes a <b>más de ' + d.umbral + ' personas distintas</b> y uno de tus compradores gana, te llevas <b>COP 100.000</b>.</p>' +
+      '<div class="bar"><i style="width:' + prog + '%"></i></div>' +
+      '<h2>Tu link para compartir</h2>' +
+      '<p>Quien entre por aquí llega a WhatsApp con tu código ya puesto; no tienes que hacer nada más.</p>' +
+      '<div class="link-box"><input id="l" readonly value="' + link + '"><button id="cp">Copiar</button></div>' +
+      '<a class="wa" id="wa" target="_blank" rel="noopener">Compartir por WhatsApp</a>';
+    document.getElementById("cp").onclick = async () => {
+      try { await navigator.clipboard.writeText(link); } catch (e) { document.getElementById("l").select(); document.execCommand("copy"); }
+      document.getElementById("cp").textContent = "¡Copiado!";
+      setTimeout(() => document.getElementById("cp").textContent = "Copiar", 1500);
+    };
+    const msg = "¡Hola! Soy " + d.etiqueta + " y estoy vendiendo boletas de la Mega Rifa Fusa. Si quieres, escoge tu número aquí 👉 " + link;
+    document.getElementById("wa").href = "https://wa.me/?text=" + encodeURIComponent(msg);
+  } catch (e) {
+    caja.innerHTML = '<p class="err">No pudimos leer tus conteos (' + e.message + '). Intenta de nuevo en un rato.</p>';
+  }
+}
+function escape_(s){ const d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
+pintar();
+</script>
+</body>
+</html>
