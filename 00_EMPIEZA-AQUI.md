@@ -4,6 +4,8 @@
 
 ## ⏭ Siguiente paso: cerrar Fase 4 (lo que le toca a Santiago) y pasar a Fase 5
 
+**13 oct, noche — decisión 64, desplegada:** selector «¿Quién te compartió la rifa?» en la web, menú desplegable de vendedores en `/admin` → Vender, y las ventas viejas ya tienen vendedor (47 pagados, ninguno sin vendedor; 4 números en DIR: Ignacio Cobos y Sophia Moreno, a confirmar). El selector queda hecho: ya no falta el paso 3 del checklist de la Fase 4.
+
 **13 oct, ~15:45 Bogotá — Fase 4 ejecutada (decisión 63).** La web pública **ya lee Supabase** (`FUENTE="supabase"`, refresco 15 s, sin vuelta al Sheet) y la base está en `modo='real'`. Desplegado como `mega-rifa-fusa-2vx1lrats`; verificado en vivo: contadores iguales a la base (46 pagados · 2 apartados a las 01:04 UTC del 14 oct), cero llamadas a Google, sin errores. Santiago probó la latencia con el 000 desde `/admin` y funcionó (tiempo exacto no medido; ≤15 s por diseño).
 
 **Pendiente de Santiago (manual):** en Google Sheets, *Publicar en la web → Detener publicación* y *Acceso general → Restringido*. Mientras no lo haga, el CSV con nombres completos sigue expuesto.
