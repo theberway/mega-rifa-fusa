@@ -1,6 +1,6 @@
 # Handoff para la próxima sesión local — Mega Rifa Fusa
 
-*Guardado el 2026-10-13. Rama: `claude/sweet-maxwell-bvoqti`. **Fases 3A, 3B y 3C desplegadas**. Siguiente sesión arranca en **Fase 4 (cutover del tablero)**: ver `02_Decisiones/plan-fase-4-cutover.md`.*
+*Actualizado el 2026-10-13 (noche). Rama: `claude/sweet-maxwell-bvoqti`. **Fases 3A, 3B, 3C y 4 desplegadas** (decisión 63). Siguiente: lo pendiente de Santiago (Sheet) y **Fase 5**.*
 
 ## Qué está hecho
 
@@ -10,11 +10,14 @@
 - **Fase 3B** (13 oct) · **Plata y estadísticas**, en vivo. Migración **007** (`007_plata_estadisticas.sql`). Pestañas nuevas solo-admin: **Plata** (consignación en lote) y **Más** (REAL vs PROYECCIÓN separadas + ranking de vendedores con aviso 35/43 sin vendedor). Fórmulas EMPIEZA C8/C10/C12 y REGLA-PREMIO en SQL leyendo `rifa.config`; paridad al peso con el xlsx recalculado. Decisiones 59–60.
 - **Fase 3C** (13 oct) · **Auditoría + exportar + respaldo diario**, en vivo. Migración **008** (`008_auditoria_respaldo.sql`). RPC: `auditoria`, `deshacer_lote` (números y pagos), `exportar` (4 tablas, CSV con BOM), `respaldos_lista`. Cron `respaldo_diario` en pg_cron a las `0 8 * * *` UTC (03:00 Bogotá), retención 30 días. Panel con 3 secciones nuevas dentro de Más (solo admin). Decisiones 61–62.
 - Lista blanca: Santiago (`admin`, `f987cff5-3429-4f01-a5f3-4d5adb1046dc`) y Sofía (`turno`, `62b89bb4-0fe3-4365-b675-24fabec11bd3`).
-- La web pública **sigue leyendo el Google Sheet**. Nada le cambió a nadie que ya compró. `SHEET_CSV` sigue presente y no hay rastro de `supabase` en `publicar/index.html` (comprobado byte a byte).
+- **Fase 4** (13 oct, ~15:45 Bogotá) · **Cutover hecho.** La web pública lee `tablero_publico()` de Supabase (`FUENTE="supabase"`, refresco 15 s, sin vuelta silenciosa al Sheet) y `rifa.config.modo='real'`. Deployment `mega-rifa-fusa-2vx1lrats`; `SHEET_CSV` queda como constante. Verificado en vivo (web = base, cero llamadas a Google) y latencia probada por Santiago con el 000. `verificar.py` dio 6 diferencias (079, 111, 145, 220, 529, 806), todas ventas reales hechas desde `/admin`. Decisión 63. **Los cambios de `index.html` están sin commit.**
 
-## Siguiente paso: Fase 4
+## Siguiente paso
 
-Checklist ejecutable paso a paso en **`02_Decisiones/plan-fase-4-cutover.md`**. La sesión nueva lee ese archivo y arranca. Requiere aprobación de Santiago para la ventana nocturna. Decisión 52 ya aprobada (la fuente cambia, no hay vuelta al Sheet, el rollback es un paso en Vercel). Decisión 63 se escribe al terminar el cutover.
+1. **Santiago (manual):** Google Sheets → *Publicar en la web → Detener publicación* y *Acceso general → Restringido*. Mientras tanto el CSV con nombres completos sigue expuesto.
+2. **Fase 5:** actualizar `07_Kit-de-Ventas/05_guia-vendedores-y-tiendas.md`, `03_Hoja-de-ruta/rutina-diaria.md`, `codigos-de-vendedores.md` y `LEEME-como-publicar.md`.
+3. **Corregir las 31 ventas viejas** sin vendedor ni método (decisión 56): `cargar_copia` e `importar.py` están bloqueados en `modo='real'`, hace falta otra vía.
+4. **Rollback:** promover `mega-rifa-fusa-1g5pwinxc` ya no es seguro: el Sheet no tiene las ventas posteriores al corte.
 
 ## Qué falta (Fase 4 → Fase 5)
 

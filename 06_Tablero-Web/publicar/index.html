@@ -312,9 +312,9 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
   </section>
 
   <footer>
-    <p class="es-only">Mega Rifa Fusa · Fusagasugá, 2026 · El tablero se refresca solo cada 20 segundos.</p>
+    <p class="es-only">Mega Rifa Fusa · Fusagasugá, 2026 · El tablero se refresca solo cada 15 segundos.</p>
     <p class="es-only">The Ber Way (<a href="https://instagram.com/theberway" target="_blank" rel="noopener">@theberway</a>) by Santiago (<a href="https://instagram.com/santiagobermudezai" target="_blank" rel="noopener">@santiagobermudezai</a>)</p>
-    <p class="en-only">Mega Rifa Fusa · Fusagasugá, 2026 · The board refreshes on its own every 20 seconds.</p>
+    <p class="en-only">Mega Rifa Fusa · Fusagasugá, 2026 · The board refreshes on its own every 15 seconds.</p>
     <p class="en-only">The Ber Way (<a href="https://instagram.com/theberway" target="_blank" rel="noopener">@theberway</a>) by Santiago (<a href="https://instagram.com/santiagobermudezai" target="_blank" rel="noopener">@santiagobermudezai</a>)</p>
   </footer>
 </div>
@@ -347,12 +347,19 @@ const WHATSAPP  = "573334018903";   // línea WhatsApp Business de la rifa
 /* ── Lo de abajo no hace falta tocarlo ── */
 const CIERRE   = new Date("2026-12-05T18:00:00-05:00");
 const TOTAL    = 1000;
-const REFRESCO = 20000;   // la web relee el tablero cada 20 s (y al volver a la pestaña)
+const REFRESCO = 15000;   // la web relee el tablero cada 15 s (y al volver a la pestaña)
 
 // 3) (opcional, MÁS RÁPIDO) URL de la aplicación web de Apps Script (termina en /exec).
 //    Lee el Sheet en vivo, sin el retraso de ~5 min de "Publicar en la web".
 //    Vacío = se usa solo el CSV de arriba. Si el servicio falla, también cae al CSV.
 const API_URL = "";
+
+// 4) Fuente de los datos (Fase 4, cutover). "supabase" = RPC pública tablero_publico() de la base.
+//    "sheet" = el CSV de arriba (ya no se usa en producción; queda solo como vía de rollback).
+//    Con "supabase", si la lectura falla NO se cae al Sheet: se muestra el aviso honesto (regla fija 3).
+const FUENTE   = "supabase";   // "supabase" | "sheet"
+const SUPA_URL = "https://oyvrdwkoorkidoadnzmc.supabase.co";
+const SUPA_KEY = "sb_publishable_t_e7HPMI1g7rINUYIr0Ehg_OlzMMm3d";   // llave publicable: solo puede llamar RPC públicas
 
 /* ══════════════════════════════════════════════════════════════ */
 
@@ -440,10 +447,45 @@ async function cargarAPI() {
   } catch (e) { return false; }
 }
 
+/* Base de datos (Supabase): RPC pública tablero_publico() -> {t, v:[[numero, estado, nombre_acortado], ...]}.
+   Solo trae PAGADO y APARTADO; el resto es LIBRE. Si falla, NO se cae al Sheet: aviso honesto. */
+async function cargarSupabase() {
+  try {
+    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 8000);
+    const r = await fetch(SUPA_URL + "/rest/v1/rpc/tablero_publico", {
+      method: "POST",
+      headers: { "apikey": SUPA_KEY, "Authorization": "Bearer " + SUPA_KEY, "Content-Type": "application/json" },
+      body: "{}",
+      cache: "no-store",
+      signal: ctl.signal
+    });
+    clearTimeout(to);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    if (!j || j.ok === false || !Array.isArray(j.v)) throw new Error("respuesta inesperada");
+    const m = {}, nm = {};
+    for (let i = 0; i < TOTAL; i++) m[String(i).padStart(3, "0")] = "LIBRE";
+    for (const f of j.v) {
+      const n = String(f[0] || "").padStart(3, "0");
+      if (!(n in m)) continue;
+      m[n] = f[1] === "PAGADO" ? "PAGADO" : "APARTADO";
+      if (m[n] === "PAGADO") nm[n] = acortar(f[2]);
+    }
+    estados = m; nombres = nm;
+    $("#estadoDatos").hidden = true;
+    pintarGrid(); pintarContadores();
+  } catch (err) {
+    sinDatos("error", err.name === "AbortError" ? "tiempo agotado" : err.message);
+  }
+}
+
 let cargando = false;
 async function cargar() {
   if (cargando) return; cargando = true;
-  try { if (await cargarAPI()) return; await cargarCSV(); } finally { cargando = false; }
+  try {
+    if (FUENTE === "supabase") { await cargarSupabase(); return; }
+    if (await cargarAPI()) return; await cargarCSV();
+  } finally { cargando = false; }
 }
 
 async function cargarCSV() {

@@ -3,7 +3,7 @@
 *Sesión del 12–13 oct 2026 · decisiones 45–55.*
 
 Esta es la fuente de verdad DE LA FASE 1 del plan `02_Decisiones/plan-panel-y-vendedores.md`.
-Hoy la base es una **copia** del Google Sheet: el Sheet sigue siendo lo que vende; la base se recarga con un comando. El cambio (Fase 4) solo se hace con tu aprobación.
+**Desde el 13 oct (~15:45 Bogotá, decisión 63) la base es la fuente única:** `rifa.config.modo = 'real'`, la web pública lee `tablero_publico()` cada 15 s y el Sheet quedó archivado (no recibe ventas). Con `modo='real'`, `rifa.cargar_copia()` y `importar.py` **ya no funcionan**; las secciones «Cómo recargar la copia» y «Verificar 1:1» de abajo son del periodo de ensayo (Fase 1). `verificar.py` compara contra el Sheet, que ya está viejo: no sirve como prueba hoy.
 
 ## Proyecto
 
@@ -91,7 +91,7 @@ Debe decir «Diferencias: 0». Si no, no se hace el cambio.
 |---|---|---|
 | **3B · Plata y estadísticas** | ✅ hecho (ver estado arriba) | `publicar/admin/`, `supabase/migraciones/007_plata_estadisticas.sql` |
 | **3C · Auditoría, exportar y respaldo** | ✅ hecho (ver estado arriba) | `publicar/admin/`, `supabase/migraciones/008_auditoria_respaldo.sql` |
-| **4 · Cambio del tablero** | Encender `FUENTE="supabase"` en la web, poner `rifa.config.modo='real'`, dejar el Sheet protegido y dejar de publicar su CSV | `publicar/index.html` |
+| **4 · Cambio del tablero** | ✅ hecho el 13 oct (decisión 63): `FUENTE="supabase"`, `modo='real'`, desplegado. **Pendiente de Santiago:** dejar de publicar el CSV del Sheet y ponerlo en Restringido | `publicar/index.html` |
 | **5 · Mini-tarjetas y retiro del Excel** | `/v/CODIGO` ya construida en Fase 1; falta actualizar las guías de vendedores y la rutina diaria | `codigos-de-vendedores.md` ya actualizado; falta `07_Kit-de-Ventas/05_...md` y `03_Hoja-de-ruta/rutina-diaria.md` |
 
 **Push de la PWA (decisión 57, modifica la 53):** no se construye en 3A; alertas solo dentro del panel. Para encenderlo después hace falta Edge Function `alertas`, service worker, llave VAPID (privada en Vault, pública en el panel) y, en iPhone, instalar la PWA en la pantalla de inicio.

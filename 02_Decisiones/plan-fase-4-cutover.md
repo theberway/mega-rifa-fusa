@@ -2,6 +2,8 @@
 
 *Guardado el 2026-10-13. Rama de arranque: `claude/sweet-maxwell-bvoqti`. Base: Supabase `oyvrdwkoorkidoadnzmc`.*
 
+> **EJECUTADO el 13 oct 2026 (~15:45 Bogotá), decisión 63.** Desviaciones respecto a este checklist: (1) `verificar.py` dio 6 diferencias, no 0, porque eran ventas reales hechas desde `/admin` que el Sheet no tenía; se aceptó con Santiago y **no** se corrió `cargar_copia`; (2) el paso 3 (selector de referido) se dejó para la Fase 5; (3) no se probó el bloqueo ejecutando `cargar_copia('{}')`: se confirmó que la función tiene el guard de `ensayo`; (4) la latencia la probó Santiago con el 000 sin medir el tiempo exacto; (5) el rollback del final ya no es seguro tras las primeras ventas posteriores al corte.
+
 Este archivo es el checklist ejecutable. Una sesión nueva puede arrancarlo sin más contexto: leer esto, confirmar pre-condiciones, ejecutar.
 
 **Qué cambia**: la web pública deja de leer el Google Sheet y empieza a leer `tablero_publico()` de Supabase. Decisión 52 ya aprobada por Santiago.

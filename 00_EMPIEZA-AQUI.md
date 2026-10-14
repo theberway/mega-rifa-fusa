@@ -2,11 +2,18 @@
 
 > Si eres una sesión nueva: lee este archivo, después `02_Decisiones/plan-maestro.md` completo y la memoria del proyecto (`MEMORY.md`, sobre todo `rifa-fusa-estado-2026-10-09` y `rifa-fusa-herramientas-y-despliegue`). Con eso tienes todo el contexto.
 
-## ⏭ Siguiente paso: Fase 4 — cutover del tablero público
+## ⏭ Siguiente paso: cerrar Fase 4 (lo que le toca a Santiago) y pasar a Fase 5
 
-**Fases 3A, 3B y 3C están desplegadas (13 oct)**. El panel `/admin` ya vende, cobra, muestra estadísticas, audita, exporta y respalda. La web pública **todavía lee el Google Sheet**: la Fase 4 cambia esa fuente a Supabase.
+**13 oct, ~15:45 Bogotá — Fase 4 ejecutada (decisión 63).** La web pública **ya lee Supabase** (`FUENTE="supabase"`, refresco 15 s, sin vuelta al Sheet) y la base está en `modo='real'`. Desplegado como `mega-rifa-fusa-2vx1lrats`; verificado en vivo: contadores iguales a la base (46 pagados · 2 apartados a las 01:04 UTC del 14 oct), cero llamadas a Google, sin errores. Santiago probó la latencia con el 000 desde `/admin` y funcionó (tiempo exacto no medido; ≤15 s por diseño).
 
-Checklist ejecutable paso a paso en **`02_Decisiones/plan-fase-4-cutover.md`**. Requiere ventana nocturna aprobada por Santiago (decisión 52 ya aprobada; sin regreso automático al Sheet; rollback = promover deployment anterior en Vercel). Antes de desplegar, **`verificar.py` tiene que dar `Diferencias: 0`**.
+**Pendiente de Santiago (manual):** en Google Sheets, *Publicar en la web → Detener publicación* y *Acceso general → Restringido*. Mientras no lo haga, el CSV con nombres completos sigue expuesto.
+
+**Ojo con tres cosas:**
+- **Rollback:** promover `mega-rifa-fusa-1g5pwinxc` ya no es seguro: el Sheet no tiene las ventas hechas desde el corte. Habría que copiarlas a mano.
+- **`verificar.py` ya no sirve como prueba:** compara contra el Sheet, que quedó viejo. Dio 6 diferencias (079, 111, 145, 220, 529, 806), todas ventas reales de `/admin`.
+- **`cargar_copia` / `importar.py` bloqueados** en `real`: corregir las 31 ventas viejas sin vendedor ni método (decisión 56) necesita otra vía.
+
+**Sigue Fase 5:** actualizar `07_Kit-de-Ventas/05_guia-vendedores-y-tiendas.md`, `03_Hoja-de-ruta/rutina-diaria.md`, `06_Tablero-Web/codigos-de-vendedores.md` y `LEEME-como-publicar.md` para decir que la fuente es Supabase; push de la PWA cuando Santiago genere la VAPID. El checklist usado está en `02_Decisiones/plan-fase-4-cutover.md`.
 
 ## 13 oct — Fase 3C: auditoría + exportar + respaldo diario
 
