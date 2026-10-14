@@ -72,7 +72,7 @@ El análisis estima que cada vendedor **fijo** mueve entre **25 y 50 números** 
 
 Más lo que ya se estimó de otras fuentes (red directa **150–250**, tiendas **40–120**, NZ **50–100**): el **centro realista al 5 dic sigue siendo ~700**. **Si los fijos son menos de 6, baja.** Con 4 fijos el centro se va a ~600, y ahí el punto de control 2 del 25 oct (meta 320) exige activar refuerzos desde ese día.
 
-Ojo: el umbral de **25 personas distintas** es para el premio de 100k, **no una meta de ventas**. Un vendedor que vende 15 es un buen vendedor.
+Ojo: la meta de **25 boletas pagadas** (pueden ser varias a la misma persona) es para el premio de 100k, **no una meta de ventas**. Un vendedor que vende 15 es un buen vendedor.
 
 ## 7. Mensaje para pedir la confirmación (WhatsApp, 1 a 1)
 

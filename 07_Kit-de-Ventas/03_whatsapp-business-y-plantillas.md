@@ -90,10 +90,10 @@ Cada una está pensada para **un caso**. Se copian, se cambia lo que va entre co
 > Te entiendo, hay que desconfiar. Mira el tablero: ahí aparece cada número pagado con el nombre acortado del dueño, y la lista final se publica **3 horas y media antes** del sorteo. El pago va **a mi cuenta personal de Nu (@sbg884)** y el premio se entrega con **video y acta**. Si algo no te cuadra, no compres.
 
 **Plantilla 12 · Agradecimiento a quien ayudó a vender**
-> Gracias por mover la rifa, [nombre]. Hasta hoy vendiste a **[N]** personas distintas. A más de 25, te llevas **$100.000** si uno de tus compradores gana. Cada domingo te mando tu resumen.
+> Gracias por mover la rifa, [nombre]. Hasta hoy vendiste **[N]** boletas pagadas. Con 25, te llevas **$100.000** si uno de tus compradores gana. Cada domingo te mando tu resumen.
 
 **Plantilla 13 · A los vendedores (domingo, resumen)**
-> Resumen de la semana, [nombre]: vendiste **[N]** números a **[M]** personas distintas. Tienes **$[X]** pendientes de entregar (máximo 48 h después de cada venta). Gracias por mover esto 🙌
+> Resumen de la semana, [nombre]: vendiste **[N]** boletas pagadas (a **[M]** personas distintas; te faltan **[F]** para las 25 del premio). Tienes **$[X]** pendientes de entregar (máximo 48 h después de cada venta). Gracias por mover esto 🙌
 
 ## 5. Plantillas para Nueva Zelanda (EN)
 

@@ -4,7 +4,7 @@
 
 ## 1. Qué es ser vendedor
 Eres alguien que le habla de la rifa a su gente (familia, amigos, compañeros, vecinos, trabajo). **No eres un empleado y no hay comisión por número** (Gneezy y Rustichini, 2000: pagar poquito motiva menos que no pagar). Lo que sí hay:
-- **COP 100.000** si le vendes a **más de 25 personas distintas** y **uno de tus compradores gana** (sea el premio de 2 millones o el whisky).
+- **COP 100.000** si vendes **25 boletas pagadas** (pueden ser varias a la misma persona) y **uno de tus compradores gana** (sea el premio de 2 millones o el whisky).
 - Un **resumen cada domingo** con lo que vendiste y lo que tienes pendiente.
 - Tu nombre en el tablero **no aparece**: tu código solo lo ve Santiago.
 
@@ -48,7 +48,7 @@ Cada vendedor tiene un código de **3 caracteres** (`V01`–`V12`) y un link: `h
 - Tu **código y tu link**.
 - El **kit de una página** (lienzo de marca) para mostrar desde el celular.
 - Plantillas de mensajes (`03_whatsapp-business-y-plantillas.md`).
-- **El resumen cada domingo**: cuántos números vendiste, cuántas personas distintas llevas (va para el umbral de 25) y cuánta plata tienes pendiente.
+- **El resumen cada domingo**: cuántos números vendiste, cuántas boletas pagadas llevas (la meta del premio es 25) y cuánta plata tienes pendiente.
 
 ---
 

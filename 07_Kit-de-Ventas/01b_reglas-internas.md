@@ -12,7 +12,7 @@
 | C | Datos de compradores | **Se conservan** para posibles campañas de The Ber Way, **solo con SÍ del comprador** (columna `QUIERE_TBW`; ver `00_Company\Strategy\Audience-from-Mega-Rifa-Fusa.md`) |
 
 ## Operación (no público)
-- **Premio al vendedor**: COP 100.000 si vende a más de 25 personas distintas y uno de sus compradores gana (el de 2M o el del whisky). No aplica a lo que venda Santiago. Tiendas: 10% por número (COP 600), liquidado cada domingo sobre números PAGADOS.
+- **Premio al vendedor**: COP 100.000 si vende 25 boletas pagadas (pueden ser varias a la misma persona) y uno de sus compradores gana (el de 2M o el del whisky). No aplica a lo que venda Santiago. Tiendas: 10% por número (COP 600), liquidado cada domingo sobre números PAGADOS.
 - **Efectivo con vendedores**: lo entregan en máximo **48 horas**; si no, sus números se liberan.
 - **Nueva Zelanda**: pago a Sofía por transferencia con el número de la boleta como referencia. Premio de NZD 1.000 con mínimo equivalente a COP 1.900.000 (Sofía completa la diferencia, hoy ≈ NZD 31). Si la consolación cae en NZ, Sofía compra un equivalente (hasta ~NZD 160) y Santiago le devuelve en pesos por Bre-B. Detalle en `06_manual-de-sofia.md`.
 - **Whisky**: Buchanan's Master 750 ml, COP 210.000 (Éxito, captura del 8 oct, solo de referencia). **Se compra después del sorteo, solo si se activa la consolación** (decisión 41): si nadie compró el número ganador, los 2M no se pagan y de ahí salen los 210k, así que no se aparta plata por adelantado. Si ya no existe esa botella, un producto equivalente de igual o mayor valor.

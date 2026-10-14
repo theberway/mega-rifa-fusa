@@ -409,9 +409,16 @@ let idioma  = "es";
 const qs = new URLSearchParams(location.search);
 let vend = (qs.get("v") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 24);
 let ref = null;   // null = todavía no se sabe quién lo compartió
+/* Lo que se recuerda vence a los 7 días (decisión 66). Antes un ?v= viejo se quedaba para siempre y el link
+   general mostraba «te atiende X» de una visita de hace semanas; el formato viejo (mrf_v, sin fecha) se descarta. */
+const SIETE_DIAS = 7 * 24 * 3600 * 1000;
 try {
-  if (vend) localStorage.setItem("mrf_v", vend);
-  else vend = localStorage.getItem("mrf_v") || "";
+  localStorage.removeItem("mrf_v");
+  if (vend) localStorage.setItem("mrf_v2", JSON.stringify({ c: vend, t: Date.now() }));
+  else {
+    const g = JSON.parse(localStorage.getItem("mrf_v2") || "null");
+    if (g && g.c && Date.now() - g.t < SIETE_DIAS) vend = g.c; else localStorage.removeItem("mrf_v2");
+  }
 } catch (e) { /* navegador sin almacenamiento: el código vale solo para esta visita */ }
 if (vend) {
   ref = { t: "v", c: vend, n: null };
@@ -419,12 +426,14 @@ if (vend) {
 } else {
   try {
     const g = JSON.parse(localStorage.getItem("mrf_ref") || "null");
-    if (g && (g.t === "nadie" || (g.t === "v" && g.c) || (g.t === "otro" && g.x))) ref = g;
+    const vigente = g && g.f && Date.now() - g.f < SIETE_DIAS;
+    if (vigente && (g.t === "nadie" || (g.t === "v" && g.c) || (g.t === "otro" && g.x))) ref = g;
+    else if (g) localStorage.removeItem("mrf_ref");
   } catch (e) {}
 }
 function guardarRef(r) {
   ref = r;
-  try { localStorage.setItem("mrf_ref", JSON.stringify(r)); } catch (e) {}
+  try { localStorage.setItem("mrf_ref", JSON.stringify(Object.assign({ f: Date.now() }, r))); } catch (e) {}
   pintarVendedor();
 }
 function pintarVendedor() {

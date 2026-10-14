@@ -30,7 +30,7 @@ Cada domingo, con los totales del Sheet en la mano. Son 7 puntos de control más
 2. **Plata real**: ¿cuadra el Sheet con Nu + libreta de efectivo + libreta de NZ?
 3. **Reserva del premio**: ¿ya están los COP 2.000.000 apartados? (si no, es la prioridad absoluta)
 4. **Neto proyectado** al ritmo actual (ver el modelo financiero, hoja `ESCENARIOS`)
-5. **Vendedores**: cuántos activos, cuántos vendieron 0 esta semana, quién ya pasó de **25 compradores distintos**
+5. **Vendedores**: cuántos activos, cuántos vendieron 0 esta semana, quién ya llegó a **25 boletas pagadas**
 6. **Tiendas**: cuántas cerradas (meta 1–3) y cuánto vendió cada una
 7. **NZ**: números vendidos y NZD recaudados (meta total 50–100 números)
 8. **Mezcla de canales**: ¿de dónde vinieron los compradores nuevos? (directo / vendedor / tienda / web / Facebook / U / NZ)
@@ -42,7 +42,7 @@ Cada domingo, con los totales del Sheet en la mano. Son 7 puntos de control más
 
 | Orden | Refuerzo | Costo | Cuánto puede mover | Cuánto demora en hacer efecto |
 |---|---|---|---|---|
-| 1 | **Reto de vendedores + cerrar tiendas**: recordar el premio de COP 100k y el umbral de 25 compradores; cerrar las tiendas que falten | 0 | +40 a +100 | 3–7 días |
+| 1 | **Reto de vendedores + cerrar tiendas**: recordar el premio de COP 100k y la meta de 25 boletas pagadas; cerrar las tiendas que falten | 0 | +40 a +100 | 3–7 días |
 | 2 | **Oleada en grupos de Facebook de Fusa** (con permiso del admin) | 0 | +20 a +60 | 1–3 días |
 | 3 | **Día fuerte en la UdeC** (presencia física, voz, mesa) | 0 | +30 a +80 | el mismo día |
 | 4 | **Publicación de Tizumba** | ~COP 100k | +50 a +150 | 1–3 días |

@@ -67,3 +67,17 @@ footer{text-align:center;font-size:12px;opacity:.8;margin-top:20px;padding-botto
 .toast.rojo{background:var(--rojo)}
 details{margin-top:10px;font-size:14px}
 summary{cursor:pointer;font-weight:700}
+
+/* Ficha y Detalle desplegados dentro de la misma tarjeta; boletas dentro de la ficha */
+button.azul{background:#1F5FA8;color:var(--crema)}
+.ficha-inline{margin-top:10px;padding:10px;background:#fff;border:3px dashed var(--negro);border-radius:10px;font-size:14px}
+.ficha-inline p{margin:4px 0}
+.boleta-bloque{margin-top:12px;padding-top:8px}
+.boleta-bloque h3{margin:0 0 6px;font-size:15px}
+.boleta-bloque + .boleta-bloque{border-top:2px solid var(--negro)}
+.det-persona{margin-top:8px;padding:6px 0;border-top:1px solid #bbb}
+.det-nombre{font-weight:700}
+.det-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.det-chip{font-family:"Space Mono",monospace;font-size:12px;padding:2px 6px;border:2px solid var(--negro);border-radius:6px}
+.det-chip.pag{background:#cfeedd}
+.det-chip.apa{background:#fff0b3}

@@ -289,9 +289,9 @@ async function pantallaMas(cont) {
     return;
   }
   const estado = el("p", { textContent: "Cargando…" }); cont.appendChild(estado);
-  let s, r;
+  let s, r, nz = null;
   try {
-    [s, r] = await Promise.all([rpc("estadisticas"), rpc("stats_vendedores")]);
+    [s, r, nz] = await Promise.all([rpc("estadisticas"), rpc("stats_vendedores"), rpc("estadisticas_nz").catch(() => null)]);
   } catch (e) { estado.className = "err"; estado.textContent = "No pudimos cargar: " + e.message; return; }
   estado.remove();
 
@@ -317,7 +317,9 @@ async function pantallaMas(cont) {
   const casoMalo = Number(s.real.caso_malo_cop);
   tR.innerHTML =
     `<tr><td>Ingresos cobrados</td><td align="right"><b>${fmtCOP(s.real.ingresos_cop)}</b></td></tr>` +
-    `<tr><td>Pagos registrados</td><td align="right"><b>${s.real.pagos_registrados}</b></td></tr>` +
+    `<tr><td>Pagos registrados</td><td align="right"><b>${s.real.pagos_registrados}</b>` +
+      (nz && nz.por_medio ? `<br><small>${Object.entries(nz.por_medio).map(([k, v]) => `${{ "BRE-B": "Nu / Bre-B", EFECTIVO: "efectivo", NZ: "NZ transf.", NZ_EFECTIVO: "NZ efectivo", TIENDA: "tienda" }[k] || k} ${v}`).join(" · ")}</small>` : "") +
+      `</td></tr>` +
     `<tr><td>Caso malo con hoy (EMPIEZA!C8)</td><td align="right"><b style="color:${casoMalo >= 0 ? 'var(--verde)' : 'var(--rojo)'}">${fmtCOP(casoMalo)}</b></td></tr>` +
     `<tr><td>Faltan al piso (EMPIEZA!C10)</td><td align="right"><b>${s.real.faltan_al_piso}</b> números</td></tr>` +
     `<tr><td>¿Llegó al piso? (EMPIEZA!C12)</td><td align="right"><b style="color:${s.real.llego_al_piso ? 'var(--verde)' : 'var(--rojo)'}">${s.real.llego_al_piso ? 'SÍ' : 'todavía no'}</b></td></tr>`;
@@ -338,6 +340,23 @@ async function pantallaMas(cont) {
     bR.appendChild(el("p", { innerHTML: `<b>Punto de control:</b> meta ${pc.meta} para ${pc.fecha} · faltan ${pc.faltan_a_meta} · ${pc.pct}% cumplido` }));
   }
   cont.appendChild(bR);
+
+  // BLOQUE NUEVA ZELANDA (ventas de Sofía, aparte)
+  if (nz) {
+    const bNZ = el("div", { className: "bloque-stats" });
+    bNZ.appendChild(el("h2", { textContent: "Nueva Zelanda · ventas de Sofía" }));
+    const gNZ = el("div", { className: "cifras" });
+    gNZ.innerHTML =
+      `<div><b>${nz.pagados}</b><span>pagados</span></div>` +
+      `<div><b>${nz.apartados}</b><span>apartados</span></div>` +
+      `<div><b>${nz.por_verificar}</b><span>por verificar</span></div>` +
+      `<div><b>${nz.transferencia + nz.efectivo}</b><span>con pago NZ</span></div>`;
+    bNZ.appendChild(gNZ);
+    bNZ.appendChild(el("p", { innerHTML: `<b>Pagados en NZ:</b> transferencia ${nz.transferencia} · efectivo ${nz.efectivo}` +
+      (nz.sin_clasificar ? ` · <span style="color:var(--rojo);font-weight:700">sin clasificar ${nz.sin_clasificar}</span>` : "") }));
+    bNZ.appendChild(el("p", { textContent: `Cobrado en NZ: NZD ${Number(nz.ingresos_nzd).toLocaleString("es-CO")} (≈ ${fmtCOP(nz.ingresos_cop)}).` }));
+    cont.appendChild(bNZ);
+  }
 
   // BLOQUE PROYECCIÓN
   const bP = el("div", { className: "bloque-stats proy" });
@@ -562,12 +581,13 @@ function tarjetaVendedor(v) {
   h.appendChild(el("span", { className: "cod", textContent: v.codigo }));
   d.appendChild(h);
   const cifras = el("div", { className: "cifras" });
-  const umbral = 25;
+  // Premio del vendedor (decisión 65): 25 boletas pagadas, aunque varias sean de la misma persona.
+  const META_VENDEDOR = 25;
   cifras.innerHTML =
     `<div><b>${v.pagados}</b><span>pagados</span></div>` +
     `<div><b>${v.compradores}</b><span>compradores</span></div>` +
     `<div><b>${v.apartados}</b><span>apartados</span></div>` +
-    `<div><b>${Math.max(0, umbral + 1 - v.compradores)}</b><span>para premio</span></div>`;
+    `<div><b>${Math.max(0, META_VENDEDOR - v.pagados)}</b><span>para premio (${META_VENDEDOR})</span></div>`;
   d.appendChild(cifras);
   const link = `https://mega-rifa-fusa.vercel.app/?v=${v.codigo}`;
   const linkBox = el("div", { className: "link-box" });
@@ -592,8 +612,15 @@ function tarjetaVendedor(v) {
     const bAl = el("button", { className: "chico gris", textContent: "+ Alias" });
     bAl.onclick = () => agregarAlias(v); acc.appendChild(bAl);
     const bDet = el("button", { className: "chico gris", textContent: "Detalle" });
-    bDet.onclick = () => abrirDetalle(v); acc.appendChild(bDet);
+    const detBox = el("div", { className: "ficha-inline" }); detBox.hidden = true;
+    bDet.onclick = async () => {
+      if (!detBox.hidden) { detBox.hidden = true; bDet.textContent = "Detalle"; return; }
+      if (!detBox.dataset.listo) { if (!(await llenarDetalle(v, detBox))) return; detBox.dataset.listo = "1"; }
+      detBox.hidden = false; bDet.textContent = "Cerrar detalle";
+    };
+    acc.appendChild(bDet);
     d.appendChild(acc);
+    d.appendChild(detBox);
   }
   return d;
 }
@@ -716,26 +743,39 @@ function agregarAlias(v) {
     .catch(err);
 }
 
-async function abrirDetalle(v) {
+// Detalle de un vendedor, dentro de su propia tarjeta: a quién le ha vendido y cuáles números.
+const ETQ_METODO = { NU: "Nu", EFECTIVO: "efectivo", NZ: "NZ transf.", NZ_EFECTIVO: "NZ efectivo" };
+async function llenarDetalle(v, box) {
   try {
     const d = await rpc("detalle_vendedor", { p_id: v.id });
-    const body = el("div");
     const nums = d.numeros || [];
     const nAlias = (d.alias || []).length;
-    body.innerHTML = `<p><b>${nums.length}</b> números a su nombre · <b>${nAlias}</b> alias.</p>`;
-    if (nAlias) body.appendChild(el("p", { textContent: "Alias: " + d.alias.join(", ") }));
-    const tbl = el("table"); tbl.style.cssText = "width:100%;font-size:13px;border-collapse:collapse;margin-top:8px";
-    tbl.innerHTML = "<thead><tr><th style='text-align:left;border-bottom:1px solid #000'>Número</th><th style='text-align:left;border-bottom:1px solid #000'>Estado</th><th style='text-align:left;border-bottom:1px solid #000'>Comprador</th></tr></thead>";
-    const tb = el("tbody");
+    const pag = nums.filter(n => n.estado === "PAGADO").length;
+    const apa = nums.length - pag;
+    box.appendChild(el("p", { textContent: `${pag} pagados · ${apa} apartados · ${nAlias} alias` + (nAlias ? " (" + d.alias.join(", ") + ")" : "") }));
+    // Agrupado por comprador: «Claudia Hernandez · 10 boletas»
+    const grupos = new Map();
     for (const n of nums) {
-      const tr = el("tr");
-      tr.innerHTML = `<td style='font-family:Space Mono,monospace'><b>${n.n}</b></td><td>${n.estado}</td><td>${n.comprador || ''}</td>`;
-      tb.appendChild(tr);
+      const k = n.comprador_id || n.comprador || "—";
+      if (!grupos.has(k)) grupos.set(k, { nombre: n.comprador || "—", items: [] });
+      grupos.get(k).items.push(n);
     }
-    tbl.appendChild(tb); body.appendChild(tbl);
-    const dlg = dialogo("Detalle · " + v.codigo, body, [["Cerrar", () => dlg.remove(), "gris chico"]]);
-    $("#app").appendChild(dlg);
-  } catch (e) { err(e); }
+    box.appendChild(el("p", { className: "nota", textContent: grupos.size + " persona(s) a quienes les ha vendido" }));
+    for (const g of grupos.values()) {
+      const fila = el("div", { className: "det-persona" });
+      const nPag = g.items.filter(i => i.estado === "PAGADO").length;
+      fila.appendChild(el("div", { className: "det-nombre", textContent: `${g.nombre} · ${g.items.length} boleta${g.items.length > 1 ? "s" : ""}${nPag < g.items.length ? ` (${nPag} pagadas)` : ""}` }));
+      const chips = el("div", { className: "det-chips" });
+      for (const i of g.items) {
+        const extra = i.estado === "PAGADO" ? (i.metodo ? " · " + (ETQ_METODO[i.metodo] || i.metodo) : "") : (i.por_verificar ? " · por verificar" : " · apartado");
+        chips.appendChild(el("span", { className: "det-chip " + (i.estado === "PAGADO" ? "pag" : "apa"), textContent: i.n + extra }));
+      }
+      fila.appendChild(chips);
+      box.appendChild(fila);
+    }
+    if (!nums.length) box.appendChild(el("p", { textContent: "Todavía no tiene ventas." }));
+    return true;
+  } catch (e) { err(e); return false; }
 }
 
 // ---------- Pendientes ----------
@@ -902,15 +942,20 @@ async function pantallaVender(cont) {
     ? [["APARTADO", "Apartado", "gris"], ["PAGADO_NU", "Pagado · Nu", "verde"],
        ["PAGADO_EFECTIVO", "Pagado · Efectivo", "verde"],
        ["EFECTIVO_VENDEDOR", "Efectivo con vendedor (48 h)", "gris"],
-       ["POR_VERIFICAR", "Por verificar", "gris"]]
+       ["POR_VERIFICAR", "Por verificar", "gris"],
+       ["PAGADO_NZ", "Pagado · NZ · transferencia", "azul"], ["PAGADO_NZ_EFECTIVO", "Pagado · NZ · efectivo", "azul"]]
     : [["APARTADO", "Apartado", "gris"], ["POR_VERIFICAR", "Por verificar", "gris"],
-       ["PAGADO_NZ", "Pagado · NZ", "verde"]];
+       ["PAGADO_NZ", "Pagado · NZ · transferencia", "azul"], ["PAGADO_NZ_EFECTIVO", "Pagado · NZ · efectivo", "azul"]];
   let estadoSel = null;
   for (const [k, lbl, cls] of opcs) {
     const b = el("button", { className: "chico " + cls, textContent: lbl });
     b.onclick = (e) => { e.preventDefault(); estadoSel = k;
       for (const x of chips.querySelectorAll("button")) x.style.outline = "";
       b.style.outline = "4px solid var(--rojo)";
+      // Venta de Nueva Zelanda: si no se puso vendedor, es de Sofía.
+      if (k.startsWith("PAGADO_NZ") && !selVend.value && selVend.querySelector('option[value="SOFIA"]')) {
+        selVend.value = "SOFIA"; selVend.onchange();
+      }
     };
     chips.appendChild(b);
   }
@@ -994,14 +1039,15 @@ async function pantallaVender(cont) {
       });
       if (r.vendedor_no_resuelto) toast("Vendedor «" + vend + "» quedó en Pendientes", "rojo");
       else toast("Guardado · " + r.estado_interno, "verde");
-      await mostrarBoleta(nums[0], nombre, vend || "", nums.length);
+      await mostrarBoletas(nums, nombre, vend || "");
     } catch (ex) { msg.textContent = String(ex.message || ex); msg.style.display = "block"; }
   };
 }
 
-async function mostrarBoleta(numero, nombre, vendedor, cantidad) {
-  const dlg = el("div", { className: "card", id: "dlg-boleta" });
-  dlg.appendChild(el("h2", { textContent: "Boleta de " + numero + (cantidad > 1 ? " (y " + (cantidad - 1) + " más)" : "") }));
+// Un bloque de boleta (imagen + idioma + copiar / compartir / guardar). Lo usan Vender (una por número) y la Ficha.
+async function bloqueBoleta(numero, nombre, vendedor) {
+  const dlg = el("div", { className: "boleta-bloque" });
+  dlg.appendChild(el("h3", { textContent: "Boleta " + numero }));
   const sel = el("select");
   sel.innerHTML = '<option value="es">Español</option><option value="en">English</option>';
   dlg.appendChild(sel);
@@ -1013,12 +1059,9 @@ async function mostrarBoleta(numero, nombre, vendedor, cantidad) {
   const bCompartir = el("button", { className: "chico", textContent: "📤 Compartir" }); bCompartir.hidden = true;
   const bGuardar = el("a", { className: "chico verde", textContent: "💾 Guardar", download: "boleta-" + numero + ".png" });
   bGuardar.style.cssText = "text-decoration:none;display:inline-block;padding:6px 10px;font-weight:700;border:3px solid var(--negro);border-radius:8px;background:var(--verde);color:var(--crema)";
-  const bCerrar = el("button", { className: "chico gris", textContent: "Cerrar" });
-  acc.appendChild(bCopiar); acc.appendChild(bCompartir); acc.appendChild(bGuardar); acc.appendChild(bCerrar);
+  acc.appendChild(bCopiar); acc.appendChild(bCompartir); acc.appendChild(bGuardar);
   dlg.appendChild(acc);
   dlg.appendChild(el("p", { className: "nota", textContent: "Copiar queda en el portapapeles; en WhatsApp mantén presionado el cuadro y Pegar." }));
-  $("#app").appendChild(dlg);
-
   async function pintar() {
     await dibujarCuandoListo(cv, { numero, nombre, vendedor: vendedor || "", idioma: sel.value });
     bGuardar.href = cv.toDataURL("image/png");
@@ -1046,7 +1089,23 @@ async function mostrarBoleta(numero, nombre, vendedor, cantidad) {
       await navigator.share({ files: [f], title: "Mega Rifa Fusa " + numero });
     } catch { toast("No se pudo compartir", "rojo"); }
   };
+  return dlg;
+}
+
+// Después de guardar una venta: una boleta por cada número, todas visibles para copiarlas una a una.
+async function mostrarBoletas(numeros, nombre, vendedor) {
+  for (const vieja of document.querySelectorAll("#dlg-boleta")) vieja.remove();
+  const dlg = el("div", { className: "card", id: "dlg-boleta" });
+  const varias = numeros.length > 1;
+  dlg.appendChild(el("h2", { textContent: varias ? `${numeros.length} boletas de ${nombre}` : "Boleta de " + numeros[0] }));
+  if (varias) dlg.appendChild(el("p", { className: "nota", textContent: "Números: " + numeros.join(", ") + ". Copia o guarda cada boleta por separado." }));
+  $("#app").appendChild(dlg);
+  for (const n of numeros) dlg.appendChild(await bloqueBoleta(n, nombre, vendedor));
+  const acc = el("div", { className: "acciones" });
+  const bCerrar = el("button", { className: "chico gris", textContent: "Cerrar" });
   bCerrar.onclick = () => dlg.remove();
+  acc.appendChild(bCerrar); dlg.appendChild(acc);
+  dlg.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 // ────────── NÚMEROS ──────────
@@ -1096,9 +1155,12 @@ async function pantallaNumeros(cont) {
           bPagEf.onclick = () => rpc("marcar_pagado", { p_numeros: [d.numero], p_metodo: "EFECTIVO" }).then(() => { toast("Pagado"); cargar(); }).catch(err);
           acc.appendChild(bPagEf);
         }
-        const bNZ = el("button", { className: "chico verde", textContent: "Pagado · NZ" });
+        const bNZ = el("button", { className: "chico verde", textContent: "Pagado · NZ transf." });
         bNZ.onclick = () => rpc("marcar_pagado", { p_numeros: [d.numero], p_metodo: "NZ" }).then(() => { toast("Pagado"); cargar(); }).catch(err);
         acc.appendChild(bNZ);
+        const bNZe = el("button", { className: "chico verde", textContent: "Pagado · NZ efectivo" });
+        bNZe.onclick = () => rpc("marcar_pagado", { p_numeros: [d.numero], p_metodo: "NZ_EFECTIVO" }).then(() => { toast("Pagado"); cargar(); }).catch(err);
+        acc.appendChild(bNZe);
         const b24 = el("button", { className: "chico gris", textContent: "Darle 24 h" });
         b24.onclick = () => rpc("dar_24h", { p_numeros: [d.numero] }).then(() => { toast("24 h más"); cargar(); }).catch(err);
         acc.appendChild(b24);
@@ -1109,24 +1171,47 @@ async function pantallaNumeros(cont) {
           acc.appendChild(bLib);
         }
       }
+      // Ficha: se despliega dentro de la misma tarjeta del número (no al final de la lista).
       const bFicha = el("button", { className: "chico gris", textContent: "Ficha" });
+      const fichaBox = el("div", { className: "ficha-inline" }); fichaBox.hidden = true;
       bFicha.onclick = async () => {
+        if (!fichaBox.hidden) { fichaBox.hidden = true; bFicha.textContent = "Ficha"; return; }
         try {
-          const f = await rpc("ficha_numero", { p_numero: d.numero });
-          const body = el("div");
-          body.innerHTML = `<p><b>${f.numero}</b> · ${f.serial} · ${f.estado}${f.por_verificar ? " · por verificar" : ""}</p>`;
-          if (f.comprador) body.innerHTML += `<p>Comprador: ${f.comprador.nombre}${f.comprador.telefono ? " · " + f.comprador.telefono : ""}</p>`;
-          if (f.vendedor) body.innerHTML += `<p>Vendedor: ${f.vendedor.codigo} (${f.vendedor.nombre})</p>`;
-          if (f.vendedor_texto && !f.vendedor) body.innerHTML += `<p>Vendedor (texto): «${f.vendedor_texto}»</p>`;
-          if (f.vence_en) body.innerHTML += `<p>Vence: ${new Date(f.vence_en).toLocaleString("es-CO")}</p>`;
-          if (f.pagado_en) body.innerHTML += `<p>Pagado: ${new Date(f.pagado_en).toLocaleString("es-CO")} · ${f.metodo}</p>`;
-          if (f.notas) body.innerHTML += `<p>Notas: ${f.notas}</p>`;
-          const dlg = dialogo("Ficha · " + f.numero, body, [["Cerrar", () => dlg.remove(), "gris chico"]]);
-          $("#app").appendChild(dlg);
+          if (!fichaBox.dataset.listo) {
+            const f = await rpc("ficha_numero", { p_numero: d.numero });
+            const linea = (txt) => fichaBox.appendChild(el("p", { textContent: txt }));
+            linea(`${f.numero} · ${f.serial} · ${f.estado}${f.por_verificar ? " · por verificar" : ""}`);
+            if (f.comprador) linea(`Comprador: ${f.comprador.nombre}${f.comprador.telefono ? " · " + f.comprador.telefono : ""}${f.comprador.pais === "NZ" ? " · NZ" : ""}`);
+            if (f.vendedor) linea(`Vendedor: ${f.vendedor.codigo} (${f.vendedor.nombre})`);
+            if (f.vendedor_texto && !f.vendedor) linea(`Vendedor (texto): «${f.vendedor_texto}»`);
+            if (f.vence_en) linea("Vence: " + new Date(f.vence_en).toLocaleString("es-CO"));
+            if (f.pagado_en) linea("Pagado: " + new Date(f.pagado_en).toLocaleString("es-CO") + " · " + (f.metodo || ""));
+            else if (f.metodo) linea("Método: " + f.metodo);
+            if (f.notas) linea("Notas: " + f.notas);
+            // Boleta de nuevo, por si no se alcanzó a copiar al registrar la venta.
+            if (f.comprador && f.estado !== "LIBRE") {
+              const boletaBox = el("div"); boletaBox.hidden = true;
+              const bBol = el("button", { className: "chico rojo", textContent: "🎟 Ver boleta" });
+              bBol.onclick = async () => {
+                if (!boletaBox.hidden) { boletaBox.hidden = true; bBol.textContent = "🎟 Ver boleta"; return; }
+                if (!boletaBox.dataset.listo) {
+                  bBol.disabled = true; bBol.textContent = "Generando…";
+                  try { boletaBox.appendChild(await bloqueBoleta(f.numero, f.comprador.nombre, f.vendedor ? f.vendedor.codigo : "")); boletaBox.dataset.listo = "1"; }
+                  catch (e) { err(e); bBol.disabled = false; bBol.textContent = "🎟 Ver boleta"; return; }
+                  bBol.disabled = false;
+                }
+                boletaBox.hidden = false; bBol.textContent = "Ocultar boleta";
+              };
+              fichaBox.appendChild(bBol); fichaBox.appendChild(boletaBox);
+            }
+            fichaBox.dataset.listo = "1";
+          }
+          fichaBox.hidden = false; bFicha.textContent = "Cerrar ficha";
         } catch (e) { err(e); }
       };
       acc.appendChild(bFicha);
       t.appendChild(acc);
+      t.appendChild(fichaBox);
       lista.appendChild(t);
     }
     cont.appendChild(lista);

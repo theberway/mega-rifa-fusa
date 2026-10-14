@@ -65,7 +65,7 @@ Después: la base se respalda sola a las 03:00 Bogotá (30 días de retención, 
 
 | Quién | Qué |
 |---|---|
-| Santiago | **Resumen semanal a cada vendedor**: cuántos números vendió, a cuántas personas distintas (va para el umbral de 25) y cuánta plata tiene pendiente de entregar |
+| Santiago | **Resumen semanal a cada vendedor**: cuántos números vendió, cuántas boletas pagadas lleva (meta del premio: 25) y a cuántas personas y cuánta plata tiene pendiente de entregar |
 | Santiago + Claude | **Revisión del punto de control** contra la meta → ¿se activa un refuerzo? (ver `puntos-de-control.md`) |
 | Santiago | Refrescar el contenido de la semana |
 

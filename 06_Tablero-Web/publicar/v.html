@@ -82,7 +82,7 @@ async function pintar() {
     }
     const link = "https://mega-rifa-fusa.vercel.app/?v=" + d.codigo;
     const falta = Math.max(0, d.faltan);
-    const prog = Math.min(100, Math.round(100 * d.compradores / (d.umbral + 1)));
+    const prog = Math.min(100, Math.round(100 * d.pagados / d.umbral));
     caja.innerHTML =
       '<h1>' + escape_(d.etiqueta) + '</h1>' +
       '<p>Código: <b style="font-family:Space Mono,monospace">' + d.codigo + '</b></p>' +
@@ -94,7 +94,7 @@ async function pintar() {
         '<div class="c"><b>' + falta + '</b><span>para el premio</span></div>' +
       '</div>' +
       '<h2>Avance hacia el premio</h2>' +
-      '<p>Si vendes a <b>más de ' + d.umbral + ' personas distintas</b> y uno de tus compradores gana, te llevas <b>COP 100.000</b>.</p>' +
+      '<p>Si vendes <b>' + d.umbral + ' boletas pagadas</b> (pueden ser varias a la misma persona) y uno de tus compradores gana, te llevas <b>COP 100.000</b>.</p>' +
       '<div class="bar"><i style="width:' + prog + '%"></i></div>' +
       '<h2>Tu link para compartir</h2>' +
       '<p>Quien entre por aquí llega a WhatsApp con tu código ya puesto; no tienes que hacer nada más.</p>' +

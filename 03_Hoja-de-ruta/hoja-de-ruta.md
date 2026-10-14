@@ -79,7 +79,7 @@ El detalle de qué se revisa y qué se activa está en `puntos-de-control.md`.
 
 Se activa cuando un punto de control va **por debajo del 90% de su meta**, en este orden (uno por punto de control, no todos a la vez):
 
-1. **Reto de vendedores + tiendas** (recordar los 25 compradores y el premio de 100k; cerrar las tiendas que faltan)
+1. **Reto de vendedores + tiendas** (recordar las 25 boletas y el premio de 100k; cerrar las tiendas que faltan)
 2. **Oleada en grupos de Facebook de Fusa** (pidiendo permiso al admin)
 3. **Día fuerte en la UdeC** (presencia física, mesa, voz)
 4. **Publicación de Tizumba** (~COP 100k; se decide en el PC 2)
