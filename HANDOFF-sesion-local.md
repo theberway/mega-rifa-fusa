@@ -15,7 +15,7 @@
 ## Siguiente paso
 
 1. **Santiago (manual):** Google Sheets → *Publicar en la web → Detener publicación* y *Acceso general → Restringido*. Mientras tanto el CSV con nombres completos sigue expuesto.
-2. **Fase 5:** actualizar `07_Kit-de-Ventas/05_guia-vendedores-y-tiendas.md`, `03_Hoja-de-ruta/rutina-diaria.md`, `codigos-de-vendedores.md` y `LEEME-como-publicar.md`.
+2. **Fase 5:** docs ya actualizados (`rutina-diaria.md`, `LEEME-como-publicar.md` marcado histórico). Faltan el selector de referido (paso 3 del checklist) y el push de la PWA (VAPID de Santiago).
 3. **Corregir las 31 ventas viejas** sin vendedor ni método (decisión 56): `cargar_copia` e `importar.py` están bloqueados en `modo='real'`, hace falta otra vía.
 4. **Rollback:** promover `mega-rifa-fusa-1g5pwinxc` ya no es seguro: el Sheet no tiene las ventas posteriores al corte.
 

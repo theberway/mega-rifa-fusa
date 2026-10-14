@@ -1,5 +1,7 @@
 # Cómo dejar el tablero funcionando
 
+> **Actualizado el 13 oct 2026 (decisión 63):** este documento describe la **época del Google Sheet** y queda como histórico. Hoy la web lee **Supabase** (`FUENTE="supabase"` en `publicar/index.html`) y el Sheet no se usa ni se actualiza. Lo vigente para publicar es: editar `publicar/index.html` (y copiarlo a `06_Tablero-Web/index.html`, deben quedar idénticos), y desplegar con `npx vercel deploy --prod --yes` desde `06_Tablero-Web/publicar/`. Para los datos (ventas, apartados, vendedores) se usa el panel `/admin`; detalle de la base en `base-de-datos.md`. Lo de abajo sobre el Sheet, `demo.csv`, `script-tablero.gs` y `API_URL` ya no aplica.
+
 *Sesión 3, 2026-10-03. Son cuatro pasos. El 1 y el 2 los hacés vos; el 3 lo hago yo en cuanto me pases dos datos; el 4 es la prueba.*
 
 ## Qué hay en esta carpeta

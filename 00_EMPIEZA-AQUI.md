@@ -13,7 +13,7 @@
 - **`verificar.py` ya no sirve como prueba:** compara contra el Sheet, que quedó viejo. Dio 6 diferencias (079, 111, 145, 220, 529, 806), todas ventas reales de `/admin`.
 - **`cargar_copia` / `importar.py` bloqueados** en `real`: corregir las 31 ventas viejas sin vendedor ni método (decisión 56) necesita otra vía.
 
-**Sigue Fase 5:** actualizar `07_Kit-de-Ventas/05_guia-vendedores-y-tiendas.md`, `03_Hoja-de-ruta/rutina-diaria.md`, `06_Tablero-Web/codigos-de-vendedores.md` y `LEEME-como-publicar.md` para decir que la fuente es Supabase; push de la PWA cuando Santiago genere la VAPID. El checklist usado está en `02_Decisiones/plan-fase-4-cutover.md`.
+**Fase 5, docs hechos (13 oct):** `rutina-diaria.md` y `LEEME-como-publicar.md` (marcado como histórico) ya dicen que la fuente es Supabase; `05_guia-vendedores-y-tiendas.md` y `codigos-de-vendedores.md` no mencionaban el Sheet, no hubo que tocarlos. **Falta:** push de la PWA cuando Santiago genere la VAPID, y el selector de referido (paso 3 del checklist, se dejó fuera de la Fase 4). El checklist usado está en `02_Decisiones/plan-fase-4-cutover.md`.
 
 ## 13 oct — Fase 3C: auditoría + exportar + respaldo diario
 
