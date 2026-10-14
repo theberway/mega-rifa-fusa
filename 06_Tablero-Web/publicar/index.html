@@ -80,6 +80,14 @@ dialog::backdrop{background:rgba(26,26,26,.7)}
 .big{font-family:var(--titular);font-size:58px;line-height:1;text-align:center;color:var(--rojo);text-shadow:3px 3px 0 var(--negro)}
 .btn{display:block;width:100%;text-align:center;font-family:var(--texto);font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.04em;padding:13px;border:var(--borde) solid var(--negro);border-radius:var(--radio);background:var(--rojo);color:var(--crema);text-decoration:none;cursor:pointer;box-shadow:4px 4px 0 var(--negro);margin-top:14px}
 .btn.alt{background:var(--crema);color:var(--negro)}
+/* Selector «¿Quién te compartió la rifa?» */
+.reft{font-family:var(--titular);font-size:24px;line-height:1.1;text-align:center;margin:0 0 4px}
+.refsub{text-align:center;font-size:14px;margin:0 0 10px}
+#dRef .sheet{max-height:94vh;overflow:auto}
+.refgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:40vh;overflow:auto;padding:2px 6px 6px 2px}
+.refgrid .btn,.refextra .btn{margin-top:0;font-size:14px;padding:10px 6px;box-shadow:3px 3px 0 var(--negro)}
+.refextra{display:grid;gap:8px;margin-top:10px}
+.refin{display:block;width:100%;font-family:var(--texto);font-size:16px;font-weight:700;padding:10px;border:4px solid var(--negro);border-radius:10px;background:#fff;color:var(--negro);margin-top:10px}
 .btn.azul{background:var(--azul);color:var(--crema)}
 table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
 td{padding:5px 0;border-bottom:1px dashed rgba(26,26,26,.3);vertical-align:top}
@@ -330,6 +338,24 @@ footer{text-align:center;font-size:13px;margin-top:34px;opacity:.8}
   </div>
 </dialog>
 
+<!-- SELECTOR DE REFERIDO: se abre una sola vez, antes de escribir por WhatsApp, si no llegó con link de vendedor -->
+<dialog id="dRef">
+  <div class="sheet">
+    <p class="reft" id="rTitulo"></p>
+    <p class="refsub" id="rSub"></p>
+    <div class="refgrid" id="rLista"></div>
+    <div class="refextra">
+      <button class="btn alt" id="rNadie" type="button"></button>
+      <button class="btn alt" id="rOtro" type="button"></button>
+      <div id="rOtroBox" hidden>
+        <input class="refin" id="rTexto" maxlength="40" autocomplete="off">
+        <button class="btn" id="rOtroOk" type="button"></button>
+      </div>
+      <button class="btn alt" id="rCerrar" type="button"></button>
+    </div>
+  </div>
+</dialog>
+
 <script>
 /* ══════════════════════════════════════════════════════════════
    CONFIGURACIÓN — las 2 líneas que hay que cambiar
@@ -375,18 +401,87 @@ let estados = null;   // null = todavía no se sabe. Nunca se inventa un estado.
 let nombres = {};     // número -> "Dav*** G." o "Reservado". Sale del Sheet, no lo escribe nadie aquí.
 let idioma  = "es";
 
-/* ───── Código del vendedor: ?v=V03, y se recuerda ───── */
+/* ───── Quién te compartió la rifa (decisión 49) ─────
+   Un ?v=CODIGO siempre gana y se recuerda. Si no hay link, la primera vez que se va a escribir por WhatsApp
+   se abre el selector (vendedores_selector) y la elección se guarda en localStorage.mrf_ref:
+     {t:"v", c:"JUANCARLOS", n:"Juan Carlos"} · {t:"nadie"} · {t:"otro", x:"texto libre"}
+   Si el selector no carga, no se bloquea el WhatsApp: se escribe sin referido y no se guarda nada. */
 const qs = new URLSearchParams(location.search);
 let vend = (qs.get("v") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 24);
+let ref = null;   // null = todavía no se sabe quién lo compartió
 try {
   if (vend) localStorage.setItem("mrf_v", vend);
   else vend = localStorage.getItem("mrf_v") || "";
 } catch (e) { /* navegador sin almacenamiento: el código vale solo para esta visita */ }
 if (vend) {
-  const s = $("#seller");
-  s.hidden = false;
-  s.textContent = (idioma === "es" ? "te atiende " : "your seller: ") + vend;
+  ref = { t: "v", c: vend, n: null };
+  try { const g = JSON.parse(localStorage.getItem("mrf_vn") || "null"); if (g && g.c === vend) ref.n = g.n; } catch (e) {}
+} else {
+  try {
+    const g = JSON.parse(localStorage.getItem("mrf_ref") || "null");
+    if (g && (g.t === "nadie" || (g.t === "v" && g.c) || (g.t === "otro" && g.x))) ref = g;
+  } catch (e) {}
 }
+function guardarRef(r) {
+  ref = r;
+  try { localStorage.setItem("mrf_ref", JSON.stringify(r)); } catch (e) {}
+  pintarVendedor();
+}
+function pintarVendedor() {
+  const s = $("#seller");
+  const nombre = ref && ref.t === "v" ? (ref.n || ref.c) : ref && ref.t === "otro" ? ref.x : "";
+  s.hidden = !nombre;
+  if (nombre) s.textContent = (idioma === "es" ? "te atiende " : "your seller: ") + nombre;
+}
+/* Frase que va en el mensaje: «me dijo Juan Carlos (JUANCARLOS)». Vacía si llegó solo o no se sabe. */
+function refFrase() {
+  if (!ref || ref.t === "nadie") return "";
+  const par = ref.t === "v" ? " (" + ref.c + ")" : "";
+  const nom = ref.t === "v" ? (ref.n || "") : ref.x;
+  if (idioma === "es") return "me dijo " + (nom ? nom + par : par.trim());
+  return nom ? nom + " told me about it" + par : "referred by" + par;
+}
+const mayus = s => s.charAt(0).toUpperCase() + s.slice(1);
+function msgWaNumero(n) {
+  const f = refFrase();
+  return idioma === "es"
+    ? "Hola, quiero el número " + n + " de la Mega Rifa Fusa" + (f ? ", " + f : "") + "."
+    : "Hi, I'd like number " + n + " in the Mega Rifa Fusa." + (f ? " " + mayus(f) + "." : "");
+}
+function urlWaTop() {
+  const f = refFrase();
+  const t = idioma === "es"
+    ? "¡Hola! Quiero más información de la Mega Rifa Fusa 🎟️" + (f ? " " + mayus(f) + "." : "")
+    : "Hi! I'd like more information about the Mega Rifa Fusa 🎟️" + (f ? " " + mayus(f) + "." : "");
+  return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(t);
+}
+// Si llegó con ?v= conocemos el código pero no el nombre bonito: se pide una vez y se recuerda.
+async function resolverNombreVendedor() {
+  if (!ref || ref.t !== "v" || ref.n) return;
+  try {
+    const r = await rpcPublica("resolver_codigo", { p_codigo: ref.c });
+    if (r && r.ok) {
+      if (r.codigo) ref.c = r.codigo;
+      ref.n = r.etiqueta || null;
+      try { localStorage.setItem("mrf_vn", JSON.stringify({ c: ref.c, n: ref.n })); } catch (e) {}
+      pintarVendedor();
+      setIdioma(idioma);
+    }
+  } catch (e) { /* sin nombre: el mensaje lleva solo el código */ }
+}
+async function rpcPublica(nombre, cuerpo) {
+  const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 8000);
+  try {
+    const r = await fetch(SUPA_URL + "/rest/v1/rpc/" + nombre, {
+      method: "POST", cache: "no-store", signal: ctl.signal,
+      headers: { "apikey": SUPA_KEY, "Authorization": "Bearer " + SUPA_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify(cuerpo || {})
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.json();
+  } finally { clearTimeout(to); }
+}
+pintarVendedor();
 
 /* ───── Idioma ───── */
 function setIdioma(l) {
@@ -396,11 +491,11 @@ function setIdioma(l) {
   $("#bES").setAttribute("aria-pressed", l === "es");
   $("#bEN").setAttribute("aria-pressed", l === "en");
   document.querySelectorAll("[data-es]").forEach(n => { n.textContent = n.dataset[l]; });
-  if (vend) $("#seller").textContent = (l === "es" ? "te atiende " : "your seller: ") + vend;
-  const wt = l === "es" ? "¡Hola! Quiero más información de la Mega Rifa Fusa 🎟️" : "Hi! I'd like more information about the Mega Rifa Fusa 🎟️";
-  $("#waTop").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(wt);
+  pintarVendedor();
+  $("#waTop").href = urlWaTop();
   pintarContadores();
   if ($("#dlg").open) abrirModal($("#dNum").textContent);
+  if ($("#dRef").open) pintarSelector();
 }
 $("#bES").onclick = () => setIdioma("es");
 $("#bEN").onclick = () => setIdioma("en");
@@ -767,10 +862,7 @@ function abrirModal(n) {
   } else {
     wa.hidden = false;
     wa.textContent = k === "LIBRE" ? T.qLIBRE : T.qOTRO;
-    const msg = idioma === "es"
-      ? "Hola, quiero el número " + n + " de la Mega Rifa Fusa." + (vend ? " Vengo por " + vend + "." : "")
-      : "Hi, I'd like number " + n + " in the Mega Rifa Fusa." + (vend ? " I come from " + vend + "." : "");
-    wa.href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg);
+    wa.href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msgWaNumero(n));
   }
   $("#dCerrar").textContent = T.cerrar;
   if (!$("#dlg").open) $("#dlg").showModal();
@@ -778,8 +870,84 @@ function abrirModal(n) {
 $("#dCerrar").onclick = () => $("#dlg").close();
 $("#dlg").onclick = ev => { if (ev.target === $("#dlg")) $("#dlg").close(); };
 
+/* ───── Selector «¿Quién te compartió la rifa?» ───── */
+let listaVend = null;      // [{c, n}] de vendedores_selector(); null = aún no cargó
+let alElegir = null;       // qué hacer cuando elige (abrir WhatsApp)
+const TR = {
+  es: { t: "¿Quién te compartió la rifa?", s: "Así le damos el crédito a quien te la ofreció. Lo preguntamos una sola vez.",
+        nadie: "Nadie, llegué solo", otro: "Otra persona…", ph: "Escribe su nombre", ok: "Continuar", cerrar: "Cancelar", cargando: "Cargando…" },
+  en: { t: "Who shared the raffle with you?", s: "So the right person gets the credit. We only ask once.",
+        nadie: "Nobody, I found it myself", otro: "Someone else…", ph: "Type their name", ok: "Continue", cerrar: "Cancel", cargando: "Loading…" }
+};
+function pintarSelector() {
+  const T = TR[idioma];
+  $("#rTitulo").textContent = T.t; $("#rSub").textContent = T.s;
+  $("#rNadie").textContent = T.nadie; $("#rOtro").textContent = T.otro;
+  $("#rTexto").placeholder = T.ph; $("#rOtroOk").textContent = T.ok; $("#rCerrar").textContent = T.cerrar;
+  const box = $("#rLista"); box.textContent = "";
+  if (!listaVend) { box.textContent = T.cargando; return; }
+  for (const v of listaVend) {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "btn alt"; b.textContent = v.n;
+    b.onclick = () => elegirRef({ t: "v", c: v.c, n: v.n });
+    box.appendChild(b);
+  }
+}
+function elegirRef(r) {
+  guardarRef(r);
+  $("#dRef").close();
+  setIdioma(idioma);              // refresca los enlaces con el referido elegido
+  const f = alElegir; alElegir = null;
+  if (f) f();
+}
+/* Pide el referido solo si no se sabe; si el selector no carga, sigue sin referido (no se bloquea la venta). */
+async function pedirRef(siguiente) {
+  if (ref) { siguiente(); return; }
+  alElegir = siguiente;
+  $("#rOtroBox").hidden = true; $("#rTexto").value = "";
+  pintarSelector();
+  $("#dRef").showModal();
+  if (!listaVend) {
+    try {
+      const l = await rpcPublica("vendedores_selector");
+      if (!Array.isArray(l) || !l.length) throw new Error("lista vacía");
+      listaVend = l;
+      pintarSelector();
+    } catch (e) {
+      $("#dRef").close(); alElegir = null;
+      siguiente();                // sin referido y sin guardar nada: se pregunta otra vez la próxima
+    }
+  }
+}
+$("#rNadie").onclick = () => elegirRef({ t: "nadie" });
+$("#rOtro").onclick = () => { $("#rOtroBox").hidden = false; $("#rTexto").focus(); };
+$("#rOtroOk").onclick = () => {
+  const x = $("#rTexto").value.replace(/[()\d]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+  if (x.length < 2) { $("#rTexto").focus(); return; }
+  elegirRef({ t: "otro", x });
+};
+$("#rTexto").onkeydown = ev => { if (ev.key === "Enter") { ev.preventDefault(); $("#rOtroOk").click(); } };
+$("#rCerrar").onclick = () => { alElegir = null; $("#dRef").close(); };
+$("#dRef").onclick = ev => { if (ev.target === $("#dRef")) { alElegir = null; $("#dRef").close(); } };
+
+/* Los dos botones de WhatsApp: si falta saber quién compartió la rifa, primero el selector. */
+function conRef(a, urlFn) {
+  a.addEventListener("click", ev => {
+    if (ref) return;                              // ya se sabe: el enlace normal funciona
+    ev.preventDefault();
+    pedirRef(() => {
+      const w = window.open(urlFn(), "_blank", "noopener");
+      if (!w) location.href = urlFn();            // navegador que bloqueó la ventana nueva
+    });
+  });
+}
+conRef($("#waTop"), urlWaTop);
+conRef($("#dWa"), () => $("#dWa").href);
+
 
 /* ───── Arranque ───── */
+$("#waTop").href = urlWaTop();
+resolverNombreVendedor();
 pintarGrid();
 cargar();
 setInterval(cargar, REFRESCO);

@@ -850,13 +850,19 @@ function marcarTab(nombre) {
 // ────────── VENDER (4 toques) ──────────
 
 // Parsea el texto que llega por WhatsApp: números 3 cifras y, si viene, el código entre paréntesis.
-// Ej.: "Quiero el 607 de la Mega Rifa Fusa, me dijo Juan Carlos (JUANCARLOS)"
+// Ej.: "Hola, quiero el número 607 de la Mega Rifa Fusa, me dijo Juan Carlos (JUANCARLOS)."
+// Si el comprador escogió «Otra persona» no hay código: "…, me dijo Pedro Perez." → el texto libre pasa como
+// vendedor y, si no resuelve, queda en Pendientes. En inglés: "Juan Carlos told me about it (JUANCARLOS)."
 function parsearMensaje(txt) {
   if (!txt) return { numeros: [], vendedor: null };
   const nums = (txt.match(/\b\d{3}\b/g) || []).map(x => x.padStart(3, "0"));
   const unicos = Array.from(new Set(nums));
   const m = txt.match(/\(([A-Z0-9]{1,24})\)/);
-  const vendedor = m ? m[1] : null;
+  let vendedor = m ? m[1] : null;
+  if (!vendedor) {
+    const t = txt.match(/me dijo\s+([^.\n(]{2,40})/i) || txt.match(/([^.\n(]{2,40}?)\s+told me about it/i);
+    if (t) vendedor = t[1].trim();
+  }
   return { numeros: unicos, vendedor };
 }
 
@@ -871,8 +877,9 @@ async function pantallaVender(cont) {
     `style="width:100%;font-family:inherit;font-size:16px;padding:10px;border:3px solid var(--negro);border-radius:8px"></textarea>` +
     `<label>Números (3 cifras, separa con espacios o comas)</label>` +
     `<input id="vNums" inputmode="numeric" placeholder="607, 123, 456">` +
-    `<label>Vendedor (código, se completa del mensaje)</label>` +
-    `<input id="vVend" placeholder="JUANCARLOS · deja vacío si fue directa">`;
+    `<label>Vendedor (se completa solo si el mensaje lo trae)</label>` +
+    `<select id="vVend"><option value="">Directa (sin vendedor)</option><option value="__otra">Otra persona (escribir)…</option></select>` +
+    `<input id="vVendTxt" placeholder="Nombre de quien lo vendió" hidden style="margin-top:6px">`;
   cont.appendChild(c1);
 
   // Toque 2
@@ -918,11 +925,33 @@ async function pantallaVender(cont) {
   cont.appendChild(c4);
 
   // Pegar mensaje → autollenar números y vendedor
-  const txMsg = c1.querySelector("#vMsg"), txNums = c1.querySelector("#vNums"), txVend = c1.querySelector("#vVend");
+  const txMsg = c1.querySelector("#vMsg"), txNums = c1.querySelector("#vNums");
+  const selVend = c1.querySelector("#vVend"), txVendOtro = c1.querySelector("#vVendTxt");
+  const limpiaCod = s => String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  selVend.onchange = () => { txVendOtro.hidden = selVend.value !== "__otra"; if (!txVendOtro.hidden) txVendOtro.focus(); };
+  // Menú de vendedores activos (los de la lista del panel). DIR es «Directa», o sea el vacío.
+  const llenarVendedores = (lista) => {
+    const otra = selVend.querySelector('option[value="__otra"]');
+    for (const v of (lista || []).filter(x => x.activo && x.codigo !== "DIR")) {
+      if (selVend.querySelector(`option[value="${v.codigo}"]`)) continue;
+      const o = new Option(`${v.nombre_completo || v.etiqueta || v.codigo} (${v.codigo})`, v.codigo);
+      selVend.insertBefore(o, otra);
+    }
+  };
+  if (VENDEDORES_CACHE.length) llenarVendedores(VENDEDORES_CACHE);
+  else rpc("listar_vendedores").then(l => { VENDEDORES_CACHE = l; llenarVendedores(l); }).catch(() => {});
+  // Del mensaje de WhatsApp: si el código está en el menú se escoge; si no, queda como texto en «Otra persona».
+  const escogerVendedor = (txt) => {
+    const cod = limpiaCod(txt);
+    if (!cod) return;
+    if (selVend.querySelector(`option[value="${cod}"]`)) { selVend.value = cod; }
+    else { selVend.value = "__otra"; txVendOtro.value = txt; }
+    selVend.onchange();
+  };
   txMsg.oninput = () => {
     const r = parsearMensaje(txMsg.value);
     if (r.numeros.length && !txNums.value) txNums.value = r.numeros.join(", ");
-    if (r.vendedor && !txVend.value) txVend.value = r.vendedor;
+    if (r.vendedor && !selVend.value) escogerVendedor(r.vendedor);
   };
 
   // Autocompletado de comprador
@@ -954,7 +983,8 @@ async function pantallaVender(cont) {
       if (!estadoSel) throw new Error("Toca un estado");
       const nombre = nomInp.value.trim();
       if (!nombre) throw new Error("Falta el nombre");
-      const vend = (txVend.value || "").toUpperCase().replace(/[^A-Z0-9]/g, "") || null;
+      const vend = limpiaCod(selVend.value === "__otra" ? txVendOtro.value : selVend.value) || null;
+      if (selVend.value === "__otra" && !vend) throw new Error("Escribe quién lo vendió o escoge «Directa»");
       const r = await rpc("registrar_venta", {
         p_numeros: nums, p_nombre: nombre, p_estado: estadoSel,
         p_vendedor: vend, p_telefono: c2.querySelector("#vTel").value || null,
