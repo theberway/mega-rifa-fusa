@@ -41,6 +41,58 @@ Cuentas: **@megarifafusa** (IG, FB y TikTok) publica todo; **@santiagobermudezai
 | **vie 23** | 8:00 a.m. | Feed "Frase del día" | IG + FB | `semana-2/23-oct-frase-del-dia/feed.png` |
 | vie 23 | 12:30 p.m. | Historia | IG + FB | `semana-2/23-oct-frase-del-dia/historia.png` |
 
-**Totales:** 13 feeds (9 listos, incluido el de NZ, + 4 del generador), 1 carrusel de 4 láminas, 14 historias (10 listas + 4 del generador, más la opcional del 19) y 6 reels por grabar (5 en español + 1 en inglés para NZ).
+**Totales (10–23 oct):** 13 feeds (9 listos, incluido el de NZ, + 4 del generador), 1 carrusel de 4 láminas, 14 historias (10 listas + 4 del generador, más la opcional del 19) y 6 reels por grabar (5 en español + 1 en inglés para NZ).
 
 **Fechas corregidas:** en `08_Contenido/calendario-de-contenido.md`, la semana 2 tiene los días de la semana corridos (dice "lun 20", pero el 20 de oct de 2026 es martes). Esta tabla usa el día real. El 23 de oct es **viernes**.
+
+---
+
+## Tanda v2 (24 oct – 2 nov 2026) — Halloween-forward
+
+Rediseño v2 (2M dominante, −40% de texto, composición asimétrica). Las piezas **15–23 oct** se re-rendearon con el estilo v2 (mismas rutas, mismo horario). Las piezas con **Gen.** salen el día con cifra real del tablero.
+
+| Fecha | Hora | Qué | Dónde | Archivo |
+|---|---|---|---|---|
+| **sáb 24** | 10:00 a.m. | Feed "NÚMERO EMBRUJADO" (kickoff Halloween) | IG + FB | `semana-3/24-oct-embrujado/feed.png` |
+| sáb 24 | 1:00 p.m. | Historia | IG + FB | `semana-3/24-oct-embrujado/historia.png` |
+| **dom 25** | 10:00 a.m. | Feed recuento (PC2) | IG + FB | **Gen.** tipo 18 oct |
+| dom 25 | 1:00 p.m. | Historia recuento | IG + FB | **Gen.** tipo 18 oct |
+| lun 26 | — | Sin feed (descanso). Historia opcional "Quedan X" | IG | **Gen.** tipo "Cualquier día" |
+| **mar 27** | 8:00 a.m. | Feed "SALE EL 5 DIC" (cuenta regresiva) | IG + FB | `semana-3/27-oct-sale-5-dic/feed.png` |
+| mar 27 | 12:30 p.m. | Historia | IG + FB | `semana-3/27-oct-sale-5-dic/historia.png` |
+| **mié 28** | 8:00 a.m. | Feed "El [###] busca dueño" | IG + FB | **Gen.** tipo 21 oct |
+| mié 28 | 12:30 p.m. | Historia | IG + FB | **Gen.** tipo 21 oct |
+| **jue 29** | 8:00 a.m. | Feed "REGALA UN NÚMERO" | IG + FB | `semana-3/29-oct-regala/feed.png` |
+| jue 29 | 12:30 p.m. | Historia | IG + FB | `semana-3/29-oct-regala/historia.png` |
+| **vie 30** | 8:00 a.m. | Feed "FIN DE MES = TU NÚMERO" | IG + FB | `semana-3/30-oct-fin-de-mes/feed.png` |
+| vie 30 | 12:30 p.m. | Historia | IG + FB | `semana-3/30-oct-fin-de-mes/historia.png` |
+| **sáb 31** | 10:00 a.m. | Feed "TU NÚMERO DE LA SUERTE" (Halloween pico) | IG + FB | `semana-3/31-oct-suerte/feed.png` |
+| sáb 31 | 7–9 p.m. | Historia Halloween noche | IG + FB | `semana-3/31-oct-suerte/historia.png` |
+| **dom 1 nov** | 10:00 a.m. | Feed "Frase del día #2" | IG + FB | `semana-3/01-nov-frase/feed.png` |
+| dom 1 nov | 1:00 p.m. | Historia | IG + FB | `semana-3/01-nov-frase/historia.png` |
+| **lun 2 nov** | 10:00 a.m. | Feed "PUENTE PARA ESCOGER" (festivo Difuntos) | IG + FB | `semana-3/02-nov-puente/feed.png` |
+| lun 2 nov | 1:00 p.m. | Historia | IG + FB | `semana-3/02-nov-puente/historia.png` |
+| **NZ** | horario de Sofía | Feed + historia NZ (segunda ola) | IG + FB de Sofía | `semana-3/NZ-sofia/feed-EN.png`, `historia-EN.png` |
+
+**Totales (24 oct – 2 nov):** 7 feeds nuevos estáticos + NZ (feed + historia) + 3 Gen. feeds + 3 Gen. historias ≈ **18 piezas**. Sin reels nuevos en esta tanda (los 6 anteriores siguen vigentes).
+
+### Piezas de apoyo (sin fecha fija, publicar como refuerzo)
+
+Piezas meme / disruptivas para intercalar entre los posts del calendario, cuando queramos refuerzo o un día flojo.
+
+| Pieza | Idea | Archivo |
+|---|---|---|
+| **Error 404** | Pantalla de "ERROR 404 tu_numero_de_la_rifa.exe not found" — meme técnico moderno | `semana-3/apoyo-1-error-404/feed.png` + `historia.png` |
+| **POV meme** | "POV: no escogiste y ganó el 234" con sello EJEMPLO + bocadillo meme | `semana-3/apoyo-2-pov-meme/feed.png` + `historia.png` |
+| **Horóscopo de rifa** | Los 12 signos del zodíaco con su rango de números — alto engagement esperado | `semana-3/apoyo-3-horoscopo/feed.png` + `historia.png` |
+| **Mi mamá vs yo** | Diálogo familiar POV ("mamá: no juegues / yo: *escoge el 777*") | `semana-3/apoyo-4-mi-mama/feed.png` + `historia.png` |
+
+Sugerencia de ritmo: 1 apoyo cada 2–3 posts del calendario. No reemplazan al post del día.
+
+**Checklist v2 por cada pieza** (de `direccion-creativa-v2.md`):
+- [ ] "$2.000.000" dominante, se lee en 1 segundo.
+- [ ] Ninguna frase promete que alguien gana (la leyenda del premio ya no va, decisión 68).
+- [ ] Un solo mensaje, un solo CTA.
+- [ ] Composición no-centrada (asimetría, capas, rotaciones leves).
+- [ ] Sin whisky, sin la causa, sin urgencia falsa, sin lenguaje legal.
+- [ ] Marca y Sutá respetados.

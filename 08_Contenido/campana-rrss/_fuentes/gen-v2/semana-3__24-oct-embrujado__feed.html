@@ -1,0 +1,178 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../marca.css"><style>
+/* v2: 2M dominante, borde negro grueso, sombras duras planas, composicion asimetrica */
+.lienzo { padding: 40px; gap: 18px; position: relative; }
+.historia.lienzo { padding: 60px 56px; gap: 24px; }
+.bg-crema { background: var(--crema); color: var(--negro); }
+.bg-rojo  { background: var(--rojo);  color: var(--crema); }
+.bg-am    { background: var(--amarillo); color: var(--negro); }
+.bg-azul  { background: var(--azul);  color: var(--crema); }
+.bg-neg   { background: var(--negro); color: var(--crema); }
+
+.tope { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.chip { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 24px; letter-spacing: 3px; padding: 7px 16px; border: 5px solid var(--negro); background: var(--crema); color: var(--rojo); white-space: nowrap; }
+.chip.oscuro { background: var(--negro); color: var(--amarillo); border-color: var(--negro); }
+.logoh { font-family: 'Alfa Slab One', serif; font-size: 34px; line-height: 1; white-space: nowrap; }
+.bg-rojo .logoh, .bg-azul .logoh, .bg-neg .logoh { color: var(--crema); text-shadow: 3px 3px 0 var(--negro); }
+.bg-am .logoh, .bg-crema .logoh { color: var(--rojo); text-shadow: 3px 3px 0 var(--negro); }
+
+/* === Bloque PREMIO (2M dominante) === */
+.premio {
+  border: 10px solid var(--negro);
+  padding: 24px 30px 26px;
+  display: flex; flex-direction: column; justify-content: center;
+  box-shadow: 10px 10px 0 var(--negro);
+}
+.premio .eyebrow { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 24px; letter-spacing: 4px; text-transform: uppercase; }
+.premio .cifra { font-family: 'Alfa Slab One', serif; line-height: 0.95; white-space: nowrap; }
+.premio .cond { font-weight: 700; margin-top: 10px; }
+.premio.rojo { background: var(--rojo); color: var(--crema); }
+.premio.rojo .cifra { color: var(--crema); text-shadow: 7px 7px 0 var(--negro); }
+.premio.rojo .eyebrow { color: var(--amarillo); }
+.premio.am { background: var(--amarillo); color: var(--negro); }
+.premio.am .cifra { color: var(--negro); }
+.premio.am .eyebrow { color: var(--negro); opacity: .78; }
+.premio.azul { background: var(--azul); color: var(--crema); }
+.premio.azul .cifra { color: var(--amarillo); text-shadow: 7px 7px 0 var(--negro); }
+.premio.azul .eyebrow { color: var(--crema); opacity: .9; }
+
+.rot-m3 { transform: rotate(-3deg); transform-origin: center; }
+.rot-m5 { transform: rotate(-5deg); transform-origin: center; }
+.rot-p2 { transform: rotate(2deg); transform-origin: center; }
+
+/* QR stacked card (QR falso: cuadricula) */
+.qr-stack { position: relative; width: 240px; height: 240px; flex-shrink: 0; }
+.qr-stack::before, .qr-stack::after { content:""; position: absolute; inset: 0; border: 6px solid var(--negro); background: var(--crema); }
+.qr-stack::before { transform: translate(14px, 14px); }
+.qr-stack::after  { transform: translate(7px, 7px); }
+.qr-stack .qr { position: relative; z-index: 2; width: 100%; height: 100%; border: 6px solid var(--negro); background:
+  repeating-linear-gradient(0deg, var(--negro) 0 10px, transparent 10px 20px),
+  repeating-linear-gradient(90deg, var(--negro) 0 10px, transparent 10px 20px), var(--crema);
+  background-blend-mode: multiply;
+}
+.qr-stack.sm { width: 190px; height: 190px; }
+.qr-stack.lg { width: 320px; height: 320px; }
+
+/* panel Suta — imagen contain, centrada; para huecos usar aspect-ratio o panel más cuadrado */
+.panel-suta { background: var(--crema); border: 8px solid var(--negro); position: relative; overflow: hidden; align-self: stretch; display: flex; align-items: center; justify-content: center; }
+.panel-suta img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center center; }
+.panel-suta.cover img { object-fit: cover; object-position: center top; }
+.panel-suta.escape img { transform: scale(1.08); }
+.panel-suta .flot { position: absolute; z-index: 3; }
+
+/* banda inferior datos */
+.datos { background: var(--negro); color: var(--crema); border: 8px solid var(--negro); padding: 12px 22px; text-align: center; }
+.datos .slab { font-family: 'Alfa Slab One', serif; color: var(--amarillo); font-size: 30px; line-height: 1.0; }
+.datos .mono { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 18px; margin-top: 4px; }
+.historia .datos .slab { font-size: 46px; }
+.historia .datos .mono { font-size: 26px; }
+
+/* CTA */
+.cta { background: var(--crema); border: 8px solid var(--negro); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; box-shadow: 8px 8px 0 var(--negro); }
+.cta .slab { font-family: 'Alfa Slab One', serif; font-size: 34px; color: var(--rojo); white-space: nowrap; }
+.cta .mono { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 22px; color: var(--negro); white-space: nowrap; }
+.historia .cta .slab { font-size: 42px; }
+.historia .cta .mono { font-size: 26px; }
+
+/* firma */
+.firma { font-size: 22px; font-weight: 600; text-align: center; letter-spacing: 1px; }
+.historia .firma { font-size: 28px; }
+
+/* layout helpers */
+.crece { flex: 1; min-height: 0; }
+.fila { display: flex; gap: 20px; }
+.col  { display: flex; flex-direction: column; gap: 18px; }
+
+/* diagonal sash — centrado, rotación suave para no recortarse */
+.sash { position: absolute; top: 48px; left: 0; width: 100%; padding: 18px 40px; transform: rotate(-3deg); transform-origin: center center; background: var(--rojo); color: var(--crema); border-top: 10px solid var(--negro); border-bottom: 10px solid var(--negro); text-align: center; font-family: 'Alfa Slab One', serif; letter-spacing: 2px; box-shadow: 0 8px 0 var(--negro); }
+
+/* boleta troquelada */
+.ticket {
+  background: var(--crema); color: var(--negro); border: 10px solid var(--negro);
+  background-image:
+    radial-gradient(circle at 0 50%, transparent 18px, var(--negro) 18px, var(--negro) 24px, var(--crema) 24px),
+    radial-gradient(circle at 100% 50%, transparent 18px, var(--negro) 18px, var(--negro) 24px, var(--crema) 24px);
+  padding: 24px 40px 28px;
+  position: relative;
+  box-shadow: 10px 10px 0 var(--negro);
+}
+.ticket::before { content:""; position: absolute; left: 32%; top: 10%; bottom: 10%; width: 0; border-left: 6px dashed var(--negro); }
+
+/* calabaza + murcielago siluetas (SVG embebido via mask) */
+.pumpkin, .bat { pointer-events: none; }
+
+/* titulares genericos */
+.titular { font-family: 'Alfa Slab One', serif; line-height: 0.96; }
+.titular.rojo-txt { color: var(--rojo); text-shadow: 6px 6px 0 var(--negro); }
+.titular.crema-txt { color: var(--crema); text-shadow: 6px 6px 0 var(--negro); }
+.titular.negro-txt { color: var(--negro); }
+.sub { font-size: 34px; font-weight: 600; line-height: 1.3; }
+.historia .sub { font-size: 44px; }
+.caps { text-transform: uppercase; letter-spacing: 3px; font-weight: 700; }
+
+/* comillas gigantes — SVG garantiza tamaño y forma */
+.quote-svg { display: block; }
+
+/* ficha ejemplo */
+.ejemplo-tag { font-family: 'Space Mono', monospace; background: var(--rojo); color: var(--crema); border: 5px solid var(--negro); padding: 3px 14px; font-size: 22px; letter-spacing: 3px; }
+
+/* digitos premio mayor */
+.dig { border: 7px solid var(--negro); display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-weight: 700; }
+
+/* encuesta hueco */
+.hueco-sticker { border: 6px dashed var(--negro); background: rgba(255,244,214,.5); color: var(--negro); padding: 18px 24px; text-align: center; font-family: 'Space Mono', monospace; font-size: 22px; letter-spacing: 2px; }
+
+/* cinta "caution tape" diagonal (barra amarilla+negra con rotación) */
+.caution-tape { position: absolute; top: 40px; left: -8%; width: 116%; padding: 18px 40px; transform: rotate(-4deg); transform-origin: center; font-family: 'Alfa Slab One', serif; letter-spacing: 2px; color: var(--negro); background: repeating-linear-gradient(45deg, var(--amarillo) 0 24px, var(--negro) 24px 36px, var(--amarillo) 36px 60px, var(--negro) 60px 72px); border-top: 8px solid var(--negro); border-bottom: 8px solid var(--negro); text-align: center; text-shadow: 2px 2px 0 var(--amarillo); box-shadow: 0 8px 0 rgba(0,0,0,.2); white-space: nowrap; overflow: hidden; }
+
+/* sellos / badges rotados */
+.sello { position: absolute; display: inline-flex; align-items: center; justify-content: center; text-align: center; font-family: 'Alfa Slab One', serif; border: 6px solid var(--negro); padding: 10px 18px; box-shadow: 6px 6px 0 var(--negro); z-index: 4; }
+
+/* globos de doodle (speech bubble) */
+.bocadillo { position: relative; background: var(--crema); border: 8px solid var(--negro); padding: 18px 24px; border-radius: 24px; font-family: 'Archivo Narrow', sans-serif; font-weight: 700; box-shadow: 8px 8px 0 var(--negro); }
+.bocadillo::after { content:""; position: absolute; bottom: -22px; left: 50px; width: 30px; height: 30px; background: var(--crema); border-right: 8px solid var(--negro); border-bottom: 8px solid var(--negro); transform: rotate(45deg); }
+
+/* pantalla error 404 */
+.pantalla { background: var(--negro); color: var(--amarillo); border: 8px solid var(--negro); padding: 24px 28px; font-family: 'Space Mono', monospace; position: relative; box-shadow: 10px 10px 0 var(--rojo); }
+.pantalla::before { content:""; position: absolute; top: 6px; left: 10px; display: flex; gap: 8px; }
+.pantalla .barra { display: flex; gap: 6px; margin-bottom: 10px; }
+.pantalla .dot { width: 14px; height: 14px; border-radius: 50%; }
+.pantalla .d1 { background: var(--rojo); } .pantalla .d2 { background: var(--amarillo); } .pantalla .d3 { background: #4EC063; }
+
+/* separador rayas de peligro vertical */
+.rayas-v { background: repeating-linear-gradient(135deg, var(--negro) 0 14px, var(--amarillo) 14px 28px); height: 100%; width: 24px; }
+
+/* zodiaco signo item */
+.signo { display: flex; align-items: center; gap: 14px; background: var(--crema); border: 6px solid var(--negro); padding: 10px 16px; box-shadow: 5px 5px 0 var(--negro); }
+.signo .glifo { font-family: 'Alfa Slab One', serif; font-size: 36px; color: var(--rojo); text-shadow: 3px 3px 0 var(--negro); line-height: 1; min-width: 42px; }
+.signo .nombre { font-family: 'Space Mono', monospace; font-size: 16px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
+.signo .numero { margin-left: auto; font-family: 'Alfa Slab One', serif; font-size: 32px; color: var(--rojo); line-height: 1; }
+</style></head>
+<body><div class="lienzo feed bg-am">
+
+<div style="position:absolute;top:-10px;left:-30px;width:160px;height:160px;transform:rotate(-18deg);z-index:1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:100%;height:100%"><path fill="#1A1A1A" d="M50 10 L72 80 L28 80 Z"/><ellipse cx="50" cy="80" rx="46" ry="10" fill="#1A1A1A"/><path d="M30 60 Q40 55 55 62" fill="none" stroke="#F2B705" stroke-width="4"/><circle cx="50" cy="30" r="5" fill="#F2B705"/></svg></div>
+<div style="position:absolute;top:260px;right:-20px;width:120px;height:120px;transform:rotate(10deg);z-index:1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:100%;height:100%"><g stroke="#1A1A1A" stroke-width="5" fill="none" stroke-linecap="round"><path d="M50 50 L10 20"/><path d="M50 50 L10 40"/><path d="M50 50 L10 60"/><path d="M50 50 L10 80"/><path d="M50 50 L90 20"/><path d="M50 50 L90 40"/><path d="M50 50 L90 60"/><path d="M50 50 L90 80"/></g><circle cx="50" cy="50" r="22" fill="#1A1A1A"/><circle cx="44" cy="46" r="4" fill="#C1121F"/><circle cx="56" cy="46" r="4" fill="#C1121F"/></svg></div>
+<div style="position:absolute;bottom:190px;left:-16px;width:120px;height:120px;transform:rotate(-14deg);z-index:1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:100%;height:100%"><path fill="#1A1A1A" d="M50 15c-2 0-3 4-3 10v6c-10-4-24-2-30 7-7 11-3 32 8 42 7 7 17 10 25 10s18-3 25-10c11-10 15-31 8-42-6-9-20-11-30-7v-6c0-6-1-10-3-10zm-14 36c3-4 7-5 10-3-1 5-5 8-10 7v-4zm28 0v4c-5 1-9-2-10-7 3-2 7-1 10 3zm-14 10c4 0 7 2 7 5s-3 5-7 5-7-2-7-5 3-5 7-5z"/></svg></div>
+<div style="position:absolute;top:540px;right:60px;width:180px;height:90px;transform:rotate(16deg);opacity:.85;z-index:1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60" style="width:100%;height:100%"><path fill="#1A1A1A" d="M60 10c-3 0-5 2-6 5-4-6-12-10-20-10-4 0-8 1-12 3 3 1 6 4 7 8-5 1-9 5-9 10 4-2 9-2 13 1-3 4-4 10-2 15 4-6 11-10 19-10 6 0 10 3 10 6 0-3 4-6 10-6 8 0 15 4 19 10 2-5 1-11-2-15 4-3 9-3 13-1 0-5-4-9-9-10 1-4 4-7 7-8-4-2-8-3-12-3-8 0-16 4-20 10-1-3-3-5-6-5z"/></svg></div>
+<div class="sello bg-rojo" style="top:160px;right:30px;transform:rotate(14deg);font-size:22px;color:var(--crema);padding:12px 20px;letter-spacing:3px">🎃 BOO</div>
+<div class="sello bg-crema" style="top:620px;left:12px;transform:rotate(-8deg);font-size:22px;color:var(--rojo);padding:12px 22px;letter-spacing:2px">¿O TE ASUSTA?</div>
+<div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:12px;flex:1">
+  <div class="tope"><span class="chip oscuro">HALLOWEEN · 24 OCT</span><span class="logoh">MEGA RIFA FUSA</span></div>
+  <div style="position:relative">
+    <div class="titular rojo-txt" style="font-size:72px;line-height:0.92;transform:rotate(-2deg)">NÚMERO<br>EM·BRU·JA·DO</div>
+    <div style="font-family:'Space Mono',monospace;font-size:18px;letter-spacing:3px;color:var(--negro);margin-top:4px">adj. /em.bɾuˈxa.ðo/ · <b>el tuyo entre 1.000</b></div>
+  </div>
+  <div class="premio rojo ">
+  <div class="eyebrow" style="font-size:22px">PREMIO EN EFECTIVO</div>
+  <div class="cifra" style="font-size:120px">$2.000.000</div>
+  <div class="cond" style="font-size:20px">Si el número ganador está vendido</div>
+</div>
+  <div class="fila crece" style="gap:14px;align-items:stretch">
+    <div class="panel-suta cover" style="width:280px"><img src="../../_assets/4-senalando.jpg" alt="Sutá"></div>
+    <div class="col crece" style="justify-content:space-between;gap:10px">
+      <div class="datos"><div class="slab">1.000 números · $6.000</div><div class="mono">Sorteo sáb 5 dic, 10:30 p.m. · Lotería de Boyacá</div></div>
+      <div class="qr-stack sm"><div class="qr"></div></div>
+    </div>
+  </div>
+  <div class="cta"><span class="slab">ESCOGE EL TUYO →</span><span class="mono">mega-rifa-fusa.vercel.app</span></div><div class="firma">Organizada por Santiago · The Ber Way</div>
+</div></div></body></html>
